@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- CSP: bloqueia scripts inline e recursos externos não autorizados -->
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src http://localhost:3000 https://api.anthropic.com;">
+<title>Nex AI — Studio de Marketing Viral</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activation.css">
+<link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+<div class="theme-transition-veil" id="theme-veil" aria-hidden="true"></div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Copiado!</span>
+</div>
+
+<!-- ===== MODAL: ADICIONAR PRODUTO ===== -->
+<div class="modal-overlay" id="add-product-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAddModal()" aria-label="Fechar">
+      <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-title" id="modal-title">Adicionar Produto</div>
+    <div class="modal-sub">Informe o nome e o prompt visual do seu produto</div>
+    <div class="form-group">
+      <label class="form-label" for="np-nome">Nome do Produto *</label>
+      <!-- maxlength como defesa extra no client -->
+      <input type="text" class="form-input" id="np-nome"
+             placeholder="Ex: Sérum Hialurônico Premium" maxlength="60"
+             autocomplete="off" spellcheck="false">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="np-prompt">
+        Prompt Visual
+        <span style="color:var(--text3);font-size:9px;letter-spacing:0;text-transform:none;font-weight:400;margin-left:3px">(máx. 200 caracteres)</span>
+      </label>
+      <textarea class="form-textarea" id="np-prompt" maxlength="200"
+                placeholder="Descreva o produto visualmente em inglês. Ex: cylindrical bottle with white dropper top"
+                style="min-height:76px"
+                oninput="updateCharCounter('np-prompt','np-counter',200)"></textarea>
+      <div class="char-counter" id="np-counter">0 / 200</div>
+    </div>
+    <button class="modal-cta" onclick="saveNewProduct()">Adicionar Produto</button>
+  </div>
+</div>
+
+<!-- ===== HEADER ===== -->
+<header class="header">
+  <div class="logo" tabindex="0" role="banner">
+    <div class="logo-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:white;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+      </svg>
+    </div>
+    <span class="logo-text">Nex AI</span>
+    <span class="badge-beta" aria-label="Beta">BETA</span>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:8px">
+    <!-- Busca global -->
+    <button onclick="openSearch()" aria-label="Busca global" id="header-search-btn"
+            style="background:var(--surface2);border:1px solid var(--border2);border-radius:20px;padding:5px 11px;display:flex;align-items:center;gap:6px;color:var(--text3);font-size:12px;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif;">
+      <svg style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span id="search-label-desk" style="display:none">Buscar</span>
+      <kbd id="search-kbd" style="background:var(--surface3);border:1px solid var(--border2);border-radius:4px;font-size:9.5px;padding:1px 5px;font-family:monospace;color:var(--text3);display:none">/</kbd>
+    </button>
+
+    <!-- Toggle tema -->
+    <button class="theme-toggle-btn" id="theme-toggle-btn"
+            onclick="toggleQuickTheme(this)"
+            aria-label="Alternar modo claro/escuro" title="Alternar tema">
+      <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/></svg>
+    </button>
+
+    <!-- Histórico -->
+    <button class="history-trigger" onclick="openHistory()" aria-label="Histórico de prompts" id="hist-btn">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 0 .5-4.5"/><polyline points="3 4 3 11 10 11"/></svg>
+      <span id="hist-label" style="display:none">Histórico</span>
+      <div class="history-notif-dot" id="hist-notif-dot"></div>
+    </button>
+
+    <!-- Créditos / Plano -->
+    <div style="text-align:right;display:none" id="header-plan">
+      <div style="font-size:11.5px;color:var(--text3)">Plano</div>
+      <div style="font-size:13px;font-weight:700;color:var(--accent3)">Pro ●</div>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- ===== SIDEBAR ===== -->
+  <nav class="sidebar" role="navigation" aria-label="Menu principal">
+
+    <div class="sidebar-section">Principal</div>
+
+    <div class="sidebar-item active"
+         onclick="switchTab('mining',this)" tabindex="0" role="menuitem"
+         aria-current="page"
+         onkeydown="if(event.key==='Enter')switchTab('mining',this)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Mineração Viral
+      <span class="sidebar-badge">NOVO</span>
+    </div>
+
+    <div class="sidebar-item"
+         onclick="switchTab('library',this)" tabindex="0" role="menuitem"
+         onkeydown="if(event.key==='Enter')switchTab('library',this)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+      Biblioteca Viral
+    </div>
+
+    <div class="sidebar-section">Criação</div>
+
+    <div class="sidebar-item"
+         onclick="switchTab('studio',this)" tabindex="0" role="menuitem"
+         onkeydown="if(event.key==='Enter')switchTab('studio',this)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      Estúdio IA — Imagem
+    </div>
+
+    <div class="sidebar-item"
+         onclick="switchTab('video',this)" tabindex="0" role="menuitem"
+         onkeydown="if(event.key==='Enter')switchTab('video',this)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+      Estúdio IA — Vídeo
+    </div>
+
+    <div class="sidebar-item"
+         onclick="switchTab('influencer',this)" tabindex="0" role="menuitem"
+         onkeydown="if(event.key==='Enter')switchTab('influencer',this)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Avatar
+    </div>
+
+    <div class="sidebar-section">Sistema</div>
+
+    <div class="sidebar-item"
+         onclick="switchTab('settings',this)" tabindex="0" role="menuitem"
+         onkeydown="if(event.key==='Enter')switchTab('settings',this)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      Configurações
+    </div>
+
+    <!-- Licença + Logout na sidebar -->
+    <div class="sidebar-footer">
+
+      <!-- Indicador de licença ativa -->
+      <div class="sidebar-license">
+        <p class="license-label">Licença ativa até</p>
+        <p id="expiry-display" class="license-date">—</p>
+        <div class="expiry-bar-wrap">
+          <div id="expiry-bar" class="expiry-bar" style="width:100%"></div>
+        </div>
+      </div>
+
+      <!-- Plano -->
+      <div class="plan-mini" style="margin-top:10px">
+        <div class="plan-mini-dot"></div>
+        <div>
+          <div class="plan-mini-name">Plano Pro</div>
+          <div class="plan-mini-label">Todos os recursos ativos</div>
+        </div>
+      </div>
+
+      <!-- Logout — invalida token no servidor -->
+      <button id="logout-btn" class="btn-logout" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sair da conta
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main-content">
+
+    <!-- TAB: MINERAÇÃO -->
+    <div class="tab-content active" id="tab-mining">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Produtos Virais</h1>
+          <p class="page-sub">Tendências em tempo real · Atualizado agora</p>
+        </div>
+      </div>
+
+      <div class="stats-bar" id="stats-bar">
+        <div class="stat-card">
+          <div class="stat-value">25</div>
+          <div class="stat-label">Produtos rastreados</div>
+          <div class="stat-delta">↑ 3 novos esta semana</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="background:linear-gradient(90deg,#00e5b3,#4facfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent">6</div>
+          <div class="stat-label">Categorias</div>
+          <div class="stat-delta">Beleza lidera</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="background:linear-gradient(90deg,#f5c542,#ff6b8a);-webkit-background-clip:text;-webkit-text-fill-color:transparent">10</div>
+          <div class="stat-label">Vídeos virais</div>
+          <div class="stat-delta">↑ 24.6M views líder</div>
+        </div>
+      </div>
+
+      <div class="quick-actions">
+        <button class="quick-action-btn primary" onclick="switchTab('studio',document.querySelector('.sidebar-item:nth-child(4)'))">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          Criar imagem viral
+        </button>
+        <button class="quick-action-btn" onclick="switchTab('video',document.querySelector('.sidebar-item:nth-child(5)'))">
+          <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          Criar vídeo viral
+        </button>
+        <button class="quick-action-btn" onclick="switchTab('library',document.querySelector('.sidebar-item:nth-child(3)'))">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+          Ver biblioteca
+        </button>
+      </div>
+
+      <div class="filters" id="mining-filters" role="group" aria-label="Filtrar por categoria">
+        <button class="filter-chip active" data-cat="all">Todos</button>
+        <button class="filter-chip" data-cat="beleza">💄 Beleza</button>
+        <button class="filter-chip" data-cat="saude">💊 Saúde</button>
+        <button class="filter-chip" data-cat="moda">👗 Moda</button>
+        <button class="filter-chip" data-cat="casa">🏠 Casa</button>
+        <button class="filter-chip" data-cat="tech">📱 Tech</button>
+        <button class="filter-chip" data-cat="fitness">🏋️ Fitness</button>
+      </div>
+      <p class="section-label">Campeões de Venda</p>
+      <div class="product-grid" id="product-grid" role="list"></div>
+    </div>
+
+    <!-- TAB: BIBLIOTECA -->
+    <div class="tab-content" id="tab-library">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Biblioteca Viral</h1>
+          <p class="page-sub">Formatos que convertem · Analise e replique</p>
+        </div>
+      </div>
+      <div class="filters" id="library-filters" role="group" aria-label="Filtrar por formato">
+        <button class="filter-chip active" data-fmt="all">🎬 Todos</button>
+        <button class="filter-chip" data-fmt="unboxing">📦 Unboxing</button>
+        <button class="filter-chip" data-fmt="antes">⏱️ Antes &amp; Depois</button>
+        <button class="filter-chip" data-fmt="review">⭐ Review</button>
+        <button class="filter-chip" data-fmt="tutorial">🎓 Tutorial</button>
+        <button class="filter-chip" data-fmt="ugc">📸 UGC</button>
+        <button class="filter-chip" data-fmt="ai">🤖 IA</button>
+      </div>
+      <div class="product-grid" id="video-grid" role="list"></div>
+    </div>
+
+    <!-- TAB: ESTÚDIO IA — IMAGEM -->
+    <div class="tab-content" id="tab-studio">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Estúdio IA — Imagem</h1>
+          <p class="page-sub">Gere prompts profissionais para Midjourney, DALL-E e Stable Diffusion</p>
+        </div>
+      </div>
+
+      <div class="stepper" id="img-stepper" role="tablist" aria-label="Etapas de criação de imagem">
+        <div class="step-item active" data-step="1" onclick="goStep(1)" role="tab" aria-selected="true"><div class="step-num">1</div> Produto</div>
+        <div class="step-item locked" data-step="2" onclick="goStep(2)" role="tab" aria-selected="false"><div class="step-num">2</div> Avatar</div>
+        <div class="step-item locked" data-step="3" onclick="goStep(3)" role="tab" aria-selected="false"><div class="step-num">3</div> Câmera &amp; Estilo</div>
+        <div class="step-item locked" data-step="4" onclick="goStep(4)" role="tab" aria-selected="false"><div class="step-num">4</div> Background</div>
+        <div class="step-item locked" data-step="5" onclick="goStep(5)" role="tab" aria-selected="false"><div class="step-num">5</div> Gerar IA</div>
+      </div>
+
+      <div class="step-panel active" id="step-1" role="tabpanel">
+        <p class="section-label">Selecionar Produto</p>
+        <div class="search-wrap">
+          <span class="search-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+          <input type="search" class="studio-search" placeholder="Buscar produto..."
+                 id="studio-search" oninput="filterStudioProducts()" aria-label="Buscar produto"
+                 autocomplete="off" spellcheck="false">
+        </div>
+        <div class="product-grid" id="studio-product-grid" style="margin-bottom:16px" role="list"></div>
+        <div id="studio-empty" class="empty-state" style="display:none" role="status">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <p>Nenhum produto encontrado</p>
+        </div>
+        <div class="add-product-btn" onclick="openAddModal()" role="button" tabindex="0"
+             onkeydown="if(event.key==='Enter')openAddModal()"
+             aria-label="Adicionar produto personalizado">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Adicionar meu produto com prompt personalizado
+        </div>
+        <div class="step-nav">
+          <button class="step-next-btn" id="img-step1-next" onclick="goStep(2)" style="flex:1" disabled>Próximo →</button>
+        </div>
+      </div>
+
+      <div class="step-panel" id="step-2" role="tabpanel">
+        <p class="section-label">Selecionar Avatar</p>
+        <div class="avatar-select-grid" id="studio-avatar-grid" role="list"></div>
+        <div class="step-nav">
+          <button class="step-back-btn" onclick="goStep(1)">← Voltar</button>
+          <button class="step-next-btn" id="img-step2-next" onclick="goStep(3)" disabled>Próximo →</button>
+        </div>
+      </div>
+
+      <div class="step-panel" id="step-3" role="tabpanel">
+        <p class="section-label">Tipo de Câmera</p>
+        <div class="camera-grid" id="camera-opts"></div>
+        <p class="section-label">Estilo de Conteúdo</p>
+        <div class="style-grid" id="style-opts"></div>
+        <p class="section-label">Modo do Avatar</p>
+        <div class="mode-grid" id="mode-opts"></div>
+        <p class="section-label">Energia</p>
+        <div class="energy-row">
+          <div class="energy-labels">
+            <span>Discreto</span>
+            <span id="energy-val">5</span>
+            <span>Expressivo</span>
+          </div>
+          <input type="range" min="1" max="10" value="5" id="energy-range"
+                 oninput="document.getElementById('energy-val').textContent=this.value"
+                 aria-label="Nível de energia">
+        </div>
+        <p class="section-label">Melhorias</p>
+        <div class="improve-grid" id="improve-opts"></div>
+        <div class="step-nav">
+          <button class="step-back-btn" onclick="goStep(2)">← Voltar</button>
+          <button class="step-next-btn" onclick="goStep(4)">Próximo →</button>
+        </div>
+      </div>
+
+      <div class="step-panel" id="step-4" role="tabpanel">
+        <p class="section-label">Escolher Background</p>
+        <div class="bg-grid" id="bg-opts" role="group" aria-label="Escolher background"></div>
+        <div style="margin-bottom:16px">
+          <label class="form-label" for="bg-custom-input">
+            Background personalizado
+            <span style="font-size:9px;color:var(--text3);letter-spacing:0;text-transform:none;font-weight:400">(descreva em inglês)</span>
+          </label>
+          <input type="text" class="form-input" id="bg-custom-input"
+                 placeholder="Ex: minimalist white marble kitchen counter, soft morning light..."
+                 style="margin-top:5px" maxlength="300" autocomplete="off">
+        </div>
+        <div class="step-nav">
+          <button class="step-back-btn" onclick="goStep(3)">← Voltar</button>
+          <button class="step-next-btn" onclick="goStep(5)">Próximo →</button>
+        </div>
+      </div>
+
+      <div class="step-panel" id="step-5" role="tabpanel">
+        <div id="img-config-summary" style="margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:7px"></div>
+        <div class="ai-loading" id="ai-loading" role="status" aria-live="polite">
+          <div class="ai-loading-dot"></div>
+          <div class="ai-loading-dot"></div>
+          <div class="ai-loading-dot"></div>
+          <span>Claude está otimizando seu prompt...</span>
+        </div>
+        <button class="gen-btn" id="gen-img-btn" onclick="generateImagePrompt()"
+                aria-label="Gerar prompt de imagem com IA">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          Gerar Prompt de Imagem com IA
+        </button>
+        <button class="copy-btn" onclick="copyOutput('prompt-output')" aria-label="Copiar prompt">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copiar Prompt
+        </button>
+        <textarea class="prompt-box" id="prompt-output" readonly
+                  placeholder="Configure as opções e clique em Gerar para criar um prompt otimizado pela IA..."
+                  aria-label="Prompt gerado" aria-readonly="true"></textarea>
+        <div class="prompt-stats" id="prompt-output-stats" style="display:none">
+          <span>Prompt gerado</span><span class="prompt-stats-words">0 palavras</span>
+        </div>
+        <div class="step-nav">
+          <button class="step-back-btn" onclick="goStep(4)">← Voltar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: ESTÚDIO IA — VÍDEO -->
+    <div class="tab-content" id="tab-video">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Estúdio IA — Vídeo</h1>
+          <p class="page-sub">Prompts para Runway, Kling AI, Pika Labs e Sora</p>
+        </div>
+      </div>
+
+      <div class="vid-stepper" id="vid-stepper" role="tablist" aria-label="Etapas de criação de vídeo">
+        <div class="vid-step-item active" data-step="1" onclick="goVidStep(1)" role="tab"><div class="vid-step-num">1</div> Produto</div>
+        <div class="vid-step-item locked" data-step="2" onclick="goVidStep(2)" role="tab"><div class="vid-step-num">2</div> Avatar</div>
+        <div class="vid-step-item locked" data-step="3" onclick="goVidStep(3)" role="tab"><div class="vid-step-num">3</div> Configurar</div>
+        <div class="vid-step-item locked" data-step="4" onclick="goVidStep(4)" role="tab"><div class="vid-step-num">4</div> Roteiro</div>
+        <div class="vid-step-item locked" data-step="5" onclick="goVidStep(5)" role="tab"><div class="vid-step-num">5</div> Gerar IA</div>
+      </div>
+
+      <div class="vid-step-panel active" id="vid-step-1" role="tabpanel">
+        <p class="section-label">Selecionar Produto</p>
+        <div class="search-wrap">
+          <span class="search-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+          <input type="search" class="studio-search" placeholder="Buscar produto..."
+                 id="vid-studio-search" oninput="filterVidProducts()"
+                 aria-label="Buscar produto para vídeo" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="product-grid" id="vid-product-grid" style="margin-bottom:16px" role="list"></div>
+        <div id="vid-studio-empty" class="empty-state" style="display:none" role="status">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <p>Nenhum produto encontrado</p>
+        </div>
+        <div class="add-product-btn" onclick="openAddModal()" role="button" tabindex="0"
+             onkeydown="if(event.key==='Enter')openAddModal()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Adicionar meu produto
+        </div>
+        <div class="step-nav">
+          <button class="step-next-btn" id="vid-step1-next" onclick="goVidStep(2)" style="flex:1" disabled>Próximo →</button>
+        </div>
+      </div>
+
+      <div class="vid-step-panel" id="vid-step-2" role="tabpanel">
+        <p class="section-label">Selecionar Avatar</p>
+        <div class="avatar-select-grid" id="vid-avatar-grid" role="list"></div>
+        <div class="step-nav">
+          <button class="step-back-btn" onclick="goVidStep(1)">← Voltar</button>
+          <button class="step-next-btn" id="vid-step2-next" onclick="goVidStep(3)" disabled>Próximo →</button>
+        </div>
+      </div>
+
+      <div class="vid-step-panel" id="vid-step-3" role="tabpanel">
+        <div class="video-config">
+          <div class="video-config-title">Configurações do Vídeo</div>
+          <div class="video-opts-grid">
+            <div class="video-opt-group">
+              <label for="vid-format">Formato</label>
+              <select id="vid-format">
+                <option value="tiktok">TikTok (9:16)</option>
+                <option value="reels">Reels (9:16)</option>
+                <option value="shorts">YouTube Shorts</option>
+                <option value="feed">Feed Quadrado (1:1)</option>
+                <option value="story">Story (9:16)</option>
+              </select>
+            </div>
+            <div class="video-opt-group">
+              <label for="vid-style">Estilo</label>
+              <select id="vid-style">
+                <option value="ugc">UGC Autêntico</option>
+                <option value="unboxing">Unboxing</option>
+                <option value="antes">Antes &amp; Depois</option>
+                <option value="review">Review Honesta</option>
+                <option value="tutorial">Tutorial Rápido</option>
+                <option value="grwm">Get Ready With Me</option>
+              </select>
+            </div>
+            <div class="video-opt-group">
+              <label for="vid-quality">Qualidade</label>
+              <select id="vid-quality">
+                <option value="hd">HD 1080p</option>
+                <option value="4k" selected>4K Ultra HD</option>
+                <option value="cinematic">4K Cinemático</option>
+              </select>
+            </div>
+            <div class="video-opt-group">
+              <label for="vid-lighting">Iluminação</label>
+              <select id="vid-lighting">
+                <option value="natural">Luz Natural</option>
+                <option value="studio">Estúdio Profissional</option>
+                <option value="golden">Golden Hour</option>
+                <option value="ring">Ring Light</option>
+                <option value="neon">Neon Aesthetic</option>
+              </select>
+            </div>
+          </div>
+          <div class="video-opt-group" style="margin-bottom:11px">
+            <label>Duração</label>
+            <div class="duration-chips" style="margin-top:6px">
+              <span class="dur-chip" onclick="selectDur(this)">7s</span>
+              <span class="dur-chip active" onclick="selectDur(this)">15s</span>
+              <span class="dur-chip" onclick="selectDur(this)">30s</span>
+              <span class="dur-chip" onclick="selectDur(this)">60s</span>
+              <span class="dur-chip" onclick="selectDur(this)">90s</span>
+            </div>
+          </div>
+          <div class="video-opt-group">
+            <label for="vid-audio">Música / Áudio</label>
+            <select id="vid-audio">
+              <option value="trending">Som Trending TikTok</option>
+              <option value="upbeat">Upbeat Energético</option>
+              <option value="chill">Lo-fi Chill</option>
+              <option value="dramatic">Dramático Cinematográfico</option>
+              <option value="none">Sem Música (voz only)</option>
+            </select>
+          </div>
+        </div>
+        <p class="section-label">Melhorias de Vídeo</p>
+        <div class="improve-grid" id="vid-improve-opts"></div>
+        <div class="step-nav">
+          <button class="step-back-btn" onclick="goVidStep(2)">← Voltar</button>
+          <button class="step-next-btn" onclick="goVidStep(4)">Próximo →</button>
+        </div>
+      </div>
+
+      <div class="vid-step-panel" id="vid-step-4" role="tabpanel">
+        <p class="section-label">Tipo de Roteiro</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:7px;margin-bottom:16px" id="roteiro-type-grid"></div>
+        <div class="roteiro-builder">
+          <div class="roteiro-title">
+            Estrutura do Roteiro
+            <button onclick="autoFillRoteiro()"
+                    style="background:rgba(124,107,255,0.12);border:1px solid rgba(124,107,255,0.28);color:var(--accent1);font-size:10px;font-weight:700;padding:4px 10px;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s"
+                    aria-label="Preencher roteiro com IA">✨ Preencher com IA</button>
+          </div>
+          <div class="roteiro-steps">
+            <div class="roteiro-step">
+              <div class="roteiro-step-header">
+                <span class="roteiro-step-badge badge-hook">HOOK</span>
+                <span class="roteiro-step-label">Gancho inicial</span>
+                <span class="roteiro-step-time">0 – 3s</span>
+              </div>
+              <div class="roteiro-presets" id="hook-presets"></div>
+              <textarea class="roteiro-textarea" id="rot-hook"
+                        placeholder="Ex: Minha pele estava horrível antes disso..."
+                        aria-label="Texto do hook" maxlength="300"></textarea>
+            </div>
+            <div class="roteiro-step">
+              <div class="roteiro-step-header">
+                <span class="roteiro-step-badge badge-reveal">REVEAL</span>
+                <span class="roteiro-step-label">Apresentação &amp; Demonstração</span>
+                <span class="roteiro-step-time">3 – 20s</span>
+              </div>
+              <div class="roteiro-presets" id="reveal-presets"></div>
+              <textarea class="roteiro-textarea" id="rot-reveal"
+                        placeholder="Ex: Apliquei o sérum todos os dias por 30 dias e olha o resultado..."
+                        aria-label="Texto do reveal" maxlength="500"></textarea>
+            </div>
+            <div class="roteiro-step">
+              <div class="roteiro-step-header">
+                <span class="roteiro-step-badge badge-cta">CTA</span>
+                <span class="roteiro-step-label">Chamada para ação</span>
+                <span class="roteiro-step-time">Final</span>
+              </div>
+              <div class="roteiro-presets" id="cta-presets"></div>
+              <textarea class="roteiro-textarea" id="rot-cta"
+                        placeholder="Ex: Link na bio com 30% off só hoje!"
+                        aria-label="Texto do CTA" maxlength="200"></textarea>
+            </div>
+          </div>
+        </div>
+        <div style="margin-bottom:16px">
+          <label class="form-label">Tom do Roteiro</label>
+          <div class="duration-chips" style="margin-top:7px" id="roteiro-tom-chips"></div>
+        </div>
+        <div class="step-nav">
+          <button class="step-back-btn" onclick="goVidStep(3)">← Voltar</button>
+          <button class="step-next-btn" onclick="goVidStep(5)">Próximo →</button>
+        </div>
+      </div>
+
+      <div class="vid-step-panel" id="vid-step-5" role="tabpanel">
+        <div id="vid-config-summary" style="margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:7px"></div>
+        <div class="ai-loading" id="vid-ai-loading" role="status" aria-live="polite">
+          <div class="ai-loading-dot"></div>
+          <div class="ai-loading-dot"></div>
+          <div class="ai-loading-dot"></div>
+          <span>Claude está criando seu prompt de vídeo...</span>
+        </div>
+        <button class="gen-btn vid-btn" id="gen-vid-btn" onclick="generateVideoPrompt()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          Gerar Prompt de Vídeo com IA
+        </button>
+        <button class="copy-btn" onclick="copyOutput('vid-prompt-output')">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copiar Prompt
+        </button>
+        <textarea class="prompt-box" id="vid-prompt-output" readonly style="min-height:130px"
+                  placeholder="Configure as opções e clique em Gerar para criar um prompt de vídeo..."
+                  aria-readonly="true" aria-label="Prompt de vídeo gerado"></textarea>
+        <div class="prompt-stats" id="vid-prompt-output-stats" style="display:none">
+          <span>Prompt gerado</span><span class="prompt-stats-words">0 palavras</span>
+        </div>
+        <div class="step-nav">
+          <button class="step-back-btn" onclick="goVidStep(4)">← Voltar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: AVATAR -->
+    <div class="tab-content" id="tab-influencer">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Avatar</h1>
+          <p class="page-sub">Crie e gerencie avatares IA para sua marca</p>
+        </div>
+      </div>
+      <div class="filters" id="avatar-filters" role="group" aria-label="Filtrar avatares">
+        <button class="filter-chip active" data-gender="all">Todos</button>
+        <button class="filter-chip" data-gender="f">👩 Feminino</button>
+        <button class="filter-chip" data-gender="m">👨 Masculino</button>
+        <button class="filter-chip" data-gender="custom">⭐ Meus Avatares</button>
+      </div>
+      <p class="section-label">Avatares Prontos</p>
+      <div class="product-grid" id="avatar-grid" style="margin-bottom:28px" role="list"></div>
+      <div id="custom-avatars-section" style="margin-bottom:28px;display:none">
+        <p class="section-label">Meus Avatares Salvos</p>
+        <div class="product-grid" id="custom-avatar-grid" role="list"></div>
+      </div>
+      <div class="create-avatar-card">
+        <h2 style="font-size:16px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px">
+          <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--accent1);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+          Criar Novo Avatar
+        </h2>
+        <div class="av-form-grid">
+          <div class="form-group" style="margin:0"><label class="form-label" for="av-nome">Nome</label><input type="text" class="form-input" placeholder="Ex: Luna" id="av-nome" maxlength="30" autocomplete="off"></div>
+          <div class="form-group" style="margin:0"><label class="form-label" for="av-idade">Idade</label><input type="number" class="form-input" placeholder="25" id="av-idade" min="18" max="60"></div>
+          <div class="form-group" style="margin:0"><label class="form-label" for="av-genero">Gênero</label><select class="form-input form-select" id="av-genero"><option>Feminino</option><option>Masculino</option><option>Não-binário</option></select></div>
+        </div>
+        <div class="form-group"><label class="form-label">Estilo Visual</label><div class="chip-group" id="av-estilo"><span class="form-chip" onclick="toggleChip(this)">Minimalista</span><span class="form-chip" onclick="toggleChip(this)">Streetwear</span><span class="form-chip" onclick="toggleChip(this)">Luxo</span><span class="form-chip" onclick="toggleChip(this)">Fitness</span><span class="form-chip" onclick="toggleChip(this)">Grunge</span><span class="form-chip" onclick="toggleChip(this)">Boho</span></div></div>
+        <div class="form-group"><label class="form-label">Nicho</label><div class="chip-group" id="av-nicho"><span class="form-chip" onclick="toggleChip(this)">Beleza</span><span class="form-chip" onclick="toggleChip(this)">Tech</span><span class="form-chip" onclick="toggleChip(this)">Moda</span><span class="form-chip" onclick="toggleChip(this)">Lifestyle</span><span class="form-chip" onclick="toggleChip(this)">Fitness</span><span class="form-chip" onclick="toggleChip(this)">Culinária</span></div></div>
+        <div class="form-group"><label class="form-label">Personalidade</label><div class="chip-group" id="av-personalidade"><span class="form-chip" onclick="toggleChip(this)">Enérgica</span><span class="form-chip" onclick="toggleChip(this)">Sofisticada</span><span class="form-chip" onclick="toggleChip(this)">Divertida</span><span class="form-chip" onclick="toggleChip(this)">Educativa</span><span class="form-chip" onclick="toggleChip(this)">Empática</span><span class="form-chip" onclick="toggleChip(this)">Audaciosa</span></div></div>
+        <div class="form-group"><label class="form-label">Tipo de Conteúdo</label><div class="chip-group" id="av-conteudo"><span class="form-chip" onclick="toggleChip(this)">Reviews</span><span class="form-chip" onclick="toggleChip(this)">Tutoriais</span><span class="form-chip" onclick="toggleChip(this)">Unboxing</span><span class="form-chip" onclick="toggleChip(this)">Vlogs</span><span class="form-chip" onclick="toggleChip(this)">GRWM</span><span class="form-chip" onclick="toggleChip(this)">TikTok Ads</span></div></div>
+        <div class="form-group">
+          <label class="form-label" for="av-desc">
+            Descrição adicional
+            <span style="color:var(--text3);font-size:9px;letter-spacing:0;text-transform:none;font-weight:400">(opcional · máx. 400)</span>
+          </label>
+          <textarea class="form-textarea" id="av-desc" maxlength="400"
+                    placeholder="Características físicas específicas, sotaque, linguagem, tom de voz..."
+                    oninput="updateCharCounter('av-desc','av-desc-counter',400)"></textarea>
+          <div class="char-counter" id="av-desc-counter">0 / 400</div>
+        </div>
+        <button class="gen-btn" style="margin-top:4px" onclick="generateAvatarPromptAI()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          Gerar Prompt com IA
+        </button>
+        <div class="ai-loading" id="avatar-ai-loading" style="margin-top:10px" role="status" aria-live="polite">
+          <div class="ai-loading-dot"></div><div class="ai-loading-dot"></div><div class="ai-loading-dot"></div>
+          <span>Claude está criando seu avatar...</span>
+        </div>
+        <textarea class="prompt-box" id="avatar-prompt-output" style="margin-top:10px;min-height:130px"
+                  readonly placeholder="Preencha as informações e clique em Gerar Prompt..."
+                  aria-readonly="true" aria-label="Prompt do avatar"></textarea>
+        <button class="modal-cta" style="margin-top:10px" onclick="saveGeneratedAvatar()">
+          <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:inline;margin-right:5px" aria-hidden="true"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Salvar Avatar
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB: CONFIGURAÇÕES -->
+    <div class="tab-content" id="tab-settings">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Configurações</h1>
+          <p class="page-sub">Personalize sua experiência Nex AI</p>
+        </div>
+      </div>
+      <div class="settings-grid">
+        <div class="settings-card">
+          <div class="settings-title"><div class="settings-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>Geração</div>
+          <div class="settings-row"><div><div class="settings-row-label">Idioma dos prompts</div></div><select class="form-select"><option selected>Inglês (recomendado)</option><option>Português</option><option>Espanhol</option></select></div>
+          <div class="settings-row"><div><div class="settings-row-label">Qualidade padrão</div></div><select class="form-select"><option>Draft</option><option>HD</option><option selected>Ultra</option></select></div>
+          <div class="settings-row"><div><div class="settings-row-label">Auto-copiar ao gerar</div><div class="settings-row-desc">Copiar prompt automaticamente</div></div><div class="toggle-wrap"><div class="toggle" id="toggle-autocopy" tabindex="0" role="switch" aria-checked="false" onclick="toggleSwitch(this)" onkeydown="toggleSwitchKey(event,this)"></div></div></div>
+        </div>
+        <div class="settings-card">
+          <div class="settings-title"><div class="settings-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>Tema</div>
+          <div class="theme-grid"><div class="theme-opt theme-dark selected" onclick="selectTheme(this)"><span>Dark</span></div><div class="theme-opt theme-light" onclick="selectTheme(this)"><span>Light</span></div><div class="theme-opt theme-futuristic" onclick="selectTheme(this)"><span>Futurista</span></div></div>
+        </div>
+        <div class="settings-card">
+          <div class="settings-title"><div class="settings-icon"><svg viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.29"/></svg></div>Exportar Dados</div>
+          <div class="settings-row"><div><div class="settings-row-label">Prompts gerados</div><div class="settings-row-desc">Exportar histórico</div></div></div>
+          <div class="export-row">
+            <button class="export-btn" onclick="exportData('json')"><svg viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/></svg>JSON</button>
+            <button class="export-btn" onclick="exportData('csv')"><svg viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/></svg>CSV</button>
+            <button class="export-btn" onclick="exportData('txt')"><svg viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/></svg>TXT</button>
+          </div>
+          <div class="settings-row" style="margin-top:10px">
+            <div><div class="settings-row-label" style="color:var(--accent2)">Limpar dados</div><div class="settings-row-desc">Remove favoritos e avatares personalizados</div></div>
+            <button onclick="clearAllData()" style="padding:5px 12px;background:rgba(255,107,138,0.07);border:1px solid rgba(255,107,138,0.22);border-radius:var(--radius-sm);color:var(--accent2);font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Limpar</button>
+          </div>
+        </div>
+        <div class="settings-card">
+          <div class="settings-title"><div class="settings-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>Atalhos de Teclado</div>
+          <div class="shortcut-grid">
+            <div class="shortcut-item">Copiar prompt <span class="shortcut-key">C</span></div>
+            <div class="shortcut-item">Mineração <span class="shortcut-key">1</span></div>
+            <div class="shortcut-item">Biblioteca <span class="shortcut-key">2</span></div>
+            <div class="shortcut-item">Estúdio Img <span class="shortcut-key">3</span></div>
+            <div class="shortcut-item">Estúdio Vídeo <span class="shortcut-key">4</span></div>
+            <div class="shortcut-item">Avatar <span class="shortcut-key">5</span></div>
+            <div class="shortcut-item">Busca global <span class="shortcut-key">/</span></div>
+            <div class="shortcut-item">Histórico <span class="shortcut-key">H</span></div>
+            <div class="shortcut-item">Tema claro/escuro <span class="shortcut-key">T</span></div>
+          </div>
+        </div>
+        <div class="settings-card full">
+          <div class="settings-title"><div class="settings-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>Conta &amp; Licença</div>
+          <div class="plan-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+              <div><span class="plan-name">Pro</span><span class="plan-tag">ATIVO</span></div>
+              <!-- data de expiração preenchida pelo session.js -->
+              <div style="font-size:12.5px;color:var(--text2)">
+                Válido até: <strong id="settings-expiry" style="color:var(--accent3)">—</strong>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:12px;padding:13px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);font-size:12.5px;color:var(--text2);line-height:1.75">
+            <strong style="color:var(--text)">Plano Pro inclui:</strong>
+            Avatares ilimitados · Prompts 4K · Biblioteca completa · Roteiro personalizado · Background customizado
+          </div>
+          <!-- Botão de logout também nas configurações -->
+          <button id="logout-btn-settings" type="button"
+                  style="margin-top:14px;padding:10px 18px;background:rgba(255,107,138,0.07);border:1px solid rgba(255,107,138,0.22);border-radius:var(--radius);color:var(--accent2);font-size:12.5px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:7px;transition:all 0.2s;">
+            <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sair da conta
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ===== BOTTOM NAV (mobile) ===== -->
+<nav class="bottom-nav" role="navigation" aria-label="Navegação principal">
+  <div class="nav-item active" onclick="switchTab('mining',this)" role="menuitem" tabindex="0" aria-label="Mineração">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span class="nav-label">Mineração</span>
+  </div>
+  <div class="nav-item" onclick="switchTab('library',this)" role="menuitem" tabindex="0" aria-label="Biblioteca">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+    <span class="nav-label">Biblioteca</span>
+  </div>
+  <div class="nav-item" onclick="switchTab('studio',this)" role="menuitem" tabindex="0" aria-label="Estúdio Imagem">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+    <span class="nav-label">Imagem</span>
+  </div>
+  <div class="nav-item" onclick="switchTab('video',this)" role="menuitem" tabindex="0" aria-label="Estúdio Vídeo">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+    <span class="nav-label">Vídeo</span>
+  </div>
+  <div class="nav-item" onclick="switchTab('influencer',this)" role="menuitem" tabindex="0" aria-label="Avatar">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span class="nav-label">Avatar</span>
+  </div>
+</nav>
+
+<!-- ===== HISTORY PANEL ===== -->
+<div class="history-overlay-bg" id="history-overlay-bg" onclick="closeHistory()" aria-hidden="true"></div>
+<div class="history-panel" id="history-panel" role="dialog" aria-modal="true" aria-label="Histórico de prompts">
+  <div class="history-panel-header">
+    <span class="history-panel-title">Histórico de Prompts</span>
+    <button class="history-panel-close" onclick="closeHistory()" aria-label="Fechar histórico">
+      <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="drag-hint">Clique em qualquer prompt para copiar</div>
+  <div class="history-list" id="history-list"></div>
+</div>
+
+<!-- ===== SEARCH OVERLAY ===== -->
+<div class="search-overlay" id="search-overlay" role="dialog" aria-modal="true" aria-label="Busca global">
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="search" class="search-main-input" id="search-main-input"
+             placeholder="Buscar produtos, avatares, seções..."
+             autocomplete="off" spellcheck="false" aria-label="Campo de busca">
+      <span class="search-shortcut">ESC</span>
+    </div>
+    <div class="search-results" id="search-results"></div>
+    <div class="search-footer">
+      <span>↑↓ navegar</span>
+      <span>↵ selecionar</span>
+      <span>ESC fechar</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCRIPTS =====
+     Ordem obrigatória:
+     1. sanitize.js  — deve estar disponível antes de qualquer manipulação de DOM
+     2. session.js   — verifica token com servidor; redireciona se inválido
+     3. script.js    — lógica principal do app
+-->
+<script src="js/sanitize.js"></script>
+<script src="js/session.js"></script>
+<script src="js/script.js"></script>
+
+<!-- Vincula botão logout das configurações ao mesmo handler do session.js -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var btnSettings = document.getElementById('logout-btn-settings');
+    if (btnSettings) {
+      btnSettings.addEventListener('click', function () {
+        if (window.NexSession) window.NexSession.logout();
+      });
+    }
+    // Espelha data de expiração no card de configurações
+    var sidebarDate = document.getElementById('expiry-display');
+    var settingsDate = document.getElementById('settings-expiry');
+    if (sidebarDate && settingsDate) {
+      var observer = new MutationObserver(function () {
+        settingsDate.textContent = sidebarDate.textContent;
+      });
+      observer.observe(sidebarDate, { childList: true, characterData: true, subtree: true });
+    }
+  });
+</script>
+
+</body>
+</html>
