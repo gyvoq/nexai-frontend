@@ -17,7 +17,7 @@
 
 const Session = (() => {
 
-  const API_BASE    = 'http://localhost:3000'; // ← trocar pela URL do seu backend em produção
+  const API_BASE    = 'https://nexai-backend-production-5e36.up.railway.app'; // ← trocar pela URL do seu backend em produção
   const TOKEN_KEY   = 'nex_session_token';
   const EXPIRY_KEY  = 'nex_session_expiry';
 
