@@ -238,6 +238,7 @@
 /* ====== ACESSIBILIDADE ====== */
 :focus-visible { outline: 2px solid var(--accent1); outline-offset: 2px; }
 .act-btn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.act-digit:focus-visible { outline: none; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
