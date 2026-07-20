@@ -1047,6 +1047,10 @@ body.theme-light .toast { background: #fff; }
 body.theme-light .modal { background: #fff; }
 body.theme-light .history-panel { background: #fff; }
 body.theme-light body::before { background: radial-gradient(ellipse at center, rgba(90,77,224,0.04) 0%, transparent 70%); }
+body.theme-light .bottom-nav { background: rgba(244,245,247,0.95); border-top-color: var(--border); }
+body.theme-light .rank-other { background: rgba(255,255,255,0.85); color: var(--text2); border: 1px solid var(--border); }
+body.theme-light .fav-btn { background: rgba(17,19,24,0.06); }
+body.theme-light .fav-btn:hover { background: rgba(232,77,111,0.15); }
 
 /* ====== FUTURISTIC MODE ====== */
 body.theme-futuristic {
