@@ -90,9 +90,9 @@
 }
 
 .sidebar-item.active {
-  background: linear-gradient(135deg, rgba(124,107,255,0.12), rgba(255,107,138,0.07));
+  background: linear-gradient(135deg, rgba(254,44,85,0.12), rgba(37,244,238,0.07));
   color: var(--text);
-  border-color: rgba(124,107,255,0.2);
+  border-color: rgba(254,44,85,0.2);
 }
 
 .sidebar-item.active svg { stroke: var(--accent1); }
@@ -101,9 +101,9 @@
 .sidebar-badge {
   margin-left: auto;
   font-size: 9px; font-weight: 700;
-  background: rgba(124,107,255,0.16);
+  background: rgba(254,44,85,0.16);
   color: var(--accent1);
-  border: 1px solid rgba(124,107,255,0.28);
+  border: 1px solid rgba(254,44,85,0.28);
   padding: 2px 7px;
   border-radius: 8px;
   letter-spacing: 0.5px;
@@ -113,8 +113,8 @@
 .sidebar-license {
   margin-top: auto;
   padding: 12px 13px;
-  background: linear-gradient(135deg, rgba(124,107,255,0.06), rgba(0,229,179,0.05));
-  border: 1px solid rgba(124,107,255,0.15);
+  background: linear-gradient(135deg, rgba(254,44,85,0.06), rgba(0,229,179,0.05));
+  border: 1px solid rgba(254,44,85,0.15);
   border-radius: var(--radius);
 }
 
@@ -179,9 +179,9 @@
 }
 
 .btn-logout:hover {
-  background: rgba(255,107,138,0.08);
-  border-color: rgba(255,107,138,0.3);
-  color: #ff6b8a;
+  background: rgba(37,244,238,0.08);
+  border-color: rgba(37,244,238,0.3);
+  color: #25f4ee;
 }
 
 /* ====== MAIN WRAP ====== */
@@ -249,8 +249,8 @@
 }
 
 .metric-card:hover {
-  border-color: rgba(124,107,255,0.28);
-  box-shadow: 0 4px 24px rgba(124,107,255,0.07);
+  border-color: rgba(254,44,85,0.28);
+  box-shadow: 0 4px 24px rgba(254,44,85,0.07);
 }
 
 .metric-label {
@@ -311,11 +311,11 @@
 }
 
 .bar:hover {
-  background: rgba(124,107,255,0.18);
+  background: rgba(254,44,85,0.18);
 }
 
 .bar.active {
-  background: linear-gradient(180deg, rgba(124,107,255,0.7), rgba(124,107,255,0.3));
+  background: linear-gradient(180deg, rgba(254,44,85,0.7), rgba(254,44,85,0.3));
   color: var(--accent1);
 }
 
@@ -372,4 +372,4 @@ body.theme-light .sidebar          { background: rgba(244,245,247,0.97); }
 body.theme-light .topbar           { background: rgba(244,245,247,0.92); }
 body.theme-light .metric-card      { background: #ffffff; }
 body.theme-light .chart-placeholder{ background: #ffffff; }
-body.theme-light .sidebar-license  { background: rgba(124,107,255,0.04); }
+body.theme-light .sidebar-license  { background: rgba(254,44,85,0.04); }
