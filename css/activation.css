@@ -69,7 +69,7 @@
 .act-title {
   font-size: 19px;
   font-weight: 700;
-  color: var(--text);
+  color: #f1f1f5;
   margin-bottom: 5px;
 }
 
@@ -95,7 +95,7 @@
   background: #14141a;
   border: 1.5px solid #26263a;
   border-radius: 12px;
-  color: var(--text);
+  color: #f1f1f5;
   font-size: 22px;
   font-weight: 700;
   text-align: center;
