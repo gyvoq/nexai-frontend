@@ -16,8 +16,8 @@
   --text: #eeeef5;
   --text2: #9898b0;
   --text3: #55556a;
-  --accent1: #7c6bff;
-  --accent2: #ff6b8a;
+  --accent1: #fe2c55;
+  --accent2: #25f4ee;
   --accent3: #00e5b3;
   --accent4: #f5c542;
   --radius: 12px;
@@ -58,7 +58,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
   transition: opacity 0.2s;
 }
 .login-btn:hover { opacity: 0.9; }
-.login-error { color: var(--accent2); font-size: 12.5px; margin-top: 8px; min-height: 18px; }
+.login-error { color: var(--accent1); font-size: 12.5px; margin-top: 8px; min-height: 18px; }
 
 /* MAIN */
 #main { display: none; min-height: 100vh; }
@@ -72,14 +72,14 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .header-logo { display: flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 700; }
 .header-logo-icon { width: 28px; height: 28px; background: linear-gradient(135deg, var(--accent1), var(--accent2)); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
 .header-logo-icon svg { width: 14px; height: 14px; stroke: white; fill: none; stroke-width: 2.2; }
-.admin-badge { font-size: 9px; font-weight: 700; background: rgba(255,107,138,0.15); color: var(--accent2); border: 1px solid rgba(255,107,138,0.3); padding: 2px 8px; border-radius: 8px; letter-spacing: 1px; }
+.admin-badge { font-size: 9px; font-weight: 700; background: rgba(254,44,85,0.15); color: var(--accent1); border: 1px solid rgba(254,44,85,0.3); padding: 2px 8px; border-radius: 8px; letter-spacing: 1px; }
 .logout-btn {
   background: var(--surface2); border: 1px solid var(--border2);
   color: var(--text2); font-size: 12px; font-weight: 600;
   padding: 6px 13px; border-radius: var(--radius-sm); cursor: pointer;
   font-family: 'Inter', sans-serif; transition: all 0.2s;
 }
-.logout-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+.logout-btn:hover { border-color: var(--accent1); color: var(--accent1); }
 
 .content { padding: 28px 24px; max-width: 1200px; margin: 0 auto; }
 
@@ -90,7 +90,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .stat-label { font-size: 12px; color: var(--text2); margin-top: 5px; }
 .stat-total .stat-value { background: linear-gradient(90deg, var(--accent1), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .stat-active .stat-value { color: var(--accent3); }
-.stat-expired .stat-value { color: var(--accent2); }
+.stat-expired .stat-value { color: var(--accent1); }
 .stat-unused .stat-value { color: var(--accent4); }
 
 /* CRIAR LICENÇA */
@@ -178,7 +178,7 @@ table { width: 100%; border-collapse: collapse; }
 thead { background: var(--surface2); }
 th { padding: 11px 14px; text-align: left; font-size: 10.5px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
 td { padding: 12px 14px; font-size: 13px; border-top: 1px solid var(--border); white-space: nowrap; }
-tr:hover td { background: rgba(124,107,255,0.03); }
+tr:hover td { background: rgba(254,44,85,0.03); }
 
 .key-cell { font-family: monospace; font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: 1px; }
 .date-cell { color: var(--text2); font-size: 12px; }
@@ -186,7 +186,7 @@ tr:hover td { background: rgba(124,107,255,0.03); }
 /* BADGES */
 .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 20px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.3px; }
 .badge-active { background: rgba(0,229,179,0.12); color: var(--accent3); border: 1px solid rgba(0,229,179,0.25); }
-.badge-expired { background: rgba(255,107,138,0.12); color: var(--accent2); border: 1px solid rgba(255,107,138,0.25); }
+.badge-expired { background: rgba(254,44,85,0.12); color: var(--accent1); border: 1px solid rgba(254,44,85,0.25); }
 .badge-unused { background: rgba(245,197,66,0.12); color: var(--accent4); border: 1px solid rgba(245,197,66,0.25); }
 .badge-revoked { background: rgba(150,150,150,0.12); color: var(--text3); border: 1px solid rgba(150,150,150,0.2); }
 .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
@@ -201,10 +201,10 @@ tr:hover td { background: rgba(124,107,255,0.03); }
 .action-btn svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .btn-revoke { background: rgba(245,197,66,0.08); border-color: rgba(245,197,66,0.25); color: var(--accent4); }
 .btn-revoke:hover { background: rgba(245,197,66,0.15); }
-.btn-delete { background: rgba(255,107,138,0.08); border-color: rgba(255,107,138,0.25); color: var(--accent2); }
-.btn-delete:hover { background: rgba(255,107,138,0.15); }
-.btn-copy { background: rgba(124,107,255,0.08); border-color: rgba(124,107,255,0.25); color: var(--accent1); }
-.btn-copy:hover { background: rgba(124,107,255,0.15); }
+.btn-delete { background: rgba(254,44,85,0.08); border-color: rgba(254,44,85,0.25); color: var(--accent1); }
+.btn-delete:hover { background: rgba(254,44,85,0.15); }
+.btn-copy { background: rgba(37,244,238,0.08); border-color: rgba(37,244,238,0.25); color: var(--accent2); }
+.btn-copy:hover { background: rgba(37,244,238,0.15); }
 
 .empty-table { text-align: center; padding: 48px 20px; color: var(--text3); font-size: 13px; }
 
