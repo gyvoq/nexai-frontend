@@ -1,0 +1,9 @@
+/* ====== SAUDAÇÃO DINÂMICA ====== */
+.greeting-banner {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text2);
+  letter-spacing: 0.2px;
+  margin-bottom: 14px;
+}
