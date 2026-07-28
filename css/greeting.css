@@ -1,7 +1,7 @@
-/* ====== SAUDAÇÃO DINÂMICA ====== */
 .greeting-banner {
   text-align: center;
   font-size: 24px;
+  font-family: "Times New Roman", Times, serif;
   font-weight: 500;
   color: var(--text2);
   letter-spacing: 0.2px;
