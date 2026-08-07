@@ -548,7 +548,11 @@ function generateImagePrompt(){
   const btn=document.getElementById('gen-img-btn');
   loading.classList.add('visible'); btn.disabled=true;
 
-  const result=`MAIN PROMPT:\nUltra-realistic product photography, 8K UHD, energy ${energy}/10.\n${avatar.name}, ${avatar.age}-year-old ${avatar.gender==='f'?'female':'male'} influencer (${avatar.nicho}, ${avatar.style} style).\n${mod} the product: "${prod}".${prodPrompt?`\nProduct visual: ${prodPrompt}.`:''}\nBackground: ${bgDesc}.\nCamera: ${cam}. Content style: ${sty}. Enhancements: ${imps}.\nVertical 9:16, editorial, soft bokeh, sharp product focus, vibrant colors.\n\nNEGATIVE PROMPT:\nblurry, low quality, watermark, distorted hands, text overlay, logo, deformed fingers\n\nHASHTAGS:\n#${prod.replace(/\s/g,'')} #tiktokviral #produtosviral #linkbio #tendencia`;
+  const avatarPersonalidade=avatar.personalidade&&avatar.personalidade!=='—'?`\nPersonality: ${avatar.personalidade}.`:'';
+  const avatarConteudo=avatar.conteudo&&avatar.conteudo!=='—'?`\nContent type: ${avatar.conteudo}.`:'';
+  const avatarDesc=avatar.desc?`\nPhysical/voice details: ${avatar.desc}.`:'';
+
+  const result=`MAIN PROMPT:\nUltra-realistic product photography, 8K UHD, energy ${energy}/10.\n${avatar.name}, ${avatar.age}-year-old ${avatar.gender==='f'?'female':avatar.gender==='m'?'male':'non-binary'} influencer (${avatar.nicho}, ${avatar.style} style).${avatarPersonalidade}${avatarConteudo}${avatarDesc}\n${mod} the product: "${prod}".${prodPrompt?`\nProduct visual: ${prodPrompt}.`:''}\nBackground: ${bgDesc}.\nCamera: ${cam}. Content style: ${sty}. Enhancements: ${imps}.\nVertical 9:16, editorial, soft bokeh, sharp product focus, vibrant colors.\n\nNEGATIVE PROMPT:\nblurry, low quality, watermark, distorted hands, text overlay, logo, deformed fingers\n\nHASHTAGS:\n#${prod.replace(/\s/g,'')} #tiktokviral #produtosviral #linkbio #tendencia`;
 
   document.getElementById('prompt-output').value=result;
   savePrompt('imagem',result);
@@ -578,7 +582,11 @@ function generateVideoPrompt(){
   loading.classList.add('visible'); btn.disabled=true;
 
   const scriptSection=(rotHook||rotReveal||rotCta)?`\n\nSCRIPT (${selectedTom} tone):\n- Hook (0-3s): "${rotHook||'—'}"\n- Reveal (3-20s): "${rotReveal||'—'}"\n- CTA: "${rotCta||'—'}"` :'';
-  const result=`MAIN PROMPT:\nCinematic ${vidQuality} vertical video, ${selectedDuration}, 9:16.\n${avatar.name}, ${avatar.age}-year-old ${avatar.gender==='f'?'female':'male'} influencer (${avatar.nicho}).\nPresenting: "${prod}".${prodPrompt?`\nProduct visual: ${prodPrompt}.`:''}\nFormat: ${vidFormat}. Style: ${vidStyle}. Lighting: ${vidLighting}. Audio: ${vidAudio}.\nEnhancements: ${vidImps}.${scriptSection}\nSmooth camera movements, natural expressions, dynamic transitions.\n\nNEGATIVE PROMPT:\nblurry, shaky, low quality, watermark, distorted faces, bad lighting\n\nHASHTAGS:\n#${prod.replace(/\s/g,'')} #tiktokviral #produtosviral #linkbio #tendencia`;
+  const avatarPersonalidade=avatar.personalidade&&avatar.personalidade!=='—'?`\nPersonality: ${avatar.personalidade}.`:'';
+  const avatarConteudo=avatar.conteudo&&avatar.conteudo!=='—'?`\nContent type: ${avatar.conteudo}.`:'';
+  const avatarDesc=avatar.desc?`\nPhysical/voice details: ${avatar.desc}.`:'';
+  const avatarStyle=avatar.style?`, ${avatar.style} style`:'';
+  const result=`MAIN PROMPT:\nCinematic ${vidQuality} vertical video, ${selectedDuration}, 9:16.\n${avatar.name}, ${avatar.age}-year-old ${avatar.gender==='f'?'female':avatar.gender==='m'?'male':'non-binary'} influencer (${avatar.nicho}${avatarStyle}).${avatarPersonalidade}${avatarConteudo}${avatarDesc}\nPresenting: "${prod}".${prodPrompt?`\nProduct visual: ${prodPrompt}.`:''}\nFormat: ${vidFormat}. Style: ${vidStyle}. Lighting: ${vidLighting}. Audio: ${vidAudio}.\nEnhancements: ${vidImps}.${scriptSection}\nSmooth camera movements, natural expressions, dynamic transitions.\n\nNEGATIVE PROMPT:\nblurry, shaky, low quality, watermark, distorted faces, bad lighting\n\nHASHTAGS:\n#${prod.replace(/\s/g,'')} #tiktokviral #produtosviral #linkbio #tendencia`;
 
   document.getElementById('vid-prompt-output').value=result;
   savePrompt('video',result);
