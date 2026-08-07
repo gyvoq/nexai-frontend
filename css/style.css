@@ -930,6 +930,30 @@ input[type=range] { width: 100%; accent-color: var(--accent1); cursor: pointer; 
 }
 .trending-badge::before { content: '↑'; font-size: 10px; }
 
+/* ====== NEW / HOT BADGES ====== */
+.badge-new {
+  position: absolute; top: 32px; left: 7px;
+  background: linear-gradient(135deg, #ff6b8a, #ff3d68);
+  color: #fff; font-size: 8.5px; font-weight: 800;
+  padding: 3px 8px; border-radius: 8px; letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(255,61,104,0.45);
+  animation: badgePulse 1.8s ease-in-out infinite;
+  z-index: 2;
+}
+.badge-hot {
+  position: absolute; bottom: 7px; left: 7px;
+  background: linear-gradient(135deg, #ffb020, #ff5e3a);
+  color: #fff; font-size: 8.5px; font-weight: 800;
+  padding: 3px 8px; border-radius: 8px; letter-spacing: 0.3px;
+  box-shadow: 0 2px 8px rgba(255,94,58,0.45);
+  backdrop-filter: blur(4px);
+  z-index: 2;
+}
+@keyframes badgePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
 /* ====== QUICK ACTIONS (new) ====== */
 .quick-actions {
   display: flex; gap: 8px; flex-wrap: wrap;
