@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Termos de Uso — NexAI</title>
+<meta name="description" content="Termos de Uso da NexAI: condições de uso da plataforma, assinaturas, propriedade intelectual e responsabilidades."/>
+<link rel="icon" href="https://i.imgur.com/7F41MZ2.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink: #000000;
+  --ink2: rgba(255,255,255,0.035);
+  --ink3: rgba(255,255,255,0.055);
+  --surface: rgba(255,255,255,0.045);
+  --surface2: rgba(255,255,255,0.09);
+  --border: rgba(255,255,255,0.09);
+  --border2: rgba(255,255,255,0.18);
+  --text: #ffffff;
+  --text2: #ffffff;
+  --text3: #ffffff;
+
+  --pink: #fe2c55;
+  --pink2: #ff7291;
+
+  --glow-pink: rgba(254,44,85,0.32);
+
+  --glass-blur: blur(28px) saturate(180%);
+  --glass-shine: inset 0 1px 0 rgba(255,255,255,0.14), inset 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Instrument Sans', sans-serif;
+  background: var(--ink);
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+}
+
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--pink);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ===== BACKDROP ===== */
+.bg-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+}
+.bg-orb-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(254,44,85,0.14) 0%, transparent 70%);
+  top: -200px; left: 50%; transform: translateX(-50%);
+}
+.bg-orb-2 {
+  width: 500px; height: 400px;
+  background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+  bottom: -100px; right: -100px;
+}
+
+/* ===== NAV ===== */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 5%;
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  transition: background 0.4s, border-color 0.4s;
+}
+
+nav.scrolled {
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+}
+.logo-img { height: 30px; width: auto; display: block; }
+.logo-text {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2.2rem;
+  list-style: none;
+}
+
+.nav-links a {
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--text); }
+
+.nav-links a.btn-nav {
+  background: rgba(255,255,255,0.92);
+  color: #060b0c !important;
+  padding: 0.55rem 1.4rem;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  transition: opacity 0.2s, transform 0.15s;
+  white-space: nowrap;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 4px 20px rgba(0,0,0,0.25);
+}
+.nav-links a.btn-nav:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.nav-toggle {
+  display: none;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text);
+}
+.nav-toggle svg { width: 18px; height: 18px; }
+
+.nav-mobile-panel {
+  display: none;
+  position: fixed;
+  top: 68px; right: 5%; left: 5%;
+  z-index: 99;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 1.2rem;
+  flex-direction: column;
+  gap: 0.2rem;
+  box-shadow: var(--glass-shine);
+}
+.nav-mobile-panel.open { display: flex; }
+.nav-mobile-panel a {
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.85rem 0.6rem;
+  border-radius: 10px;
+  transition: background 0.2s, color 0.2s;
+}
+.nav-mobile-panel a:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+.nav-mobile-panel a.btn-nav {
+  text-align: center;
+  margin-top: 0.4rem;
+  color: #060b0c !important;
+  background: rgba(255,255,255,0.92);
+  border-radius: 100px;
+  border: 1px solid rgba(255,255,255,0.6);
+}
+
+@media (max-width: 860px) {
+  .nav-links { display: none; }
+  .nav-toggle { display: flex; }
+}
+
+/* ===== LEGAL HERO ===== */
+.legal-hero {
+  position: relative;
+  z-index: 1;
+  padding: 9rem 5% 3rem;
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 1.6rem;
+  transition: color 0.2s;
+}
+.back-link:hover { color: var(--text); }
+.back-link svg { width: 15px; height: 15px; }
+
+.legal-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.45rem 0.9rem;
+  border-radius: 100px;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shine);
+  margin-bottom: 1.4rem;
+}
+.legal-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pink); }
+
+.legal-hero h1 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  margin-bottom: 1rem;
+}
+.legal-hero h1 em {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--pink);
+}
+
+.legal-updated {
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.7;
+  max-width: 560px;
+}
+
+/* ===== LEGAL LAYOUT ===== */
+.legal-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 1rem 5% 6rem;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.legal-toc {
+  position: sticky;
+  top: 6.5rem;
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 1.1rem;
+  box-shadow: var(--glass-shine);
+}
+.legal-toc-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pink);
+  margin-bottom: 0.8rem;
+}
+.legal-toc a {
+  display: block;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.55);
+  text-decoration: none;
+  padding: 0.4rem 0;
+  line-height: 1.4;
+  transition: color 0.2s;
+  border-left: 2px solid transparent;
+  padding-left: 0.7rem;
+  margin-left: -0.7rem;
+}
+.legal-toc a:hover, .legal-toc a.active {
+  color: var(--text);
+  border-left-color: var(--pink);
+}
+
+.legal-card {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 22px;
+  padding: 2.4rem;
+  box-shadow: var(--glass-shine), 0 8px 32px rgba(0,0,0,0.35);
+}
+
+.legal-section { padding-bottom: 2.2rem; margin-bottom: 2.2rem; border-bottom: 1px solid rgba(255,255,255,0.08); scroll-margin-top: 6.5rem; }
+.legal-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+.legal-section-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px; height: 26px;
+  border-radius: 8px;
+  background: rgba(254,44,85,0.12);
+  border: 1px solid rgba(254,44,85,0.25);
+  color: var(--pink);
+  font-size: 0.72rem;
+  font-weight: 800;
+  margin-right: 0.6rem;
+}
+
+.legal-section h2 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.9rem;
+}
+
+.legal-section p {
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.68);
+  margin-bottom: 0.9rem;
+}
+.legal-section p:last-child { margin-bottom: 0; }
+
+.legal-section ul {
+  list-style: none;
+  margin: 0.9rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.legal-section li {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.68);
+  padding-left: 1.4rem;
+  position: relative;
+}
+.legal-section li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0.55rem;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--pink);
+}
+
+.legal-section strong { color: var(--text); font-weight: 700; }
+
+.legal-callout {
+  background: rgba(254,44,85,0.05);
+  border: 1px solid rgba(254,44,85,0.16);
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.75);
+  margin-top: 1rem;
+}
+
+.legal-contact-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, var(--pink) 0%, #c81f42 100%);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 100px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.88rem;
+  margin-top: 0.4rem;
+  box-shadow: 0 4px 30px var(--glow-pink), inset 0 1px 0 rgba(255,255,255,0.3);
+  transition: transform 0.2s;
+}
+.legal-contact-btn:hover { transform: translateY(-2px); }
+
+@media (max-width: 780px) {
+  .legal-wrap { grid-template-columns: 1fr; }
+  .legal-toc { position: static; }
+  .legal-card { padding: 1.6rem; }
+}
+
+/* ===== FOOTER ===== */
+footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  padding: 2.2rem 5% 3rem;
+  border-top: 1px solid var(--border);
+}
+.footer-logo { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 1.2rem; letter-spacing: -0.03em; color: #ffffff; }
+.footer-links { display: flex; gap: 2rem; list-style: none; flex-wrap: wrap; }
+.footer-links a { color: #ffffff; opacity: 0.85; text-decoration: none; font-size: 0.8rem; transition: opacity 0.2s; }
+.footer-links a:hover { opacity: 1; }
+.footer-copy { font-size: 0.75rem; color: #ffffff; opacity: 0.85; }
+
+@media (max-width: 600px) {
+  footer { flex-direction: column; align-items: flex-start; }
+  .legal-hero { padding: 7.5rem 6% 2rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+
+<nav id="nav">
+  <a href="nexai-landing.html" class="logo"><img src="https://i.imgur.com/7F41MZ2.png" alt="NexAI" class="logo-img"><span class="logo-text">NexAI</span></a>
+  <ul class="nav-links">
+    <li><a href="nexai-landing.html#features">Recursos</a></li>
+    <li><a href="nexai-landing.html#pricing">Preços</a></li>
+    <li><a href="nexai-landing.html#faq">FAQ</a></li>
+    <li><a href="nexai-landing.html#pricing" class="btn-nav">Começar grátis</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navMobilePanel">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+  </button>
+</nav>
+<div class="nav-mobile-panel" id="navMobilePanel">
+  <a href="nexai-landing.html#features">Recursos</a>
+  <a href="nexai-landing.html#pricing">Preços</a>
+  <a href="nexai-landing.html#faq">FAQ</a>
+  <a href="nexai-landing.html#pricing" class="btn-nav">Começar grátis</a>
+</div>
+
+<section class="legal-hero">
+  <a href="nexai-landing.html" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    Voltar para a página inicial
+  </a>
+  <div class="legal-eyebrow"><span class="legal-eyebrow-dot"></span>Documento legal</div>
+  <h1>Termos de <em>Uso</em></h1>
+  <p class="legal-updated">Estes Termos de Uso regulam o acesso e a utilização da plataforma NexAI. Ao criar uma conta ou usar nossos serviços, você concorda integralmente com as condições descritas abaixo.<br>Última atualização: 8 de agosto de 2026.</p>
+</section>
+
+<div class="legal-wrap">
+  <aside class="legal-toc" aria-label="Sumário">
+    <div class="legal-toc-label">Sumário</div>
+    <a href="#aceitacao">1. Aceitação</a>
+    <a href="#servico">2. O serviço</a>
+    <a href="#conta">3. Conta e cadastro</a>
+    <a href="#uso">4. Uso aceitável</a>
+    <a href="#ia-terceiros">5. Ferramentas de IA de terceiros</a>
+    <a href="#propriedade">6. Propriedade intelectual</a>
+    <a href="#pagamentos">7. Pagamentos e assinatura</a>
+    <a href="#cancelamento">8. Cancelamento e reembolso</a>
+    <a href="#responsabilidade">9. Limitação de responsabilidade</a>
+    <a href="#alteracoes">10. Alterações nos termos</a>
+    <a href="#rescisao">11. Rescisão</a>
+    <a href="#lei">12. Lei aplicável</a>
+    <a href="#contato">13. Contato</a>
+  </aside>
+
+  <div class="legal-card">
+
+    <div class="legal-section" id="aceitacao">
+      <h2><span class="legal-section-num">01</span>Aceitação dos termos</h2>
+      <p>Ao acessar ou usar a plataforma NexAI ("Plataforma", "Serviço"), você declara que leu, entendeu e concorda em se vincular a estes Termos de Uso e à nossa Política de Privacidade. Se você não concordar com qualquer parte destes termos, não deverá utilizar o Serviço.</p>
+      <p>Caso esteja utilizando a Plataforma em nome de uma empresa, você declara ter autoridade para vincular essa empresa a estes termos.</p>
+    </div>
+
+    <div class="legal-section" id="servico">
+      <h2><span class="legal-section-num">02</span>Descrição do serviço</h2>
+      <p>A NexAI é uma plataforma de inteligência artificial que auxilia criadores e vendedores a identificar produtos e vídeos em alta no TikTok Shop e a gerar <strong>prompts profissionais de imagem e vídeo</strong> — incluindo roteiros e configurações de avatar — para uso em ferramentas de terceiros como Midjourney, DALL-E, Stable Diffusion, Runway, Kling AI, Pika Labs e Sora.</p>
+      <p>A NexAI não renderiza, hospeda nem distribui as imagens ou vídeos finais gerados a partir dos prompts. A criação do conteúdo visual final é realizada por ferramentas externas, de responsabilidade e propriedade de seus respectivos provedores.</p>
+    </div>
+
+    <div class="legal-section" id="conta">
+      <h2><span class="legal-section-num">03</span>Conta e cadastro</h2>
+      <p>Para utilizar a Plataforma, é necessário criar uma conta com informações verdadeiras, completas e atualizadas. Você é responsável por manter a confidencialidade de suas credenciais de acesso e por todas as atividades realizadas em sua conta.</p>
+      <ul>
+        <li>Você deve ter pelo menos 18 anos para criar uma conta.</li>
+        <li>Cada conta é pessoal e intransferível, salvo planos comerciais expressamente autorizados.</li>
+        <li>A NexAI pode suspender contas com informações falsas ou atividade suspeita.</li>
+      </ul>
+    </div>
+
+    <div class="legal-section" id="uso">
+      <h2><span class="legal-section-num">04</span>Uso aceitável</h2>
+      <p>Ao usar a NexAI, você concorda em não:</p>
+      <ul>
+        <li>Utilizar a Plataforma para fins ilegais, fraudulentos ou que violem direitos de terceiros;</li>
+        <li>Gerar prompts ou conteúdo que promovam discurso de ódio, violência, assédio ou material sexualmente explícito envolvendo menores;</li>
+        <li>Tentar copiar, descompilar ou realizar engenharia reversa da Plataforma;</li>
+        <li>Revender, sublicenciar ou redistribuir o acesso à Plataforma sem autorização prévia por escrito;</li>
+        <li>Utilizar robôs, scrapers ou outros meios automatizados para acessar o Serviço fora das integrações oficiais.</li>
+      </ul>
+      <div class="legal-callout">O descumprimento destas regras pode resultar em suspensão ou encerramento imediato da conta, sem direito a reembolso.</div>
+    </div>
+
+    <div class="legal-section" id="ia-terceiros">
+      <h2><span class="legal-section-num">05</span>Ferramentas de IA de terceiros</h2>
+      <p>Os prompts gerados pela NexAI destinam-se ao uso em plataformas externas de geração de imagem e vídeo. O uso dessas ferramentas está sujeito aos termos de serviço, políticas de conteúdo e custos próprios de cada provedor, sobre os quais a NexAI não possui controle.</p>
+      <p>Você é o único responsável por garantir que o uso dos prompts gerados, e do conteúdo final produzido a partir deles, esteja em conformidade com os termos dessas ferramentas de terceiros e com a legislação aplicável, incluindo normas de publicidade e proteção ao consumidor.</p>
+    </div>
+
+    <div class="legal-section" id="propriedade">
+      <h2><span class="legal-section-num">06</span>Propriedade intelectual</h2>
+      <p>Todo o software, design, marca, textos e demais elementos da Plataforma são de propriedade exclusiva da NexAI ou de seus licenciadores, sendo protegidos por leis de propriedade intelectual.</p>
+      <p>Os prompts, roteiros e configurações que você cria a partir dos seus próprios produtos são de sua titularidade. Você concede à NexAI uma licença limitada para processar esses dados exclusivamente com a finalidade de operar e melhorar o Serviço.</p>
+    </div>
+
+    <div class="legal-section" id="pagamentos">
+      <h2><span class="legal-section-num">07</span>Pagamentos e assinatura</h2>
+      <p>O acesso à Plataforma é oferecido mediante assinatura mensal recorrente, cobrada automaticamente até o cancelamento. Os valores vigentes são exibidos na página de preços no momento da contratação.</p>
+      <ul>
+        <li>A cobrança é renovada automaticamente a cada ciclo de 30 dias;</li>
+        <li>Alterações de preço serão comunicadas com antecedência mínima de 15 dias;</li>
+        <li>Impostos aplicáveis podem ser adicionados ao valor exibido, conforme a legislação vigente.</li>
+      </ul>
+    </div>
+
+    <div class="legal-section" id="cancelamento">
+      <h2><span class="legal-section-num">08</span>Cancelamento e reembolso</h2>
+      <p>Você pode cancelar sua assinatura a qualquer momento diretamente no painel da conta, sem multas ou taxas adicionais. O acesso permanece ativo até o fim do período já pago.</p>
+      <p>Oferecemos garantia incondicional de <strong>7 dias corridos</strong> a partir da primeira contratação: se você não estiver satisfeito, basta solicitar o reembolso dentro desse prazo para receber 100% do valor pago de volta.</p>
+    </div>
+
+    <div class="legal-section" id="responsabilidade">
+      <h2><span class="legal-section-num">09</span>Limitação de responsabilidade</h2>
+      <p>A NexAI se esforça para manter a Plataforma disponível e funcionando corretamente, mas não garante que o Serviço será ininterrupto ou livre de erros. A Plataforma é fornecida "como está" e "conforme disponível".</p>
+      <p>A NexAI não se responsabiliza por resultados de vendas, desempenho de campanhas, ou pelo conteúdo final gerado por ferramentas de terceiros a partir dos prompts fornecidos. Na máxima extensão permitida por lei, a responsabilidade total da NexAI está limitada ao valor pago pelo usuário nos últimos 3 meses de assinatura.</p>
+    </div>
+
+    <div class="legal-section" id="alteracoes">
+      <h2><span class="legal-section-num">10</span>Alterações nos termos</h2>
+      <p>Podemos atualizar estes Termos de Uso periodicamente para refletir mudanças no Serviço ou na legislação. Alterações relevantes serão comunicadas por e-mail ou aviso na Plataforma com antecedência razoável. O uso continuado do Serviço após a alteração constitui aceitação dos novos termos.</p>
+    </div>
+
+    <div class="legal-section" id="rescisao">
+      <h2><span class="legal-section-num">11</span>Rescisão</h2>
+      <p>A NexAI pode suspender ou encerrar o acesso de qualquer usuário que viole estes Termos de Uso, mediante aviso prévio sempre que possível. Você também pode encerrar sua conta a qualquer momento, ficando responsável por qualquer valor pendente até a data de encerramento.</p>
+    </div>
+
+    <div class="legal-section" id="lei">
+      <h2><span class="legal-section-num">12</span>Lei aplicável e foro</h2>
+      <p>Estes Termos de Uso são regidos pelas leis da República Federativa do Brasil. Fica eleito o foro da comarca de domicílio do usuário para dirimir eventuais controvérsias, salvo disposição legal em contrário.</p>
+    </div>
+
+    <div class="legal-section" id="contato">
+      <h2><span class="legal-section-num">13</span>Contato</h2>
+      <p>Em caso de dúvidas sobre estes Termos de Uso, entre em contato com nossa equipe de suporte. Respondemos normalmente em até 24 horas úteis.</p>
+      <a href="mailto:contato@nexai.com" class="legal-contact-btn">
+        Falar com o suporte
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">NexAI</div>
+  <ul class="footer-links">
+    <li><a href="nexai-landing.html#features">Recursos</a></li>
+    <li><a href="nexai-landing.html#pricing">Preços</a></li>
+    <li><a href="nexai-landing.html#faq">FAQ</a></li>
+    <li><a href="privacy.html">Privacidade</a></li>
+    <li><a href="terms.html">Termos</a></li>
+  </ul>
+  <span class="footer-copy">© 2026 NexAI. Todos os direitos reservados.</span>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  const navToggle = document.getElementById('navToggle');
+  const navMobilePanel = document.getElementById('navMobilePanel');
+  navToggle.addEventListener('click', () => {
+    const open = navMobilePanel.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  navMobilePanel.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      navMobilePanel.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // Highlight active section in the table of contents
+  const sections = document.querySelectorAll('.legal-section[id]');
+  const tocLinks = document.querySelectorAll('.legal-toc a');
+  const tocObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const link = document.querySelector('.legal-toc a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => tocObserver.observe(s));
+</script>
+</body>
+</html>
