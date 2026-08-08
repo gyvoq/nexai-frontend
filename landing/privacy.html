@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Política de Privacidade — NexAI</title>
+<meta name="description" content="Política de Privacidade da NexAI: como coletamos, usamos, armazenamos e protegemos seus dados pessoais."/>
+<link rel="icon" href="https://i.imgur.com/7F41MZ2.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink: #000000;
+  --ink2: rgba(255,255,255,0.035);
+  --ink3: rgba(255,255,255,0.055);
+  --surface: rgba(255,255,255,0.045);
+  --surface2: rgba(255,255,255,0.09);
+  --border: rgba(255,255,255,0.09);
+  --border2: rgba(255,255,255,0.18);
+  --text: #ffffff;
+  --text2: #ffffff;
+  --text3: #ffffff;
+
+  --pink: #fe2c55;
+  --pink2: #ff7291;
+
+  --glow-pink: rgba(254,44,85,0.32);
+
+  --glass-blur: blur(28px) saturate(180%);
+  --glass-shine: inset 0 1px 0 rgba(255,255,255,0.14), inset 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Instrument Sans', sans-serif;
+  background: var(--ink);
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+}
+
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--pink);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ===== BACKDROP ===== */
+.bg-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+}
+.bg-orb-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(254,44,85,0.14) 0%, transparent 70%);
+  top: -200px; left: 50%; transform: translateX(-50%);
+}
+.bg-orb-2 {
+  width: 500px; height: 400px;
+  background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+  bottom: -100px; right: -100px;
+}
+
+/* ===== NAV ===== */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 5%;
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  transition: background 0.4s, border-color 0.4s;
+}
+
+nav.scrolled {
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+}
+.logo-img { height: 30px; width: auto; display: block; }
+.logo-text {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2.2rem;
+  list-style: none;
+}
+
+.nav-links a {
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--text); }
+
+.nav-links a.btn-nav {
+  background: rgba(255,255,255,0.92);
+  color: #060b0c !important;
+  padding: 0.55rem 1.4rem;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  transition: opacity 0.2s, transform 0.15s;
+  white-space: nowrap;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 4px 20px rgba(0,0,0,0.25);
+}
+.nav-links a.btn-nav:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.nav-toggle {
+  display: none;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text);
+}
+.nav-toggle svg { width: 18px; height: 18px; }
+
+.nav-mobile-panel {
+  display: none;
+  position: fixed;
+  top: 68px; right: 5%; left: 5%;
+  z-index: 99;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 1.2rem;
+  flex-direction: column;
+  gap: 0.2rem;
+  box-shadow: var(--glass-shine);
+}
+.nav-mobile-panel.open { display: flex; }
+.nav-mobile-panel a {
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.85rem 0.6rem;
+  border-radius: 10px;
+  transition: background 0.2s, color 0.2s;
+}
+.nav-mobile-panel a:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+.nav-mobile-panel a.btn-nav {
+  text-align: center;
+  margin-top: 0.4rem;
+  color: #060b0c !important;
+  background: rgba(255,255,255,0.92);
+  border-radius: 100px;
+  border: 1px solid rgba(255,255,255,0.6);
+}
+
+@media (max-width: 860px) {
+  .nav-links { display: none; }
+  .nav-toggle { display: flex; }
+}
+
+/* ===== LEGAL HERO ===== */
+.legal-hero {
+  position: relative;
+  z-index: 1;
+  padding: 9rem 5% 3rem;
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 1.6rem;
+  transition: color 0.2s;
+}
+.back-link:hover { color: var(--text); }
+.back-link svg { width: 15px; height: 15px; }
+
+.legal-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.45rem 0.9rem;
+  border-radius: 100px;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shine);
+  margin-bottom: 1.4rem;
+}
+.legal-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pink); }
+
+.legal-hero h1 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  margin-bottom: 1rem;
+}
+.legal-hero h1 em {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--pink);
+}
+
+.legal-updated {
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.7;
+  max-width: 560px;
+}
+
+/* ===== LEGAL LAYOUT ===== */
+.legal-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 1rem 5% 6rem;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.legal-toc {
+  position: sticky;
+  top: 6.5rem;
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 1.1rem;
+  box-shadow: var(--glass-shine);
+}
+.legal-toc-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pink);
+  margin-bottom: 0.8rem;
+}
+.legal-toc a {
+  display: block;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.55);
+  text-decoration: none;
+  padding: 0.4rem 0;
+  line-height: 1.4;
+  transition: color 0.2s;
+  border-left: 2px solid transparent;
+  padding-left: 0.7rem;
+  margin-left: -0.7rem;
+}
+.legal-toc a:hover, .legal-toc a.active {
+  color: var(--text);
+  border-left-color: var(--pink);
+}
+
+.legal-card {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 22px;
+  padding: 2.4rem;
+  box-shadow: var(--glass-shine), 0 8px 32px rgba(0,0,0,0.35);
+}
+
+.legal-section { padding-bottom: 2.2rem; margin-bottom: 2.2rem; border-bottom: 1px solid rgba(255,255,255,0.08); scroll-margin-top: 6.5rem; }
+.legal-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+.legal-section-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px; height: 26px;
+  border-radius: 8px;
+  background: rgba(254,44,85,0.12);
+  border: 1px solid rgba(254,44,85,0.25);
+  color: var(--pink);
+  font-size: 0.72rem;
+  font-weight: 800;
+  margin-right: 0.6rem;
+}
+
+.legal-section h2 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.9rem;
+}
+
+.legal-section p {
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.68);
+  margin-bottom: 0.9rem;
+}
+.legal-section p:last-child { margin-bottom: 0; }
+
+.legal-section ul {
+  list-style: none;
+  margin: 0.9rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.legal-section li {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.68);
+  padding-left: 1.4rem;
+  position: relative;
+}
+.legal-section li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0.55rem;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--pink);
+}
+
+.legal-section strong { color: var(--text); font-weight: 700; }
+
+.legal-callout {
+  background: rgba(254,44,85,0.05);
+  border: 1px solid rgba(254,44,85,0.16);
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.75);
+  margin-top: 1rem;
+}
+
+.legal-contact-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, var(--pink) 0%, #c81f42 100%);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 100px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.88rem;
+  margin-top: 0.4rem;
+  box-shadow: 0 4px 30px var(--glow-pink), inset 0 1px 0 rgba(255,255,255,0.3);
+  transition: transform 0.2s;
+}
+.legal-contact-btn:hover { transform: translateY(-2px); }
+
+@media (max-width: 780px) {
+  .legal-wrap { grid-template-columns: 1fr; }
+  .legal-toc { position: static; }
+  .legal-card { padding: 1.6rem; }
+}
+
+/* ===== FOOTER ===== */
+footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  padding: 2.2rem 5% 3rem;
+  border-top: 1px solid var(--border);
+}
+.footer-logo { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 1.2rem; letter-spacing: -0.03em; color: #ffffff; }
+.footer-links { display: flex; gap: 2rem; list-style: none; flex-wrap: wrap; }
+.footer-links a { color: #ffffff; opacity: 0.85; text-decoration: none; font-size: 0.8rem; transition: opacity 0.2s; }
+.footer-links a:hover { opacity: 1; }
+.footer-copy { font-size: 0.75rem; color: #ffffff; opacity: 0.85; }
+
+@media (max-width: 600px) {
+  footer { flex-direction: column; align-items: flex-start; }
+  .legal-hero { padding: 7.5rem 6% 2rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+
+<nav id="nav">
+  <a href="nexai-landing.html" class="logo"><img src="https://i.imgur.com/7F41MZ2.png" alt="NexAI" class="logo-img"><span class="logo-text">NexAI</span></a>
+  <ul class="nav-links">
+    <li><a href="nexai-landing.html#features">Recursos</a></li>
+    <li><a href="nexai-landing.html#pricing">Preços</a></li>
+    <li><a href="nexai-landing.html#faq">FAQ</a></li>
+    <li><a href="nexai-landing.html#pricing" class="btn-nav">Começar grátis</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navMobilePanel">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+  </button>
+</nav>
+<div class="nav-mobile-panel" id="navMobilePanel">
+  <a href="nexai-landing.html#features">Recursos</a>
+  <a href="nexai-landing.html#pricing">Preços</a>
+  <a href="nexai-landing.html#faq">FAQ</a>
+  <a href="nexai-landing.html#pricing" class="btn-nav">Começar grátis</a>
+</div>
+
+<section class="legal-hero">
+  <a href="nexai-landing.html" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    Voltar para a página inicial
+  </a>
+  <div class="legal-eyebrow"><span class="legal-eyebrow-dot"></span>Documento legal</div>
+  <h1>Política de <em>Privacidade</em></h1>
+  <p class="legal-updated">Esta Política de Privacidade explica como a NexAI coleta, usa, armazena e protege seus dados pessoais ao utilizar nossa plataforma, em conformidade com a Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018).<br>Última atualização: 8 de agosto de 2026.</p>
+</section>
+
+<div class="legal-wrap">
+  <aside class="legal-toc" aria-label="Sumário">
+    <div class="legal-toc-label">Sumário</div>
+    <a href="#introducao">1. Introdução</a>
+    <a href="#dados-coletados">2. Dados que coletamos</a>
+    <a href="#como-usamos">3. Como usamos seus dados</a>
+    <a href="#base-legal">4. Base legal para o tratamento</a>
+    <a href="#compartilhamento">5. Compartilhamento de dados</a>
+    <a href="#ia-terceiros">6. Prompts e ferramentas de IA de terceiros</a>
+    <a href="#cookies">7. Cookies e tecnologias similares</a>
+    <a href="#armazenamento">8. Armazenamento e segurança</a>
+    <a href="#retencao">9. Retenção de dados</a>
+    <a href="#direitos">10. Seus direitos como titular</a>
+    <a href="#menores">11. Privacidade de menores</a>
+    <a href="#alteracoes">12. Alterações nesta política</a>
+    <a href="#contato">13. Contato e encarregado (DPO)</a>
+  </aside>
+
+  <div class="legal-card">
+
+    <div class="legal-section" id="introducao">
+      <h2><span class="legal-section-num">01</span>Introdução</h2>
+      <p>A NexAI ("nós", "nossa") respeita a sua privacidade e está comprometida em proteger os dados pessoais dos usuários da plataforma. Esta Política de Privacidade descreve quais dados coletamos, para quais finalidades os utilizamos e quais direitos você possui sobre eles.</p>
+      <p>Ao usar a NexAI, você concorda com as práticas descritas nesta política. Recomendamos a leitura em conjunto com os nossos <a href="terms.html" style="color:var(--pink)">Termos de Uso</a>.</p>
+    </div>
+
+    <div class="legal-section" id="dados-coletados">
+      <h2><span class="legal-section-num">02</span>Dados que coletamos</h2>
+      <p>Coletamos os seguintes tipos de dados:</p>
+      <ul>
+        <li><strong>Dados de cadastro:</strong> nome, e-mail, senha (criptografada) e, quando aplicável, dados de faturamento;</li>
+        <li><strong>Dados de uso:</strong> produtos pesquisados, prompts gerados, avatares configurados e preferências dentro da plataforma;</li>
+        <li><strong>Dados técnicos:</strong> endereço IP, tipo de navegador, dispositivo, sistema operacional e páginas visitadas;</li>
+        <li><strong>Dados de pagamento:</strong> processados por processadores de pagamento terceirizados — a NexAI não armazena números completos de cartão de crédito.</li>
+      </ul>
+    </div>
+
+    <div class="legal-section" id="como-usamos">
+      <h2><span class="legal-section-num">03</span>Como usamos seus dados</h2>
+      <p>Utilizamos seus dados pessoais para:</p>
+      <ul>
+        <li>Criar e gerenciar sua conta na Plataforma;</li>
+        <li>Processar pagamentos e gerenciar assinaturas;</li>
+        <li>Fornecer, manter e melhorar os recursos da NexAI, incluindo a geração de prompts e recomendações de produtos;</li>
+        <li>Enviar comunicações essenciais sobre sua conta, cobranças e atualizações do serviço;</li>
+        <li>Prevenir fraudes, abusos e violações destes termos;</li>
+        <li>Cumprir obrigações legais e regulatórias.</li>
+      </ul>
+    </div>
+
+    <div class="legal-section" id="base-legal">
+      <h2><span class="legal-section-num">04</span>Base legal para o tratamento</h2>
+      <p>Tratamos seus dados pessoais com base nas seguintes hipóteses legais previstas na LGPD:</p>
+      <ul>
+        <li><strong>Execução de contrato:</strong> para fornecer o Serviço que você contratou;</li>
+        <li><strong>Legítimo interesse:</strong> para melhorar a Plataforma e prevenir fraudes;</li>
+        <li><strong>Cumprimento de obrigação legal:</strong> para atender exigências fiscais e regulatórias;</li>
+        <li><strong>Consentimento:</strong> para comunicações de marketing opcionais, que você pode revogar a qualquer momento.</li>
+      </ul>
+    </div>
+
+    <div class="legal-section" id="compartilhamento">
+      <h2><span class="legal-section-num">05</span>Compartilhamento de dados</h2>
+      <p>Não vendemos seus dados pessoais. Podemos compartilhar informações com:</p>
+      <ul>
+        <li>Processadores de pagamento, para viabilizar cobranças e assinaturas;</li>
+        <li>Provedores de infraestrutura e hospedagem, sob obrigações contratuais de confidencialidade;</li>
+        <li>Autoridades públicas, quando exigido por lei, ordem judicial ou solicitação regulatória;</li>
+        <li>Parceiros de análise de dados, de forma agregada e anonimizada, para entender o uso da Plataforma.</li>
+      </ul>
+    </div>
+
+    <div class="legal-section" id="ia-terceiros">
+      <h2><span class="legal-section-num">06</span>Prompts e ferramentas de IA de terceiros</h2>
+      <p>Os prompts que você gera na NexAI são criados a partir das suas escolhas (produto, avatar, ambiente etc.) e ficam associados à sua conta para que você possa reutilizá-los. Caso você opte por copiar e utilizar esses prompts em ferramentas externas — como Midjourney, DALL-E, Stable Diffusion, Runway, Kling AI, Pika Labs ou Sora — o tratamento de dados realizado por essas ferramentas passa a ser regido pelas políticas de privacidade próprias de cada provedor, sobre as quais a NexAI não tem controle.</p>
+    </div>
+
+    <div class="legal-section" id="cookies">
+      <h2><span class="legal-section-num">07</span>Cookies e tecnologias similares</h2>
+      <p>Utilizamos cookies essenciais para manter sua sessão ativa e cookies analíticos para entender como a Plataforma é utilizada e melhorar a experiência do usuário. Você pode gerenciar suas preferências de cookies diretamente nas configurações do seu navegador.</p>
+    </div>
+
+    <div class="legal-section" id="armazenamento">
+      <h2><span class="legal-section-num">08</span>Armazenamento e segurança</h2>
+      <p>Adotamos medidas técnicas e organizacionais para proteger seus dados contra acesso não autorizado, perda, alteração ou divulgação indevida, incluindo criptografia em trânsito, controle de acesso e monitoramento contínuo.</p>
+      <div class="legal-callout">Nenhum sistema é 100% infalível. Caso identifique qualquer atividade suspeita em sua conta, entre em contato imediatamente com nosso suporte.</div>
+    </div>
+
+    <div class="legal-section" id="retencao">
+      <h2><span class="legal-section-num">09</span>Retenção de dados</h2>
+      <p>Mantemos seus dados pessoais pelo tempo necessário para cumprir as finalidades descritas nesta política, incluindo obrigações legais, fiscais e contratuais. Após o encerramento da conta, dados essenciais podem ser retidos por prazo adicional exigido pela legislação aplicável, sendo então eliminados ou anonimizados.</p>
+    </div>
+
+    <div class="legal-section" id="direitos">
+      <h2><span class="legal-section-num">10</span>Seus direitos como titular</h2>
+      <p>Nos termos da LGPD, você tem direito a:</p>
+      <ul>
+        <li>Confirmar a existência de tratamento e acessar seus dados;</li>
+        <li>Corrigir dados incompletos, inexatos ou desatualizados;</li>
+        <li>Solicitar a anonimização, bloqueio ou eliminação de dados desnecessários;</li>
+        <li>Solicitar a portabilidade dos seus dados a outro fornecedor;</li>
+        <li>Revogar o consentimento e se opor a tratamentos realizados com base no legítimo interesse;</li>
+        <li>Solicitar informações sobre com quem compartilhamos seus dados.</li>
+      </ul>
+      <p>Para exercer qualquer um desses direitos, entre em contato conforme indicado na seção 13.</p>
+    </div>
+
+    <div class="legal-section" id="menores">
+      <h2><span class="legal-section-num">11</span>Privacidade de menores</h2>
+      <p>A NexAI não é destinada a menores de 18 anos e não coleta intencionalmente dados pessoais de crianças ou adolescentes. Caso identifiquemos o cadastro de um menor, a conta e os dados associados serão removidos.</p>
+    </div>
+
+    <div class="legal-section" id="alteracoes">
+      <h2><span class="legal-section-num">12</span>Alterações nesta política</h2>
+      <p>Podemos atualizar esta Política de Privacidade periodicamente para refletir mudanças em nossas práticas ou na legislação aplicável. Alterações relevantes serão comunicadas por e-mail ou aviso na Plataforma. Recomendamos revisar esta página regularmente.</p>
+    </div>
+
+    <div class="legal-section" id="contato">
+      <h2><span class="legal-section-num">13</span>Contato e encarregado (DPO)</h2>
+      <p>Para dúvidas, solicitações ou reclamações sobre o tratamento dos seus dados pessoais, entre em contato com nosso Encarregado de Proteção de Dados (DPO). Respondemos normalmente em até 15 dias úteis, conforme previsto na LGPD.</p>
+      <a href="" class="legal-contact-btn">
+        Falar com o DPO
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">NexAI</div>
+  <ul class="footer-links">
+    <li><a href="nexai-landing.html#features">Recursos</a></li>
+    <li><a href="nexai-landing.html#pricing">Preços</a></li>
+    <li><a href="nexai-landing.html#faq">FAQ</a></li>
+    <li><a href="privacy.html">Privacidade</a></li>
+    <li><a href="terms.html">Termos</a></li>
+  </ul>
+  <span class="footer-copy">© 2026 NexAI. Todos os direitos reservados.</span>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  const navToggle = document.getElementById('navToggle');
+  const navMobilePanel = document.getElementById('navMobilePanel');
+  navToggle.addEventListener('click', () => {
+    const open = navMobilePanel.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  navMobilePanel.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      navMobilePanel.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // Highlight active section in the table of contents
+  const sections = document.querySelectorAll('.legal-section[id]');
+  const tocLinks = document.querySelectorAll('.legal-toc a');
+  const tocObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const link = document.querySelector('.legal-toc a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => tocObserver.observe(s));
+</script>
+</body>
+</html>
