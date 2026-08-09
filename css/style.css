@@ -387,12 +387,12 @@ h1,h2,h3,h4 { font-family: 'Inter', sans-serif; letter-spacing: -0.3px; }
   background: transparent;
 }
 .play-circle {
-  width: 56px; height: 56px;
+  width: 80px; height: 80px;
   display: flex; align-items: center; justify-content: center;
   transition: transform var(--transition);
 }
 .play-circle svg {
-  width: 56px; height: 56px;
+  width: 80px; height: 80px;
   fill: var(--accent1);
   stroke: var(--accent1);
   stroke-width: 1.8;
