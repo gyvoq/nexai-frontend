@@ -636,5 +636,18 @@ footer {
   }, { rootMargin: '-20% 0px -70% 0px' });
   sections.forEach(s => tocObserver.observe(s));
 </script>
+<script>
+  // Se a página foi aberta a partir do app (tela de "concordar com os termos"
+  // ou rodapé do dashboard/app), o link "Voltar para a página inicial" deve
+  // retornar para lá, não para a landing page de marketing.
+  (function () {
+    var params = new URLSearchParams(location.search);
+    var ret = params.get('return');
+    if (ret && /^[a-zA-Z0-9_-]+\.html$/.test(ret)) {
+      var backLink = document.querySelector('.back-link');
+      if (backLink) backLink.href = '../' + ret;
+    }
+  })();
+</script>
 </body>
 </html>
