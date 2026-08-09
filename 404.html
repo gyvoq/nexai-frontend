@@ -20,15 +20,18 @@
   --glass-shine: inset 0 1px 0 rgba(255,255,255,0.14), inset 0 0 0 1px rgba(255,255,255,0.04);
 }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   font-family: 'Instrument Sans', sans-serif;
   background: var(--ink);
   color: var(--text);
-  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   padding: 2rem 5%;
 }
@@ -158,6 +161,13 @@ p {
   .card { padding: 2.2rem 1.4rem; }
   .actions { flex-direction: column; }
   .btn-primary, .btn-ghost { justify-content: center; }
+}
+
+@media (max-height: 640px) {
+  .card { padding: 1.6rem 1.6rem; }
+  .eyebrow { margin-bottom: 1rem; }
+  .code { margin-bottom: 0.3rem; }
+  p { margin-bottom: 1.2rem; }
 }
 </style>
 </head>
