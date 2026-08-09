@@ -322,6 +322,48 @@
 
 #terms-overlay.hiding { animation: actOut 0.5s ease forwards; }
 
+/* ====== TELA DE LOADING (transição termos → ativação) ====== */
+#loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: #07070a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+}
+
+.loading-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  animation: actIn 0.5s cubic-bezier(.22,1,.36,1) both;
+}
+
+.loading-card .act-logo { margin-bottom: 0; }
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid #1e1e28;
+  border-top-color: #fe2c55;
+  border-right-color: #25f4ee;
+  animation: loadingSpin 0.85s linear infinite;
+}
+
+@keyframes loadingSpin { to { transform: rotate(360deg); } }
+
+.loading-text {
+  font-size: 13px;
+  color: #66667a;
+  letter-spacing: 0.2px;
+}
+
+#loading-overlay.hiding { animation: actOut 0.45s ease forwards; }
+
 /* ====== RESPONSIVO ====== */
 @media (max-width: 440px) {
   .act-card    { padding: 28px 18px 24px; border-radius: 18px; }
