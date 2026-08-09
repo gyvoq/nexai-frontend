@@ -377,7 +377,7 @@ h1,h2,h3,h4 { font-family: 'Inter', sans-serif; letter-spacing: -0.3px; }
 }
 .video-card:hover { transform: translateY(-3px); border-color: rgba(255,45,120,0.4); box-shadow: 0 10px 36px rgba(255,45,120,0.1); }
 
-.video-thumb { position: relative; aspect-ratio: 9/16; max-height: 168px; overflow: hidden; background: var(--surface3); }
+.video-thumb { position: relative; width: 100%; aspect-ratio: 9/16; max-height: 168px; overflow: hidden; background: var(--surface3); }
 .video-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
 .video-card:hover .video-thumb img { transform: scale(1.05); }
 
@@ -385,20 +385,14 @@ h1,h2,h3,h4 { font-family: 'Inter', sans-serif; letter-spacing: -0.3px; }
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
   background: transparent;
-  transition: background var(--transition);
 }
 .play-circle {
-  width: 52px; height: 52px;
-  background: linear-gradient(135deg, var(--accent1), var(--accent2));
-  border-radius: 50%;
+  width: 40px; height: 40px;
   display: flex; align-items: center; justify-content: center;
-  border: none;
-  box-shadow: 0 6px 20px rgba(254,44,85,0.45);
-  transition: transform var(--transition), box-shadow var(--transition);
+  transition: transform var(--transition);
 }
-.play-circle svg { width: 20px; height: 20px; stroke: white; fill: white; }
-.video-card:hover .play-overlay { background: transparent; }
-.video-card:hover .play-circle { transform: scale(1.1); box-shadow: 0 8px 26px rgba(254,44,85,0.6); }
+.play-circle svg { width: 40px; height: 40px; stroke: none; fill: var(--accent1); filter: drop-shadow(0 2px 8px rgba(254,44,85,0.5)); }
+.video-card:hover .play-circle { transform: scale(1.1); }
 
 .format-badge { position: absolute; top: 7px; right: 7px; font-size: 9.5px; font-weight: 700; padding: 3px 7px; border-radius: 7px; letter-spacing: 0.4px; }
 .fmt-unboxing { background: rgba(255,107,43,0.18); color: #ff8c5a; border: 1px solid rgba(255,107,43,0.3); }
