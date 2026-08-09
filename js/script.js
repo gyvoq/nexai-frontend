@@ -161,6 +161,92 @@ function exportData(fmt){
   showToast(`Exportado como ${fmt.toUpperCase()}`);
 }
 
+/* ===== BACKUP (gerar / importar) ===== */
+const BACKUP_VERSION = 1;
+
+function generateBackup(){
+  const backup={
+    app:'nex-ai-backup',
+    version:BACKUP_VERSION,
+    createdAt:new Date().toISOString(),
+    data:{
+      favorites,
+      customAvatars,
+      customProducts,
+      promptHistory,
+      theme: (function(){ try{return localStorage.getItem('nex-theme')||'dark';}catch(e){return 'dark';} })()
+    }
+  };
+  const content=JSON.stringify(backup,null,2);
+  const blob=new Blob([content],{type:'application/json'});
+  const stamp=new Date().toISOString().slice(0,10);
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:`nex-ai-backup-${stamp}.json`});
+  a.click();URL.revokeObjectURL(a.href);
+  showToast('Backup gerado com sucesso!');
+  const status=document.getElementById('backup-status');
+  if(status)status.textContent='Último backup gerado agora.';
+}
+
+function importBackup(event){
+  const input=event.target;
+  const file=input.files&&input.files[0];
+  if(!file)return;
+
+  const status=document.getElementById('backup-status');
+  if(file.size>10*1024*1024){ // 10MB — limite defensivo
+    showToast('Arquivo muito grande para ser um backup válido.');
+    input.value='';
+    return;
+  }
+
+  const reader=new FileReader();
+  reader.onload=function(e){
+    let parsed;
+    try{ parsed=JSON.parse(e.target.result); }
+    catch(err){ showToast('Arquivo inválido: não é um JSON válido.'); if(status)status.textContent='Falha ao importar: JSON inválido.'; input.value=''; return; }
+
+    // Aceita tanto o formato de backup completo quanto o export simples (fallback)
+    const payload = (parsed && parsed.app==='nex-ai-backup' && parsed.data) ? parsed.data : parsed;
+
+    if(!payload || typeof payload!=='object'){
+      showToast('Arquivo de backup inválido.');
+      if(status)status.textContent='Falha ao importar: formato não reconhecido.';
+      input.value='';
+      return;
+    }
+
+    showConfirm('Importar este backup vai substituir seus dados atuais (favoritos, avatares, produtos e histórico). Continuar?', ()=>{
+      try{
+        if(payload.favorites && typeof payload.favorites==='object'){ favorites=payload.favorites; safeSet(FAV_KEY,favorites); }
+        if(Array.isArray(payload.customAvatars)){ customAvatars=payload.customAvatars; safeSet(AVATARS_KEY,customAvatars); }
+        if(Array.isArray(payload.customProducts)){ customProducts=payload.customProducts; safeSet(PRODUCTS_KEY,customProducts); }
+        if(Array.isArray(payload.promptHistory)){ promptHistory=payload.promptHistory; safeSet(PROMPTS_KEY,promptHistory); }
+        if(payload.theme && typeof payload.theme==='string'){
+          applyThemeClass(payload.theme);
+        }
+
+        // Atualiza a UI com os dados recém-importados
+        if(typeof renderProducts==='function')renderProducts();
+        if(typeof renderVideos==='function')renderVideos();
+        if(typeof renderStudioProducts==='function')renderStudioProducts();
+        if(typeof renderVidProducts==='function')renderVidProducts();
+        if(typeof renderAvatars==='function')renderAvatars('all');
+        if(typeof updateHistNotif==='function')updateHistNotif();
+
+        showToast('Backup importado com sucesso!');
+        if(status)status.textContent='Backup importado em '+new Date().toLocaleString('pt-BR')+'.';
+      }catch(err){
+        showToast('Erro ao aplicar o backup.');
+        if(status)status.textContent='Falha ao importar os dados.';
+      }finally{
+        input.value='';
+      }
+    });
+  };
+  reader.onerror=function(){ showToast('Erro ao ler o arquivo.'); input.value=''; };
+  reader.readAsText(file);
+}
+
 /* ===== MODAL ===== */
 function openAddModal(){
   document.getElementById('add-product-modal').classList.add('open');
