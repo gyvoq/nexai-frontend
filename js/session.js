@@ -149,8 +149,13 @@ const Session = (() => {
     const linksWrap = document.createElement('div');
     linksWrap.className = 'terms-links';
 
+    // Página atual (index.html, dashboard.html...), usada para que o link
+    // "Voltar para a página inicial" dentro de terms.html/privacy.html
+    // retorne para cá (a tela de concordar) em vez da landing page.
+    const returnPage = (location.pathname.split('/').pop() || 'index.html');
+
     const termsLink = document.createElement('a');
-    termsLink.href = 'landing/terms.html';
+    termsLink.href = `landing/terms.html?return=${encodeURIComponent(returnPage)}`;
     termsLink.target = '_blank';
     termsLink.rel = 'noopener noreferrer';
     termsLink.textContent = 'Termos de Uso';
@@ -160,7 +165,7 @@ const Session = (() => {
     sep.textContent = '•';
 
     const privacyLink = document.createElement('a');
-    privacyLink.href = 'landing/privacy.html';
+    privacyLink.href = `landing/privacy.html?return=${encodeURIComponent(returnPage)}`;
     privacyLink.target = '_blank';
     privacyLink.rel = 'noopener noreferrer';
     privacyLink.textContent = 'Política de Privacidade';
@@ -197,11 +202,17 @@ const Session = (() => {
     btn.addEventListener('click', () => {
       if (!checkbox.checked) return;
       acceptTerms();
+      // Mostra o loading ANTES de iniciar o fade-out dos termos, para que a
+      // transição revele a tela de loading (opaca) e não o dashboard por trás.
+      showLoadingOverlay();
       ov.classList.add('hiding');
       setTimeout(() => {
         ov.remove();
-        runLoadingThenProceed(onAccept);
       }, 500);
+      const minDelay = new Promise(resolve => setTimeout(resolve, 900));
+      Promise.all([Promise.resolve(onAccept()), minDelay]).then(() => {
+        hideLoadingOverlay();
+      });
     });
 
     card.append(logo, title, sub, linksWrap, checkRow, btn);
@@ -257,18 +268,6 @@ const Session = (() => {
     if (!ov) return;
     ov.classList.add('hiding');
     setTimeout(() => ov.remove(), 450);
-  }
-
-  /**
-   * Mostra o loading enquanto o próximo passo (verificação de sessão)
-   * é resolvido, garantindo um tempo mínimo de exibição para não "piscar".
-   */
-  function runLoadingThenProceed(next) {
-    showLoadingOverlay();
-    const minDelay = new Promise(resolve => setTimeout(resolve, 900));
-    Promise.all([Promise.resolve(next()), minDelay]).then(() => {
-      hideLoadingOverlay();
-    });
   }
 
   // ─── UI DA TELA DE ATIVAÇÃO ──────────────────────────────────────────────
