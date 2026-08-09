@@ -33,13 +33,20 @@
   --glass-shine: inset 0 1px 0 rgba(255,255,255,0.14), inset 0 0 0 1px rgba(255,255,255,0.04);
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  width: 100%;
+}
 
 body {
   font-family: 'Instrument Sans', sans-serif;
   background: var(--ink);
   color: var(--text);
   overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  touch-action: pan-y;
   -webkit-font-smoothing: antialiased;
   font-variant-numeric: tabular-nums;
 }
@@ -57,6 +64,7 @@ a:focus-visible, button:focus-visible {
   filter: blur(100px);
   pointer-events: none;
   z-index: 0;
+  max-width: 100vw;
 }
 .bg-orb-1 {
   width: 600px; height: 600px;
@@ -522,7 +530,7 @@ footer {
   </a>
   <div class="legal-eyebrow"><span class="legal-eyebrow-dot"></span>Documento legal</div>
   <h1>Política de <em>Privacidade</em></h1>
-  <p class="legal-updated">Esta Política de Privacidade explica como a NexAI coleta, usa, armazena e protege seus dados pessoais ao utilizar nossa plataforma, em conformidade com a Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018).<br>Última atualização: 8 de agosto de 2026.</p>
+  <p class="legal-updated">Esta Política de Privacidade explica como a NexAI coleta, usa, armazena e protege seus dados pessoais ao utilizar nossa plataforma, em conformidade com a Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018).<br>Última atualização: 9 de agosto de 2026.</p>
 </section>
 
 <div class="legal-wrap">
@@ -534,7 +542,7 @@ footer {
     <a href="#base-legal">4. Base legal para o tratamento</a>
     <a href="#compartilhamento">5. Compartilhamento de dados</a>
     <a href="#ia-terceiros">6. Prompts e ferramentas de IA de terceiros</a>
-    <a href="#cookies">7. Cookies e tecnologias similares</a>
+    <a href="#cookies">7. Armazenamento local e tecnologias similares</a>
     <a href="#armazenamento">8. Armazenamento e segurança</a>
     <a href="#retencao">9. Retenção de dados</a>
     <a href="#direitos">10. Seus direitos como titular</a>
@@ -553,26 +561,25 @@ footer {
 
     <div class="legal-section" id="dados-coletados">
       <h2><span class="legal-section-num">02</span>Dados que coletamos</h2>
-      <p>Coletamos os seguintes tipos de dados:</p>
+      <p>A NexAI foi desenhada para coletar o mínimo de dados possível em seus próprios servidores. Coletamos:</p>
       <ul>
-        <li><strong>Dados de cadastro:</strong> nome, e-mail, senha (criptografada) e, quando aplicável, dados de faturamento;</li>
-        <li><strong>Dados de uso:</strong> produtos pesquisados, prompts gerados, avatares configurados e preferências dentro da plataforma;</li>
-        <li><strong>Dados técnicos:</strong> endereço IP, tipo de navegador, dispositivo, sistema operacional e páginas visitadas;</li>
-        <li><strong>Dados de pagamento:</strong> processados por processadores de pagamento terceirizados — a NexAI não armazena números completos de cartão de crédito.</li>
+        <li><strong>Dados de licença:</strong> a chave de licença adquirida, seu status (ativa, expirada, revogada), a data de ativação/expiração e um token de sessão gerado na ativação. Não coletamos nome, e-mail ou senha diretamente na Plataforma;</li>
+        <li><strong>Dados de compra:</strong> nome, e-mail e dados de pagamento informados no ato da compra são coletados e processados pela plataforma de checkout terceirizada (ex.: Hotmart, Kiwify, Stripe ou equivalente) usada para emitir sua chave de licença — a NexAI não tem acesso a esses dados nem armazena números de cartão;</li>
+        <li><strong>Dados técnicos:</strong> endereço IP e informações da requisição podem ser processados momentaneamente por medidas de segurança (ex.: limitação de tentativas de ativação), sem formar um histórico de navegação armazenado;</li>
+        <li><strong>Dados salvos localmente no seu navegador:</strong> produtos pesquisados, prompts gerados, avatares configurados, favoritos e preferências (como tema) ficam armazenados apenas no armazenamento local do seu navegador (localStorage/sessionStorage) e <strong>não são enviados nem armazenados nos servidores da NexAI</strong>. Limpar os dados do navegador ou trocar de dispositivo apaga esse conteúdo.</li>
       </ul>
     </div>
 
     <div class="legal-section" id="como-usamos">
       <h2><span class="legal-section-num">03</span>Como usamos seus dados</h2>
-      <p>Utilizamos seus dados pessoais para:</p>
+      <p>Utilizamos os dados que processamos para:</p>
       <ul>
-        <li>Criar e gerenciar sua conta na Plataforma;</li>
-        <li>Processar pagamentos e gerenciar assinaturas;</li>
+        <li>Validar sua chave de licença e manter sua sessão de acesso ativa;</li>
         <li>Fornecer, manter e melhorar os recursos da NexAI, incluindo a geração de prompts e recomendações de produtos;</li>
-        <li>Enviar comunicações essenciais sobre sua conta, cobranças e atualizações do serviço;</li>
-        <li>Prevenir fraudes, abusos e violações destes termos;</li>
+        <li>Prevenir fraudes, abusos, uso compartilhado indevido de chaves e violações destes termos;</li>
         <li>Cumprir obrigações legais e regulatórias.</li>
       </ul>
+      <p>Comunicações sobre a compra (confirmação, nota fiscal, cobrança) e o envio da chave de licença são realizados pela plataforma de checkout terceirizada, não pela NexAI diretamente.</p>
     </div>
 
     <div class="legal-section" id="base-legal">
@@ -588,34 +595,38 @@ footer {
 
     <div class="legal-section" id="compartilhamento">
       <h2><span class="legal-section-num">05</span>Compartilhamento de dados</h2>
-      <p>Não vendemos seus dados pessoais. Podemos compartilhar informações com:</p>
+      <p>Não vendemos seus dados pessoais. Podemos compartilhar ou processar informações com:</p>
       <ul>
-        <li>Processadores de pagamento, para viabilizar cobranças e assinaturas;</li>
-        <li>Provedores de infraestrutura e hospedagem, sob obrigações contratuais de confidencialidade;</li>
-        <li>Autoridades públicas, quando exigido por lei, ordem judicial ou solicitação regulatória;</li>
-        <li>Parceiros de análise de dados, de forma agregada e anonimizada, para entender o uso da Plataforma.</li>
+        <li>A plataforma de checkout terceirizada (ex.: Hotmart, Kiwify, Stripe ou equivalente), responsável pela coleta de nome, e-mail, dados de pagamento e pelo envio da chave de licença — regida pela política de privacidade própria dela;</li>
+        <li>Provedores de infraestrutura e hospedagem (ex.: banco de dados na nuvem), sob obrigações contratuais de confidencialidade, para armazenar os dados de licença descritos na seção 2;</li>
+        <li>Autoridades públicas, quando exigido por lei, ordem judicial ou solicitação regulatória.</li>
       </ul>
     </div>
 
     <div class="legal-section" id="ia-terceiros">
       <h2><span class="legal-section-num">06</span>Prompts e ferramentas de IA de terceiros</h2>
-      <p>Os prompts que você gera na NexAI são criados a partir das suas escolhas (produto, avatar, ambiente etc.) e ficam associados à sua conta para que você possa reutilizá-los. Caso você opte por copiar e utilizar esses prompts em ferramentas externas — como Midjourney, DALL-E, Stable Diffusion, Runway, Kling AI, Pika Labs ou Sora — o tratamento de dados realizado por essas ferramentas passa a ser regido pelas políticas de privacidade próprias de cada provedor, sobre as quais a NexAI não tem controle.</p>
+      <p>Os prompts que você gera na NexAI são criados a partir das suas escolhas (produto, avatar, ambiente etc.) e ficam salvos localmente no seu navegador para que você possa reutilizá-los, conforme descrito na seção 2. Caso você opte por copiar e utilizar esses prompts em ferramentas externas — como Midjourney, DALL-E, Stable Diffusion, Runway, Kling AI, Pika Labs ou Sora — o tratamento de dados realizado por essas ferramentas passa a ser regido pelas políticas de privacidade próprias de cada provedor, sobre as quais a NexAI não tem controle.</p>
     </div>
 
     <div class="legal-section" id="cookies">
-      <h2><span class="legal-section-num">07</span>Cookies e tecnologias similares</h2>
-      <p>Utilizamos cookies essenciais para manter sua sessão ativa e cookies analíticos para entender como a Plataforma é utilizada e melhorar a experiência do usuário. Você pode gerenciar suas preferências de cookies diretamente nas configurações do seu navegador.</p>
+      <h2><span class="legal-section-num">07</span>Armazenamento local e tecnologias similares</h2>
+      <p>A NexAI não utiliza cookies de rastreamento ou de análise. Em vez disso, utilizamos o armazenamento local do próprio navegador (localStorage e sessionStorage) para duas finalidades:</p>
+      <ul>
+        <li><strong>Sessão de acesso:</strong> o token de sessão gerado após a ativação da chave de licença é mantido em sessionStorage, sendo apagado automaticamente ao fechar o navegador;</li>
+        <li><strong>Preferências e conteúdo gerado:</strong> tema visual, produtos favoritos, avatares e prompts criados por você ficam salvos em localStorage, permanecendo apenas no seu dispositivo até que você os apague ou limpe os dados do navegador.</li>
+      </ul>
+      <p>Essas informações não são transmitidas aos servidores da NexAI. Você pode apagá-las a qualquer momento limpando os dados de navegação do seu navegador para este site.</p>
     </div>
 
     <div class="legal-section" id="armazenamento">
       <h2><span class="legal-section-num">08</span>Armazenamento e segurança</h2>
       <p>Adotamos medidas técnicas e organizacionais para proteger seus dados contra acesso não autorizado, perda, alteração ou divulgação indevida, incluindo criptografia em trânsito, controle de acesso e monitoramento contínuo.</p>
-      <div class="legal-callout">Nenhum sistema é 100% infalível. Caso identifique qualquer atividade suspeita em sua conta, entre em contato imediatamente com nosso suporte.</div>
+      <div class="legal-callout">Nenhum sistema é 100% infalível. Caso identifique qualquer atividade suspeita relacionada à sua chave de licença, entre em contato imediatamente com nosso suporte.</div>
     </div>
 
     <div class="legal-section" id="retencao">
       <h2><span class="legal-section-num">09</span>Retenção de dados</h2>
-      <p>Mantemos seus dados pessoais pelo tempo necessário para cumprir as finalidades descritas nesta política, incluindo obrigações legais, fiscais e contratuais. Após o encerramento da conta, dados essenciais podem ser retidos por prazo adicional exigido pela legislação aplicável, sendo então eliminados ou anonimizados.</p>
+      <p>Os dados da chave de licença (status, datas de ativação/expiração e token de sessão) são mantidos em nosso banco de dados enquanto a licença existir, para permitir reativações e suporte. Dados salvos localmente no seu navegador (prompts, avatares, favoritos, preferências) permanecem sob seu controle e podem ser apagados a qualquer momento limpando os dados de navegação. Após solicitação de exclusão de uma licença, os registros podem ser retidos por prazo adicional quando exigido por obrigação legal, fiscal ou contratual, sendo então eliminados ou anonimizados.</p>
     </div>
 
     <div class="legal-section" id="direitos">
@@ -634,7 +645,7 @@ footer {
 
     <div class="legal-section" id="menores">
       <h2><span class="legal-section-num">11</span>Privacidade de menores</h2>
-      <p>A NexAI não é destinada a menores de 18 anos e não coleta intencionalmente dados pessoais de crianças ou adolescentes. Caso identifiquemos o cadastro de um menor, a conta e os dados associados serão removidos.</p>
+      <p>A NexAI não é destinada a menores de 18 anos e não coleta intencionalmente dados pessoais de crianças ou adolescentes. Caso identifiquemos que uma chave de licença foi adquirida ou ativada por um menor, a licença e os dados associados serão removidos.</p>
     </div>
 
     <div class="legal-section" id="alteracoes">
