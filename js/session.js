@@ -200,13 +200,75 @@ const Session = (() => {
       ov.classList.add('hiding');
       setTimeout(() => {
         ov.remove();
-        onAccept();
+        runLoadingThenProceed(onAccept);
       }, 500);
     });
 
     card.append(logo, title, sub, linksWrap, checkRow, btn);
     ov.appendChild(card);
     document.body.prepend(ov);
+  }
+
+  // ─── TELA DE LOADING (transição entre termos e ativação) ────────────────
+
+  /** Mostra o overlay de loading */
+  function showLoadingOverlay() {
+    let ov = document.getElementById('loading-overlay');
+    if (ov) { ov.style.display = ''; return ov; }
+
+    ov = document.createElement('div');
+    ov.id = 'loading-overlay';
+
+    const card = document.createElement('div');
+    card.className = 'loading-card';
+
+    const logo = document.createElement('div');
+    logo.className = 'act-logo';
+    logo.innerHTML = `
+      <div class="act-logo-icon">
+        <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:white;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+      </div>`;
+    const logoText = document.createElement('span');
+    logoText.className = 'act-logo-text';
+    logoText.textContent = 'Nex AI';
+    logo.appendChild(logoText);
+
+    const spinner = document.createElement('div');
+    spinner.className = 'loading-spinner';
+    spinner.setAttribute('role', 'status');
+    spinner.setAttribute('aria-live', 'polite');
+    spinner.setAttribute('aria-label', 'Carregando');
+
+    const text = document.createElement('div');
+    text.className = 'loading-text';
+    text.textContent = 'Preparando o seu acesso...';
+
+    card.append(logo, spinner, text);
+    ov.appendChild(card);
+    document.body.prepend(ov);
+    return ov;
+  }
+
+  /** Esconde e remove o overlay de loading */
+  function hideLoadingOverlay() {
+    const ov = document.getElementById('loading-overlay');
+    if (!ov) return;
+    ov.classList.add('hiding');
+    setTimeout(() => ov.remove(), 450);
+  }
+
+  /**
+   * Mostra o loading enquanto o próximo passo (verificação de sessão)
+   * é resolvido, garantindo um tempo mínimo de exibição para não "piscar".
+   */
+  function runLoadingThenProceed(next) {
+    showLoadingOverlay();
+    const minDelay = new Promise(resolve => setTimeout(resolve, 900));
+    Promise.all([Promise.resolve(next()), minDelay]).then(() => {
+      hideLoadingOverlay();
+    });
   }
 
   // ─── UI DA TELA DE ATIVAÇÃO ──────────────────────────────────────────────
