@@ -49,7 +49,7 @@
 .act-logo-icon {
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, #fe2c55, #25f4ee);
+  background: linear-gradient(135deg, #fe2c55, #ff2d78);
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -120,8 +120,8 @@
 }
 
 .act-digit.error {
-  border-color: #25f4ee !important;
-  box-shadow: 0 0 0 3px rgba(37,244,238,0.14) !important;
+  border-color: #ff2d78 !important;
+  box-shadow: 0 0 0 3px rgba(255,45,120,0.14) !important;
   animation: shake 0.32s ease;
 }
 
@@ -141,7 +141,7 @@
 /* ====== MENSAGENS DE FEEDBACK ====== */
 .act-error-msg {
   font-size: 12.5px;
-  color: #25f4ee;
+  color: #ff2d78;
   font-family: 'Inter', sans-serif;
   min-height: 18px;
   margin-bottom: 8px;
@@ -163,7 +163,7 @@
 .act-btn {
   width: 100%;
   padding: 13px;
-  background: linear-gradient(135deg, #fe2c55, #25f4ee);
+  background: linear-gradient(135deg, #fe2c55, #ff2d78);
   border: none;
   border-radius: 12px;
   color: white;
@@ -256,11 +256,11 @@
 }
 
 .terms-links a {
-  color: #25f4ee;
+  color: #ff2d78;
   font-size: 12.5px;
   font-weight: 600;
   text-decoration: none;
-  border-bottom: 1px solid rgba(37,244,238,0.3);
+  border-bottom: 1px solid rgba(255,45,120,0.3);
   transition: opacity 0.18s;
 }
 .terms-links a:hover { opacity: 0.8; }
@@ -302,7 +302,7 @@
 }
 
 .terms-checkbox:checked {
-  background: linear-gradient(135deg, #fe2c55, #25f4ee);
+  background: #ff2d78;
   border-color: transparent;
 }
 
@@ -326,7 +326,7 @@
 #loading-overlay {
   position: fixed;
   inset: 0;
-  z-index: 10000;
+  z-index: 9998; /* abaixo do overlay de termos, para não expor o dashboard durante o fade-out */
   background: #07070a;
   display: flex;
   align-items: center;
@@ -350,7 +350,7 @@
   border-radius: 50%;
   border: 3px solid #1e1e28;
   border-top-color: #fe2c55;
-  border-right-color: #25f4ee;
+  border-right-color: #ff2d78;
   animation: loadingSpin 0.85s linear infinite;
 }
 
