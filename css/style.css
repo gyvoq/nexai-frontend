@@ -387,11 +387,19 @@ h1,h2,h3,h4 { font-family: 'Inter', sans-serif; letter-spacing: -0.3px; }
   background: transparent;
 }
 .play-circle {
-  width: 40px; height: 40px;
+  width: 56px; height: 56px;
   display: flex; align-items: center; justify-content: center;
   transition: transform var(--transition);
 }
-.play-circle svg { width: 40px; height: 40px; stroke: none; fill: var(--accent1); filter: drop-shadow(0 2px 8px rgba(254,44,85,0.5)); }
+.play-circle svg {
+  width: 56px; height: 56px;
+  fill: var(--accent1);
+  stroke: var(--accent1);
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  filter: drop-shadow(0 2px 8px rgba(254,44,85,0.5));
+}
 .video-card:hover .play-circle { transform: scale(1.1); }
 
 .format-badge { position: absolute; top: 7px; right: 7px; font-size: 9.5px; font-weight: 700; padding: 3px 7px; border-radius: 7px; letter-spacing: 0.4px; }
