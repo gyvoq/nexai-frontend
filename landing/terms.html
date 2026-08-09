@@ -33,13 +33,20 @@
   --glass-shine: inset 0 1px 0 rgba(255,255,255,0.14), inset 0 0 0 1px rgba(255,255,255,0.04);
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  width: 100%;
+}
 
 body {
   font-family: 'Instrument Sans', sans-serif;
   background: var(--ink);
   color: var(--text);
   overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  touch-action: pan-y;
   -webkit-font-smoothing: antialiased;
   font-variant-numeric: tabular-nums;
 }
@@ -57,6 +64,7 @@ a:focus-visible, button:focus-visible {
   filter: blur(100px);
   pointer-events: none;
   z-index: 0;
+  max-width: 100vw;
 }
 .bg-orb-1 {
   width: 600px; height: 600px;
@@ -520,7 +528,7 @@ footer {
   </a>
   <div class="legal-eyebrow"><span class="legal-eyebrow-dot"></span>Documento legal</div>
   <h1>Termos de <em>Uso</em></h1>
-  <p class="legal-updated">Estes Termos de Uso regulam o acesso e a utilização da plataforma NexAI. Ao criar uma conta ou usar nossos serviços, você concorda integralmente com as condições descritas abaixo.<br>Última atualização: 8 de agosto de 2026.</p>
+  <p class="legal-updated">Estes Termos de Uso regulam o acesso e a utilização da plataforma NexAI. Ao ativar uma chave de licença ou usar nossos serviços, você concorda integralmente com as condições descritas abaixo.<br>Última atualização: 9 de agosto de 2026.</p>
 </section>
 
 <div class="legal-wrap">
@@ -528,7 +536,7 @@ footer {
     <div class="legal-toc-label">Sumário</div>
     <a href="#aceitacao">1. Aceitação</a>
     <a href="#servico">2. O serviço</a>
-    <a href="#conta">3. Conta e cadastro</a>
+    <a href="#conta">3. Licença e acesso à Plataforma</a>
     <a href="#uso">4. Uso aceitável</a>
     <a href="#ia-terceiros">5. Ferramentas de IA de terceiros</a>
     <a href="#propriedade">6. Propriedade intelectual</a>
@@ -556,12 +564,13 @@ footer {
     </div>
 
     <div class="legal-section" id="conta">
-      <h2><span class="legal-section-num">03</span>Conta e cadastro</h2>
-      <p>Para utilizar a Plataforma, é necessário criar uma conta com informações verdadeiras, completas e atualizadas. Você é responsável por manter a confidencialidade de suas credenciais de acesso e por todas as atividades realizadas em sua conta.</p>
+      <h2><span class="legal-section-num">03</span>Licença e acesso à Plataforma</h2>
+      <p>O acesso à NexAI não depende de cadastro com nome, e-mail e senha na Plataforma: ele é feito por meio de uma <strong>chave de licença</strong>, adquirida através de um checkout de terceiros (por exemplo, Hotmart, Kiwify, Stripe ou plataforma equivalente) e enviada ao comprador por e-mail. Ao inserir a chave na tela de ativação, é gerado um token de sessão que mantém seu acesso ativo enquanto a licença for válida.</p>
+      <p>Você é responsável por manter sua chave de licença em sigilo e por todas as atividades realizadas por meio dela. Chaves compartilhadas indevidamente ou com uso simultâneo suspeito podem ter a sessão revogada.</p>
       <ul>
-        <li>Você deve ter pelo menos 18 anos para criar uma conta.</li>
-        <li>Cada conta é pessoal e intransferível, salvo planos comerciais expressamente autorizados.</li>
-        <li>A NexAI pode suspender contas com informações falsas ou atividade suspeita.</li>
+        <li>Você deve ter pelo menos 18 anos para adquirir e utilizar uma licença.</li>
+        <li>Cada chave de licença é pessoal e intransferível, salvo planos comerciais expressamente autorizados.</li>
+        <li>A NexAI pode revogar ou suspender chaves de licença em caso de fraude, uso indevido ou atividade suspeita.</li>
       </ul>
     </div>
 
@@ -575,7 +584,7 @@ footer {
         <li>Revender, sublicenciar ou redistribuir o acesso à Plataforma sem autorização prévia por escrito;</li>
         <li>Utilizar robôs, scrapers ou outros meios automatizados para acessar o Serviço fora das integrações oficiais.</li>
       </ul>
-      <div class="legal-callout">O descumprimento destas regras pode resultar em suspensão ou encerramento imediato da conta, sem direito a reembolso.</div>
+      <div class="legal-callout">O descumprimento destas regras pode resultar em suspensão ou revogação imediata da chave de licença, sem direito a reembolso.</div>
     </div>
 
     <div class="legal-section" id="ia-terceiros">
@@ -592,17 +601,18 @@ footer {
 
     <div class="legal-section" id="pagamentos">
       <h2><span class="legal-section-num">07</span>Pagamentos e assinatura</h2>
-      <p>O acesso à Plataforma é oferecido mediante assinatura mensal recorrente, cobrada automaticamente até o cancelamento. Os valores vigentes são exibidos na página de preços no momento da contratação.</p>
+      <p>A compra do acesso à NexAI é processada por uma plataforma de checkout terceirizada (ex.: Hotmart, Kiwify, Stripe ou equivalente), responsável pela cobrança, emissão de nota fiscal e envio da chave de licença. A NexAI não processa nem armazena dados de cartão de crédito ou outros meios de pagamento — esse tratamento é feito integralmente pelo provedor de checkout, sob a política de privacidade própria dele.</p>
+      <p>Os valores e a periodicidade vigentes (mensal, anual ou vitalícia, conforme o plano contratado) são exibidos na página de preços no momento da contratação.</p>
       <ul>
-        <li>A cobrança é renovada automaticamente a cada ciclo de 30 dias;</li>
-        <li>Alterações de preço serão comunicadas com antecedência mínima de 15 dias;</li>
+        <li>Em planos recorrentes, a cobrança é renovada automaticamente ao final de cada ciclo, salvo cancelamento prévio junto ao checkout;</li>
+        <li>Alterações de preço para novas contratações serão comunicadas com antecedência mínima de 15 dias, quando aplicável a assinaturas ativas;</li>
         <li>Impostos aplicáveis podem ser adicionados ao valor exibido, conforme a legislação vigente.</li>
       </ul>
     </div>
 
     <div class="legal-section" id="cancelamento">
       <h2><span class="legal-section-num">08</span>Cancelamento e reembolso</h2>
-      <p>Você pode cancelar sua assinatura a qualquer momento diretamente no painel da conta, sem multas ou taxas adicionais. O acesso permanece ativo até o fim do período já pago.</p>
+      <p>Você pode cancelar sua assinatura a qualquer momento diretamente na plataforma de checkout utilizada na compra (ex.: Hotmart, Kiwify, Stripe ou equivalente), sem multas ou taxas adicionais. O acesso à NexAI permanece ativo até o fim do período já pago.</p>
       <p>Oferecemos garantia incondicional de <strong>7 dias corridos</strong> a partir da primeira contratação: se você não estiver satisfeito, basta solicitar o reembolso dentro desse prazo para receber 100% do valor pago de volta.</p>
     </div>
 
@@ -619,7 +629,7 @@ footer {
 
     <div class="legal-section" id="rescisao">
       <h2><span class="legal-section-num">11</span>Rescisão</h2>
-      <p>A NexAI pode suspender ou encerrar o acesso de qualquer usuário que viole estes Termos de Uso, mediante aviso prévio sempre que possível. Você também pode encerrar sua conta a qualquer momento, ficando responsável por qualquer valor pendente até a data de encerramento.</p>
+      <p>A NexAI pode suspender ou revogar a chave de licença de qualquer usuário que viole estes Termos de Uso, mediante aviso prévio sempre que possível. Você também pode deixar de usar o Serviço a qualquer momento, ficando responsável por qualquer valor pendente junto à plataforma de checkout até a data de encerramento.</p>
     </div>
 
     <div class="legal-section" id="lei">
