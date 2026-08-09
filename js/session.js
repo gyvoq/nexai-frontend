@@ -20,6 +20,8 @@ const Session = (() => {
   const API_BASE    = 'https://nexai-backend-production-5e36.up.railway.app'; // ← trocar pela URL do seu backend em produção
   const TOKEN_KEY   = 'nex_session_token';
   const EXPIRY_KEY  = 'nex_session_expiry';
+  const TERMS_KEY   = 'nex_terms_accepted';
+  const TERMS_VERSION = '1.0'; // ← incrementar quando os termos/política mudarem, forçando novo aceite
 
   /** Pega o token salvo no sessionStorage */
   function getToken() {
@@ -96,6 +98,115 @@ const Session = (() => {
     } catch { /* mesmo se falhar, limpa localmente */ }
     clearSession();
     showActivationOverlay();
+  }
+
+  // ─── TELA DE TERMOS DE USO & POLÍTICA DE PRIVACIDADE ────────────────────
+
+  /** Verifica se o usuário já aceitou a versão vigente dos termos */
+  function hasAcceptedTerms() {
+    try { return localStorage.getItem(TERMS_KEY) === TERMS_VERSION; } catch { return false; }
+  }
+
+  /** Marca os termos como aceitos (persiste entre sessões, ao contrário do token) */
+  function acceptTerms() {
+    try { localStorage.setItem(TERMS_KEY, TERMS_VERSION); } catch { /* ignore */ }
+  }
+
+  /** Mostra overlay de consentimento e só chama onAccept após o clique confirmado */
+  function showTermsOverlay(onAccept) {
+    let ov = document.getElementById('terms-overlay');
+    if (ov) { ov.style.display = ''; return; }
+
+    ov = document.createElement('div');
+    ov.id = 'terms-overlay';
+
+    const card = document.createElement('div');
+    card.className = 'act-card terms-card';
+
+    // Logo (mesmo padrão visual da tela de ativação)
+    const logo = document.createElement('div');
+    logo.className = 'act-logo';
+    logo.innerHTML = `
+      <div class="act-logo-icon">
+        <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:white;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+      </div>`;
+    const logoText = document.createElement('span');
+    logoText.className = 'act-logo-text';
+    logoText.textContent = 'Nex AI';
+    logo.appendChild(logoText);
+
+    const title = document.createElement('div');
+    title.className = 'act-title';
+    title.textContent = 'Antes de continuar';
+
+    const sub = document.createElement('div');
+    sub.className = 'act-sub';
+    sub.textContent = 'Para usar a plataforma, você precisa ler e concordar com nossos Termos de Uso e nossa Política de Privacidade.';
+
+    // Links para os documentos (abrem em nova aba)
+    const linksWrap = document.createElement('div');
+    linksWrap.className = 'terms-links';
+
+    const termsLink = document.createElement('a');
+    termsLink.href = 'landing/terms.html';
+    termsLink.target = '_blank';
+    termsLink.rel = 'noopener noreferrer';
+    termsLink.textContent = 'Termos de Uso';
+
+    const sep = document.createElement('span');
+    sep.className = 'terms-links-sep';
+    sep.textContent = '•';
+
+    const privacyLink = document.createElement('a');
+    privacyLink.href = 'landing/privacy.html';
+    privacyLink.target = '_blank';
+    privacyLink.rel = 'noopener noreferrer';
+    privacyLink.textContent = 'Política de Privacidade';
+
+    linksWrap.append(termsLink, sep, privacyLink);
+
+    // Checkbox de concordância
+    const checkRow = document.createElement('label');
+    checkRow.className = 'terms-check-row';
+    checkRow.setAttribute('for', 'terms-checkbox');
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = 'terms-checkbox';
+    checkbox.className = 'terms-checkbox';
+
+    const checkText = document.createElement('span');
+    checkText.textContent = 'Li e concordo com os Termos de Uso e a Política de Privacidade';
+
+    checkRow.append(checkbox, checkText);
+
+    // Botão continuar
+    const btn = document.createElement('button');
+    btn.className = 'act-btn';
+    btn.id = 'terms-continue-btn';
+    btn.type = 'button';
+    btn.textContent = 'Concordar e continuar';
+    btn.disabled = true;
+
+    checkbox.addEventListener('change', () => {
+      btn.disabled = !checkbox.checked;
+    });
+
+    btn.addEventListener('click', () => {
+      if (!checkbox.checked) return;
+      acceptTerms();
+      ov.classList.add('hiding');
+      setTimeout(() => {
+        ov.remove();
+        onAccept();
+      }, 500);
+    });
+
+    card.append(logo, title, sub, linksWrap, checkRow, btn);
+    ov.appendChild(card);
+    document.body.prepend(ov);
   }
 
   // ─── UI DA TELA DE ATIVAÇÃO ──────────────────────────────────────────────
@@ -346,6 +457,15 @@ const Session = (() => {
   // ─── INICIALIZAÇÃO ────────────────────────────────────────────────────────
 
   async function init() {
+    // Primeiro passo, sempre: exige aceite dos Termos de Uso e Política de Privacidade
+    if (!hasAcceptedTerms()) {
+      showTermsOverlay(proceedAfterTerms);
+      return;
+    }
+    proceedAfterTerms();
+  }
+
+  async function proceedAfterTerms() {
     const token = getToken();
 
     if (!token) {
@@ -376,7 +496,7 @@ const Session = (() => {
     init();
   });
 
-  return { getToken, saveSession, clearSession, logout };
+  return { getToken, saveSession, clearSession, logout, hasAcceptedTerms };
 })();
 
 window.NexSession = Session;
