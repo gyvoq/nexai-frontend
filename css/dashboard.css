@@ -90,7 +90,7 @@
 }
 
 .sidebar-item.active {
-  background: linear-gradient(135deg, rgba(254,44,85,0.12), rgba(37,244,238,0.07));
+  background: linear-gradient(135deg, rgba(254,44,85,0.12), rgba(255,45,120,0.07));
   color: var(--text);
   border-color: rgba(254,44,85,0.2);
 }
@@ -179,9 +179,9 @@
 }
 
 .btn-logout:hover {
-  background: rgba(37,244,238,0.08);
-  border-color: rgba(37,244,238,0.3);
-  color: #25f4ee;
+  background: rgba(255,45,120,0.08);
+  border-color: rgba(255,45,120,0.3);
+  color: #ff2d78;
 }
 
 /* ====== MAIN WRAP ====== */
