@@ -21,38 +21,65 @@ const Session = (() => {
   const TOKEN_KEY   = 'nex_session_token';
   const EXPIRY_KEY  = 'nex_session_expiry';
   const TERMS_KEY   = 'nex_terms_accepted';
-  const DEVICE_KEY  = 'nex_device_id';
   const TERMS_VERSION = '1.0'; // ← incrementar quando os termos/política mudarem, forçando novo aceite
 
   /**
-   * Identificador único e persistente deste dispositivo/navegador.
-   * Guardado em localStorage (sobrevive ao fechar o browser, ao contrário
-   * do sessionToken) para que o backend possa travar a chave de ativação
-   * neste dispositivo. Se o usuário limpar os dados do site ou usar outro
-   * navegador/aparelho, um novo deviceId será gerado — e o backend vai
-   * recusar a ativação porque a chave já está vinculada ao dispositivo
-   * anterior (é preciso liberar via admin para reativar em outro lugar).
+   * Identificador do dispositivo — NÃO depende de localStorage/cookies.
+   * ─────────────────────────────────────────────────────────────────
+   * Antes gerávamos um UUID e guardávamos em localStorage. Bug: ao limpar
+   * o storage/cookies do navegador, um UUID novo era gerado e o backend
+   * enxergava como "outro dispositivo", bloqueando o próprio dono no
+   * mesmo aparelho.
+   *
+   * Agora calculamos uma impressão (fingerprint) determinística a partir
+   * de características estáveis do navegador/hardware (tela, fuso horário,
+   * idioma, núcleos de CPU, renderização de canvas, etc.) e aplicamos
+   * SHA-256. O resultado é o mesmo antes e depois de limpar o storage,
+   * porque não é guardado — é recalculado toda vez a partir do próprio
+   * ambiente do navegador.
    */
-  function getDeviceId() {
+  async function getDeviceId() {
     try {
-      let id = localStorage.getItem(DEVICE_KEY);
-      if (!id) {
-        id = (crypto.randomUUID ? crypto.randomUUID() : _fallbackUUID());
-        localStorage.setItem(DEVICE_KEY, id);
+      const gl = document.createElement('canvas').getContext('webgl') || document.createElement('canvas').getContext('experimental-webgl');
+      const debugInfo = gl && gl.getExtension('WEBGL_debug_renderer_info');
+      const gpu = debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : '';
+
+      // Canvas fingerprint: mesmo hardware/driver renderiza de forma consistente
+      const canvas = document.createElement('canvas');
+      canvas.width = 220; canvas.height = 30;
+      const ctx = canvas.getContext('2d');
+      let canvasData = '';
+      if (ctx) {
+        ctx.textBaseline = 'top';
+        ctx.font = '14px Arial';
+        ctx.fillText('nexai-device-fp', 2, 2);
+        canvasData = canvas.toDataURL();
       }
-      return id;
+
+      const signals = [
+        navigator.userAgent || '',
+        navigator.language || '',
+        String(navigator.hardwareConcurrency || ''),
+        String(screen.width) + 'x' + String(screen.height) + 'x' + String(screen.colorDepth),
+        Intl.DateTimeFormat().resolvedOptions().timeZone || '',
+        gpu || '',
+        canvasData,
+      ].join('|');
+
+      const enc = new TextEncoder().encode(signals);
+      const hash = await crypto.subtle.digest('SHA-256', enc);
+      return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
     } catch {
-      // localStorage indisponível (modo privado etc.) — gera um id efêmero
-      return _fallbackUUID();
+      // Ambiente sem SubtleCrypto (http:// não seguro, navegador muito antigo etc.)
+      // Fallback: ainda assim NÃO usa storage, para não repetir o bug original.
+      return _hashFallback(navigator.userAgent + screen.width + screen.height + (navigator.language || ''));
     }
   }
 
-  function _fallbackUUID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-      const r = (Math.random() * 16) | 0;
-      const v = c === 'x' ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
+  function _hashFallback(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) { h = (h * 31 + str.charCodeAt(i)) | 0; }
+    return 'f' + Math.abs(h).toString(16).padStart(63, '0');
   }
 
   /** Pega o token salvo no sessionStorage */
@@ -106,10 +133,11 @@ const Session = (() => {
    * Retorna { success, token, expiresAt, message? } ou { error }
    */
   async function activate(code) {
+    const deviceId = await getDeviceId();
     const res = await fetch(`${API_BASE}/api/activate`, {
       method : 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body   : JSON.stringify({ key: code, deviceId: getDeviceId() }),
+      body   : JSON.stringify({ key: code, deviceId }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Erro desconhecido');
@@ -508,8 +536,15 @@ const Session = (() => {
       } catch (err) {
         attempts++;
 
-        // Após 5 falhas client-side, bloqueia por 60s localmente
-        if (attempts >= MAX_CLIENT_ATTEMPTS) {
+        const isDeviceLock = /outro dispositivo/i.test(err.message || '');
+
+        // Bloqueio por dispositivo: mostra a mensagem real do servidor,
+        // não conta como tentativa de força bruta (a chave está correta).
+        if (isDeviceLock) {
+          attempts--;
+          showError(err.message);
+        } else if (attempts >= MAX_CLIENT_ATTEMPTS) {
+          // Após 5 falhas client-side, bloqueia por 60s localmente
           blockedUntil = Date.now() + 60_000;
           showError('Muitas tentativas. Aguarde 60 segundos.');
           attempts = 0;
