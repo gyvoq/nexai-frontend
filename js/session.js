@@ -21,7 +21,39 @@ const Session = (() => {
   const TOKEN_KEY   = 'nex_session_token';
   const EXPIRY_KEY  = 'nex_session_expiry';
   const TERMS_KEY   = 'nex_terms_accepted';
+  const DEVICE_KEY  = 'nex_device_id';
   const TERMS_VERSION = '1.0'; // ← incrementar quando os termos/política mudarem, forçando novo aceite
+
+  /**
+   * Identificador único e persistente deste dispositivo/navegador.
+   * Guardado em localStorage (sobrevive ao fechar o browser, ao contrário
+   * do sessionToken) para que o backend possa travar a chave de ativação
+   * neste dispositivo. Se o usuário limpar os dados do site ou usar outro
+   * navegador/aparelho, um novo deviceId será gerado — e o backend vai
+   * recusar a ativação porque a chave já está vinculada ao dispositivo
+   * anterior (é preciso liberar via admin para reativar em outro lugar).
+   */
+  function getDeviceId() {
+    try {
+      let id = localStorage.getItem(DEVICE_KEY);
+      if (!id) {
+        id = (crypto.randomUUID ? crypto.randomUUID() : _fallbackUUID());
+        localStorage.setItem(DEVICE_KEY, id);
+      }
+      return id;
+    } catch {
+      // localStorage indisponível (modo privado etc.) — gera um id efêmero
+      return _fallbackUUID();
+    }
+  }
+
+  function _fallbackUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = (Math.random() * 16) | 0;
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
 
   /** Pega o token salvo no sessionStorage */
   function getToken() {
@@ -77,7 +109,7 @@ const Session = (() => {
     const res = await fetch(`${API_BASE}/api/activate`, {
       method : 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body   : JSON.stringify({ key: code }),
+      body   : JSON.stringify({ key: code, deviceId: getDeviceId() }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Erro desconhecido');
