@@ -1,78 +1,76 @@
 /* ===== DATA ===== */
 const products = [
-  {id:6,name:'Blush em Bastão Multiuso',cat:'beleza',img:'./img6.png',rank:1,grad:'grad-beleza',tag:'#beleza',prompt:'cream blush stick coral shade in sleek tube packaging'},
-  {id:21,name:'Creme Noturno Retinol',cat:'beleza',img:'./img21.png',rank:2,grad:'grad-beleza',tag:'#beleza',prompt:'retinol night cream glass jar dark packaging premium'},
-  {id:13,name:'Colchonete Yoga Anti-slip',cat:'fitness',img:'./img13.png',rank:3,grad:'grad-fitness',tag:'#fitness',prompt:'purple yoga mat anti-slip rolled up'},
-  {id:10,name:'Bolsa Baguete Couro Sintético',cat:'moda',img:'./img10.png',rank:4,grad:'grad-moda',tag:'#moda',prompt:'baguette shoulder bag faux leather cream color gold hardware'},
-  {id:23,name:'Mochila Runner Impermeável',cat:'fitness',img:'./img23.png',rank:5,grad:'grad-fitness',tag:'#fitness',prompt:'waterproof running backpack compact black with reflective details'},
-  {id:27,name:'Luminária LED RGB Gamer',cat:'casa',img:'./img27.png',rank:6,grad:'grad-casa',tag:'#casa',prompt:'RGB LED desk lamp gamer setup colorful glow'},
-  {id:28,name:'Kit Skincare Coreano 5 Passos',cat:'beleza',img:'./img28.png',rank:7,grad:'grad-beleza',tag:'#beleza',prompt:'5 step korean skincare kit pastel packaging set of bottles'},
-  {id:5,name:'Umidificador Portátil USB',cat:'casa',img:'./img5.png',rank:8,grad:'grad-casa',tag:'#casa',prompt:'compact USB humidifier white with soft mist and LED light'},
-  {id:25,name:'Vitamina C Pó Efervescente',cat:'saude',img:'./img25.png',rank:9,grad:'grad-saude',tag:'#saude',prompt:'effervescent vitamin C powder tube orange packaging'},
-  {id:30,name:'Carregador Magnético 3 em 1',cat:'tech',img:'./img30.png',rank:10,grad:'grad-tech',tag:'#tech',prompt:'3 in 1 magnetic wireless charger white foldable stand'},
-  {id:34,name:'Suplemento Magnésio Dimalato',cat:'saude',img:'./img34.png',rank:11,grad:'grad-saude',tag:'#saude',prompt:'magnesium dimalate supplement bottle white and purple label'},
-  {id:32,name:'Difusor Aromaterapia Bluetooth',cat:'casa',img:'./img32.png',rank:12,grad:'grad-casa',tag:'#casa',prompt:'ceramic aromatherapy diffuser with bluetooth speaker soft glow'},
-  {id:33,name:'Óleo Capilar Reparador',cat:'beleza',img:'./img33.png',rank:13,grad:'grad-beleza',tag:'#beleza',prompt:'hair repair oil small glass bottle dropper packaging'},
-  {id:11,name:'Air Fryer Digital 5L',cat:'casa',img:'./img11.png',rank:14,grad:'grad-casa',tag:'#casa',prompt:'digital air fryer 5L black modern kitchen appliance'},
-  {id:12,name:'Máscara Facial Argila',cat:'beleza',img:'./img12.png',rank:15,grad:'grad-beleza',tag:'#beleza',prompt:'clay face mask white tube with green cap skincare'},
-  {id:20,name:'Jogo Panelas Antiaderente',cat:'casa',img:'./img20.png',rank:16,grad:'grad-casa',tag:'#casa',prompt:'non-stick cookware set 5 pieces dark gray modern'},
-  {id:29,name:'Kit Faixas Elásticas Treino',cat:'fitness',img:'./img29.png',rank:17,grad:'grad-fitness',tag:'#fitness',prompt:'set of resistance bands colorful with carrying pouch'},
-  {id:17,name:'Legging Compressão Alto',cat:'fitness',img:'./img17.png',rank:18,grad:'grad-fitness',tag:'#fitness',prompt:'high waist compression legging black athletic wear'},
-  {id:37,name:'Mini Projetor Portátil LED',cat:'tech',img:'./img24.png',rank:19,grad:'grad-tech',tag:'#tech',isNew:true,prompt:'compact portable LED projector white mini home cinema device'},
-  {id:7,name:'Creatina Monohidratada 300g',cat:'saude',img:'./img7.png',rank:20,grad:'grad-saude',tag:'#saude',prompt:'creatine monohydrate powder tub white and blue label 300g'},
-  {id:26,name:'Óculos de Sol Polarizado Esportivo',cat:'moda',img:'./img26.png',rank:21,grad:'grad-moda',tag:'#moda',prompt:'sporty polarized wraparound sunglasses black rubber frame'},
-  {id:1,name:'Sérum Bifásico Niacinamida',cat:'beleza',img:'./img1.png',rank:22,grad:'grad-beleza',tag:'#beleza',prompt:'dual-phase serum bottle clear and orange layers, niacinamide skincare packaging'},
-  {id:36,name:'Squeeze Térmico Motivacional 1L',cat:'fitness',img:'./img13.png',rank:23,grad:'grad-fitness',tag:'#fitness',isNew:true,prompt:'motivational time-marked water bottle 1L matte pastel colors'},
-  {id:14,name:'Fone Bluetooth NC Pro',cat:'tech',img:'./img14.png',rank:24,grad:'grad-tech',tag:'#tech',prompt:'over-ear noise cancelling headphones matte black'},
+  {id:25,name:'Vitamina C Pó Efervescente',cat:'saude',img:'./img25.png',rank:1,grad:'grad-saude',tag:'#saude',isNew:true,prompt:'effervescent vitamin C powder tube orange packaging'},
+  {id:38,name:'Colágeno Hidrolisado Sabor Frutas',cat:'saude',img:'./img34.png',rank:2,grad:'grad-saude',tag:'#saude',isNew:true,prompt:'hydrolyzed collagen supplement pouch fruit flavor pastel packaging'},
+  {id:6,name:'Blush em Bastão Multiuso',cat:'beleza',img:'./img6.png',rank:3,grad:'grad-beleza',tag:'#beleza',prompt:'cream blush stick coral shade in sleek tube packaging'},
+  {id:39,name:'Protetor Solar Facial Toque Seco',cat:'beleza',img:'./img28.png',rank:4,grad:'grad-beleza',tag:'#beleza',isNew:true,prompt:'dry touch facial sunscreen tube matte finish minimal packaging'},
+  {id:34,name:'Suplemento Magnésio Dimalato',cat:'saude',img:'./img34.png',rank:5,grad:'grad-saude',tag:'#saude',prompt:'magnesium dimalate supplement bottle white and purple label'},
+  {id:13,name:'Colchonete Yoga Anti-slip',cat:'fitness',img:'./img13.png',rank:6,grad:'grad-fitness',tag:'#fitness',prompt:'purple yoga mat anti-slip rolled up'},
+  {id:40,name:'Faixa Modeladora Pós-treino',cat:'fitness',img:'./img29.png',rank:7,grad:'grad-fitness',tag:'#fitness',isNew:true,prompt:'post workout compression waist band black breathable fabric'},
+  {id:21,name:'Creme Noturno Retinol',cat:'beleza',img:'./img21.png',rank:8,grad:'grad-beleza',tag:'#beleza',prompt:'retinol night cream glass jar dark packaging premium'},
+  {id:41,name:'Fone Bluetooth com Cancelamento Adaptativo',cat:'tech',img:'./img14.png',rank:9,grad:'grad-tech',tag:'#tech',isNew:true,prompt:'adaptive noise cancelling earbuds matte case premium tech'},
+  {id:28,name:'Kit Skincare Coreano 5 Passos',cat:'beleza',img:'./img28.png',rank:10,grad:'grad-beleza',tag:'#beleza',prompt:'5 step korean skincare kit pastel packaging set of bottles'},
+  {id:10,name:'Bolsa Baguete Couro Sintético',cat:'moda',img:'./img10.png',rank:11,grad:'grad-moda',tag:'#moda',prompt:'baguette shoulder bag faux leather cream color gold hardware'},
+  {id:42,name:'Óculos Blue Light Anti-fadiga',cat:'moda',img:'./img4.png',rank:12,grad:'grad-moda',tag:'#moda',isNew:true,prompt:'blue light blocking glasses transparent frame minimal desk accessory'},
+  {id:23,name:'Mochila Runner Impermeável',cat:'fitness',img:'./img23.png',rank:13,grad:'grad-fitness',tag:'#fitness',prompt:'waterproof running backpack compact black with reflective details'},
+  {id:30,name:'Carregador Magnético 3 em 1',cat:'tech',img:'./img30.png',rank:14,grad:'grad-tech',tag:'#tech',prompt:'3 in 1 magnetic wireless charger white foldable stand'},
+  {id:27,name:'Luminária LED RGB Gamer',cat:'casa',img:'./img27.png',rank:15,grad:'grad-casa',tag:'#casa',prompt:'RGB LED desk lamp gamer setup colorful glow'},
+  {id:43,name:'Organizador de Gavetas Modular',cat:'casa',img:'./img20.png',rank:16,grad:'grad-casa',tag:'#casa',isNew:true,prompt:'modular drawer organizer set clear plastic minimalist storage'},
+  {id:5,name:'Umidificador Portátil USB',cat:'casa',img:'./img5.png',rank:17,grad:'grad-casa',tag:'#casa',prompt:'compact USB humidifier white with soft mist and LED light'},
+  {id:32,name:'Difusor Aromaterapia Bluetooth',cat:'casa',img:'./img32.png',rank:18,grad:'grad-casa',tag:'#casa',prompt:'ceramic aromatherapy diffuser with bluetooth speaker soft glow'},
+  {id:33,name:'Óleo Capilar Reparador',cat:'beleza',img:'./img33.png',rank:19,grad:'grad-beleza',tag:'#beleza',prompt:'hair repair oil small glass bottle dropper packaging'},
+  {id:37,name:'Mini Projetor Portátil LED',cat:'tech',img:'./img24.png',rank:20,grad:'grad-tech',tag:'#tech',prompt:'compact portable LED projector white mini home cinema device'},
+  {id:7,name:'Creatina Monohidratada 300g',cat:'saude',img:'./img7.png',rank:21,grad:'grad-saude',tag:'#saude',prompt:'creatine monohydrate powder tub white and blue label 300g'},
+  {id:26,name:'Óculos de Sol Polarizado Esportivo',cat:'moda',img:'./img26.png',rank:22,grad:'grad-moda',tag:'#moda',prompt:'sporty polarized wraparound sunglasses black rubber frame'},
+  {id:1,name:'Sérum Bifásico Niacinamida',cat:'beleza',img:'./img1.png',rank:23,grad:'grad-beleza',tag:'#beleza',prompt:'dual-phase serum bottle clear and orange layers, niacinamide skincare packaging'},
+  {id:36,name:'Squeeze Térmico Motivacional 1L',cat:'fitness',img:'./img13.png',rank:24,grad:'grad-fitness',tag:'#fitness',prompt:'motivational time-marked water bottle 1L matte pastel colors'},
   {id:19,name:'Tênis Plataforma Chunky',cat:'moda',img:'./img19.png',rank:25,grad:'grad-moda',tag:'#moda',prompt:'chunky platform sneaker white thick sole streetwear'},
   {id:3,name:'Legging Térmica Yoga',cat:'fitness',img:'./img3.png',rank:26,grad:'grad-fitness',tag:'#fitness',prompt:'thermal fleece lined leggings black athletic wear folded'},
-  {id:35,name:'Escova Secadora Alisadora Iônica',cat:'beleza',img:'./img15.png',rank:27,grad:'grad-beleza',tag:'#beleza',isNew:true,prompt:'ionic hot air brush styler pink and rose gold packaging'},
+  {id:35,name:'Escova Secadora Alisadora Iônica',cat:'beleza',img:'./img15.png',rank:27,grad:'grad-beleza',tag:'#beleza',prompt:'ionic hot air brush styler pink and rose gold packaging'},
   {id:31,name:'Bolsa Transversal Utilitária',cat:'moda',img:'./img31.png',rank:28,grad:'grad-moda',tag:'#moda',prompt:'utility crossbody bag nylon black multiple pockets'},
   {id:22,name:'Ômega 3 EPA DHA Premium',cat:'saude',img:'./img22.png',rank:29,grad:'grad-saude',tag:'#saude',prompt:'omega 3 supplement amber glass bottle 60 softgels'},
-  {id:4,name:'Óculos Fotocromático Retrô',cat:'moda',img:'./img4.png',rank:30,grad:'grad-moda',tag:'#moda',prompt:'photochromic retro round sunglasses tortoise frame'},
-  {id:24,name:'Teclado Mecânico RGB',cat:'tech',img:'./img24.png',rank:31,grad:'grad-tech',tag:'#tech',prompt:'mechanical keyboard RGB backlit compact 65 percent layout'},
-  {id:9,name:'Fone Bluetooth Open-Ear',cat:'tech',img:'./img9.png',rank:32,grad:'grad-tech',tag:'#tech',prompt:'open-ear clip bluetooth earphones matte black compact case'},
-  {id:15,name:'Base Líquida Full Cover 24h',cat:'beleza',img:'./img15.png',rank:33,grad:'grad-beleza',tag:'#beleza',prompt:'liquid foundation pump bottle beige packaging'},
-  {id:16,name:'Whey Zero Lactose 1kg',cat:'saude',img:'./img16.png',rank:34,grad:'grad-saude',tag:'#saude',prompt:'zero lactose whey protein 1kg white and blue bag'},
-  {id:18,name:'Mini Massageador de Pescoço',cat:'casa',img:'./img18.png',rank:35,grad:'grad-casa',tag:'#casa',prompt:'portable neck massager device black ergonomic design'},
-  {id:2,name:'Anel Inteligente Smart Ring',cat:'tech',img:'./img2.png',rank:36,grad:'grad-tech',tag:'#tech',prompt:'minimalist titanium smart ring black finish on display box'},
-  {id:8,name:'Tênis Corrida Carbon Plate',cat:'fitness',img:'./img8.png',rank:37,grad:'grad-fitness',tag:'#fitness',prompt:'performance running shoe with visible carbon plate sole neon accents'},
+  {id:24,name:'Teclado Mecânico RGB',cat:'tech',img:'./img24.png',rank:30,grad:'grad-tech',tag:'#tech',prompt:'mechanical keyboard RGB backlit compact 65 percent layout'},
+  {id:9,name:'Fone Bluetooth Open-Ear',cat:'tech',img:'./img9.png',rank:31,grad:'grad-tech',tag:'#tech',prompt:'open-ear clip bluetooth earphones matte black compact case'},
+  {id:15,name:'Base Líquida Full Cover 24h',cat:'beleza',img:'./img15.png',rank:32,grad:'grad-beleza',tag:'#beleza',prompt:'liquid foundation pump bottle beige packaging'},
+  {id:16,name:'Whey Zero Lactose 1kg',cat:'saude',img:'./img16.png',rank:33,grad:'grad-saude',tag:'#saude',prompt:'zero lactose whey protein 1kg white and blue bag'},
+  {id:18,name:'Mini Massageador de Pescoço',cat:'casa',img:'./img18.png',rank:34,grad:'grad-casa',tag:'#casa',prompt:'portable neck massager device black ergonomic design'},
+  {id:2,name:'Anel Inteligente Smart Ring',cat:'tech',img:'./img2.png',rank:35,grad:'grad-tech',tag:'#tech',prompt:'minimalist titanium smart ring black finish on display box'},
+  {id:8,name:'Tênis Corrida Carbon Plate',cat:'fitness',img:'./img8.png',rank:36,grad:'grad-fitness',tag:'#fitness',prompt:'performance running shoe with visible carbon plate sole neon accents'},
 ];
 
 const videos = [
-  {id:'15',title:'Anel de Safira',fmt:'review',img:'./img2.png',grad:'grad-tech',views:'224K',likes:'27.4K',dur:'0:10',fmtClass:'fmt-review',url:'https://www.tiktok.com/@gems_magic/video/7661344587549625631',hook:'Um anel pode substituir meu relógio?',reveal:'Depois de 7 dias usando 24h por dia...',cta:'Meu resultado completo e onde comprar'},
-  {id:'19',title:'Vale a pena o carregador magnético 3 em 1?',fmt:'review',img:'./img30.png',grad:'grad-tech',views:'1.4M',likes:'62K',dur:'0:11',fmtClass:'fmt-review',url:'https://www.tiktok.com/@jayko_art/video/7645716144719990030',hook:'Carrega celular, fone e relógio junto?',reveal:'Testei os 3 dispositivos ao mesmo tempo...',cta:'Minha opinião sincera no final'},
-  {id:'11',title:'Substitui todo meu skincare por isso e virou rotina',fmt:'ugc',img:'./img28.png',grad:'grad-beleza',views:'412K',likes:'75.6K',dur:'0:25',fmtClass:'fmt-ugc',url:'https://www.tiktok.com/@of.swgmia/video/7651982366956702997',hook:'Troquei 5 produtos por só 1 kit...',reveal:'Minha pele depois de 2 semanas usando...',cta:'Kit completo com desconto no link'},
-  {id:'5',title:'Conjunto feminino que virou obsessão: review completa',fmt:'ugc',img:'./img5.png',grad:'grad-moda',views:'7.3M',likes:'190K',dur:'0:38',fmtClass:'fmt-ugc',url:'https://vt.tiktok.com/ZSxtWRAeU/',hook:'Olha que perfeição desse conjunto',reveal:'Olha como ele é de perto',cta:'Clica no carrinho laranja'},
-  {id:'4',title:'Esse acessório brilha no escuro — DIY em 30 segundos',fmt:'tutorial',img:'./img4.png',grad:'grad-tech',views:'4M',likes:'202K',dur:'0:12',fmtClass:'fmt-tutorial',url:'https://vt.tiktok.com/ZSxtnV1CG/',hook:'Brilha no escuro de verdade?',reveal:'Mostrando o processo ao vivo',cta:'Tutorial completo no YouTube'},
-  {id:'17',title:'IA criou esse tênis e ele parece 100% real',fmt:'ai',img:'./img8.png',grad:'grad-fitness',views:'3.2M',likes:'397K',dur:'0:16',fmtClass:'fmt-ai',url:'https://www.tiktok.com/@shiftrobotics/video/7660971169134185742',hook:'Você não vai acreditar que isso é IA...',reveal:'Comparando com o produto de verdade...',cta:'Já disponível, corre no link'},
-  {id:'13',title:'Treino de 15 min viralizou, será que funciona mesmo?',fmt:'review',img:'./img29.png',grad:'grad-fitness',views:'4.6M',likes:'657K',dur:'0:11',fmtClass:'fmt-review',url:'https://www.tiktok.com/@raiccagutierrez08/video/7649898431665704212',hook:'Vi esse treino em todos os feeds...',reveal:'Testei por uma semana sem parar...',cta:'Kit de faixas com 20% off na bio'},
-  {id:'18',title:'Unboxing do kit skincare coreano que todo mundo tá usando',fmt:'unboxing',img:'./img28.png',grad:'grad-beleza',views:'9M',likes:'55K',dur:'0:24',fmtClass:'fmt-unboxing',url:'https://www.tiktok.com/@juliana.indicaa/video/7615441801658240277',hook:'Chegou o kit que tá em todo lugar...',reveal:'Abrindo os 5 passos com vocês...',cta:'Kit completo no link da bio'},
-  {id:'12',title:'Abri a caixa de tecnologia mais cara que já comprei esse mês',fmt:'unboxing',img:'./img30.png',grad:'grad-tech',views:'990K',likes:'74.8K',dur:'0:44',fmtClass:'fmt-unboxing',url:'https://www.tiktok.com/@mandyinrio/video/7643660370162289938',hook:'Gastei tudo que tinha nesse mês...',reveal:'Abrindo cada peça com vocês...',cta:'Link do carregador nos comentários'},
-  {id:'10',title:'Maquiagem 5 minutos — resultado profissional sem sair de casa',fmt:'tutorial',img:'./img10.png',grad:'grad-tech',views:'2.1M',likes:'189K',dur:'3:15',fmtClass:'fmt-tutorial',url:'https://www.tiktok.com/@bellaayar/video/7548853143132589319',hook:'5 minutos para transformar seu look...',reveal:'Base, contorno, olho — passo a passo...',cta:'Kit completo no link da bio'},
-  {id:'7',title:'Antes era assim... depois desse produto mudou tudo',fmt:'antes',img:'./img7.png',grad:'grad-beleza',views:'6.3M',likes:'780K',dur:'0:21',fmtClass:'fmt-antes',url:'https://www.tiktok.com',hook:'Isso era eu há 3 semanas atrás...',reveal:'Mostrando a transformação real...',cta:'Tem link direto nos comentários'},
-  {id:'16',title:'Antes eu tinha dor nas costas, depois desse colchonete não mais',fmt:'antes',img:'./img13.png',grad:'grad-casa',views:'1.1M',likes:'63.1K',dur:'3:53',fmtClass:'fmt-antes',url:'https://www.tiktok.com/@getadjustednow/video/7663112670731717919',hook:'3 meses sem dormir direito...',reveal:'Foi só trocar o colchonete...',cta:'Link com frete grátis na bio'},
-  {id:'1',title:'Testei esse sérum por 30 dias e minha pele nunca foi assim',fmt:'antes',img:'./img1.png',grad:'grad-beleza',views:'8M',likes:'385K',dur:'1:25',fmtClass:'fmt-antes',url:'https://vt.tiktok.com/ZSxtWR7HR/',hook:'Em quantos dias o sérum tira espinha?',reveal:'Apliquei o sérum todos os dias de manhã...',cta:'O link tá na bio com 30% off!'},
-  {id:'14',title:'Como aplicar blush certo em 10 segundos',fmt:'tutorial',img:'./img6.png',grad:'grad-beleza',views:'5.1M',likes:'607K',dur:'0:11',fmtClass:'fmt-tutorial',url:'https://www.tiktok.com/@carlaswan15/video/7636021547504782610',hook:'Você tá aplicando blush errado...',reveal:'O truque que ninguém te conta...',cta:'Produto usado no vídeo, link na bio'},
-  {id:'2',title:'Unboxing da caixa mais cara que já pedi no TikTok Shop',fmt:'unboxing',img:'./img2.png',grad:'grad-saude',views:'1.9M',likes:'87K',dur:'3:46',fmtClass:'fmt-unboxing',url:'https://vt.tiktok.com/ZSxtn3A2k/',hook:'Gastei R$600 e não sei se valeu...',reveal:'Abrindo item por item ao vivo...',cta:'Link nos comentários — corra!'},
-  {id:'3',title:'Review honesta: comprei por impulso e me arrependi?',fmt:'review',img:'./img3.png',grad:'grad-fitness',views:'24.6M',likes:'770K',dur:'1:29',fmtClass:'fmt-review',url:'https://vt.tiktok.com/ZSxtnSVKn/',hook:'Será que funciona de verdade?',reveal:'Testando produto sem filtro',cta:'Minha conclusão final e onde comprar'},
-  {id:'9',title:'Vale mesmo? Produto viralizou no TikTok e testei',fmt:'review',img:'./img9.png',grad:'grad-fitness',views:'720K',likes:'58K',dur:'1:45',fmtClass:'fmt-review',url:'tiktok.com/@alexiasabrinaf/video/7512045250714602808',hook:'Vi esse produto no feed 10 vezes...',reveal:'Testei e vou contar a verdade...',cta:'Spoiler: link na bio com frete grátis'},
-  {id:'8',title:'Unbox da coleção limitada que esgotou em 2 horas',fmt:'unboxing',img:'./img8.png',grad:'grad-saude',views:'1.9M',likes:'167K',dur:'0:55',fmtClass:'fmt-unboxing',url:'https://www.tiktok.com',hook:'Consegui uma das últimas unidades...',reveal:'Abrindo tudo ao vivo com vocês...',cta:'Avisa quando voltar ao estoque!'},
-  {id:'6',title:'Esse cortador de grama não parece real — e foi IA que fez',fmt:'ai',img:'./img6.png',grad:'grad-casa',views:'13M',likes:'144K',dur:'0:36',fmtClass:'fmt-ai',url:'https://vt.tiktok.com/ZSxtWmp3t/',hook:'Você está brincando comigo?',reveal:'Esse cortador de grama está bombando',cta:'Os primeiros 100 clientes ganham 50% de desconto'},
-
-  {id:'20',title:'Minha melhor compra no TikTok Shop até agora',fmt:'antes',img:'./img8.png',grad:'grad-fitness',views:'2.3M',likes:'133K',dur:'1:06',fmtClass:'fmt-antes',url:'https://vt.tiktok.com/ZS476249q/',hook:'Essa foi minha melhor compra no TikTok Shop até agora...',reveal:'Mostrando o antes e depois lavando o tênis dentro do saco...',cta:'Link do saco de lavar tênis na bio'},
-  {id:'21',title:'Antes e depois: testei essa máscara de cabelo',fmt:'antes',img:'./img33.png',grad:'grad-beleza',views:'297K',likes:'9K',dur:'0:20',fmtClass:'fmt-antes',url:'https://vt.tiktok.com/ZS47jEaUA/',hook:'Meu cabelo antes de usar essa máscara...',reveal:'Depois de uma aplicação, olha a diferença...',cta:'Máscara de cabelo linkada na bio'},
-  {id:'22',title:'Testei esse pincel de maquiagem viral',fmt:'ugc',img:'./img6.png',grad:'grad-beleza',views:'1.5M',likes:'36K',dur:'0:18',fmtClass:'fmt-ugc',url:'https://vt.tiktok.com/ZS476pNdj/',hook:'Esse pincel de maquiagem tá em todo lugar...',reveal:'Testando na base e no pó...',cta:'Pincel disponível no link da bio'},
-  {id:'23',title:'Ventilador de teto criado com IA parece real',fmt:'ai',img:'./img27.png',grad:'grad-casa',views:'34M',likes:'1.3M',dur:'0:14',fmtClass:'fmt-ai',url:'https://vt.tiktok.com/ZS476CPgJ/',hook:'Você não vai acreditar que isso é IA...',reveal:'Comparando com o ventilador real...',cta:'Já disponível, corre no link'},
-  {id:'24',title:'IA criou esse sapato de salto e ele parece 100% real',fmt:'ai',img:'./img19.png',grad:'grad-moda',views:'24.7M',likes:'430K',dur:'0:15',fmtClass:'fmt-ai',url:'https://vt.tiktok.com/ZS476XGhD/',hook:'Esse sapato de salto alto com dedos é real?',reveal:'Comparando com o produto de verdade...',cta:'Link do sapato na bio'},
-  {id:'25',title:'Antes e depois: essa tinta de cabelo mudou tudo',fmt:'antes',img:'./img35.png',grad:'grad-beleza',views:'19M',likes:'237K',dur:'0:26',fmtClass:'fmt-antes',url:'https://vt.tiktok.com/ZS476VJ5n/',hook:'Meu cabelo antes dessa tinta...',reveal:'Depois de uma aplicação, olha a transformação...',cta:'Tinta de cabelo com desconto na bio'},
-  {id:'26',title:'Review da garrafa térmica do Homem-Aranha',fmt:'review',img:'./img13.png',grad:'grad-fitness',views:'12.6M',likes:'80K',dur:'0:11',fmtClass:'fmt-review',url:'https://vt.tiktok.com/ZS476gHhw/',hook:'Achei essa garrafa térmica do Homem-Aranha...',reveal:'Testando se mantém a temperatura...',cta:'Garrafa disponível no link da bio'},
   {id:'27',title:'Essa caneta chique viralizou no TikTok Shop',fmt:'review',img:'./img24.png',grad:'grad-tech',views:'2.7M',likes:'38.9K',dur:'0:25',fmtClass:'fmt-review',url:'https://vt.tiktok.com/ZS476GRtN/',hook:'Essa caneta parece cara de longe...',reveal:'Mostrando o design e a escrita de perto...',cta:'Caneta disponível no link da bio'},
-  {id:'28',title:'Unboxing: coisas para casa que pedi na Amazon',fmt:'unboxing',img:'./img11.png',grad:'grad-casa',views:'480K',likes:'121K',dur:'2:40',fmtClass:'fmt-unboxing',url:'https://vt.tiktok.com/ZS47YsjCT/',hook:'',reveal:'',cta:''},
+  {id:'17',title:'IA criou esse tênis e ele parece 100% real',fmt:'ai',img:'./img8.png',grad:'grad-fitness',views:'3.2M',likes:'397K',dur:'0:16',fmtClass:'fmt-ai',url:'https://www.tiktok.com/@shiftrobotics/video/7660971169134185742',hook:'Você não vai acreditar que isso é IA...',reveal:'Comparando com o produto de verdade...',cta:'Já disponível, corre no link'},
+  {id:'7',title:'Antes era assim... depois desse produto mudou tudo',fmt:'antes',img:'./img7.png',grad:'grad-beleza',views:'6.3M',likes:'780K',dur:'0:21',fmtClass:'fmt-antes',url:'https://www.tiktok.com',hook:'Isso era eu há 3 semanas atrás...',reveal:'Mostrando a transformação real...',cta:'Tem link direto nos comentários'},
+  {id:'3',title:'Review honesta: comprei por impulso e me arrependi?',fmt:'review',img:'./img3.png',grad:'grad-fitness',views:'24.6M',likes:'770K',dur:'1:29',fmtClass:'fmt-review',url:'https://vt.tiktok.com/ZSxtnSVKn/',hook:'Será que funciona de verdade?',reveal:'Testando produto sem filtro',cta:'Minha conclusão final e onde comprar'},
+  {id:'26',title:'Review da garrafa térmica do Homem-Aranha',fmt:'review',img:'./img13.png',grad:'grad-fitness',views:'12.6M',likes:'80K',dur:'0:11',fmtClass:'fmt-review',url:'https://vt.tiktok.com/ZS476gHhw/',hook:'Achei essa garrafa térmica do Homem-Aranha...',reveal:'Testando se mantém a temperatura...',cta:'Garrafa disponível no link da bio'},
+  {id:'16',title:'Antes eu tinha dor nas costas, depois desse colchonete não mais',fmt:'antes',img:'./img13.png',grad:'grad-casa',views:'1.1M',likes:'63.1K',dur:'3:53',fmtClass:'fmt-antes',url:'https://www.tiktok.com/@getadjustednow/video/7663112670731717919',hook:'3 meses sem dormir direito...',reveal:'Foi só trocar o colchonete...',cta:'Link com frete grátis na bio'},
+  {id:'23',title:'Ventilador de teto criado com IA parece real',fmt:'ai',img:'./img27.png',grad:'grad-casa',views:'34M',likes:'1.3M',dur:'0:14',fmtClass:'fmt-ai',url:'https://vt.tiktok.com/ZS476CPgJ/',hook:'Você não vai acreditar que isso é IA...',reveal:'Comparando com o ventilador real...',cta:'Já disponível, corre no link'},
+  {id:'13',title:'Treino de 15 min viralizou, será que funciona mesmo?',fmt:'review',img:'./img29.png',grad:'grad-fitness',views:'4.6M',likes:'657K',dur:'0:11',fmtClass:'fmt-review',url:'https://www.tiktok.com/@raiccagutierrez08/video/7649898431665704212',hook:'Vi esse treino em todos os feeds...',reveal:'Testei por uma semana sem parar...',cta:'Kit de faixas com 20% off na bio'},
+  {id:'20',title:'Minha melhor compra no TikTok Shop até agora',fmt:'antes',img:'./img8.png',grad:'grad-fitness',views:'2.3M',likes:'133K',dur:'1:06',fmtClass:'fmt-antes',url:'https://vt.tiktok.com/ZS476249q/',hook:'Essa foi minha melhor compra no TikTok Shop até agora...',reveal:'Mostrando o antes e depois lavando o tênis dentro do saco...',cta:'Link do saco de lavar tênis na bio'},
+  {id:'1',title:'Testei esse sérum por 30 dias e minha pele nunca foi assim',fmt:'antes',img:'./img1.png',grad:'grad-beleza',views:'8M',likes:'385K',dur:'1:25',fmtClass:'fmt-antes',url:'https://vt.tiktok.com/ZSxtWR7HR/',hook:'Em quantos dias o sérum tira espinha?',reveal:'Apliquei o sérum todos os dias de manhã...',cta:'O link tá na bio com 30% off!'},
+  {id:'9',title:'Vale mesmo? Produto viralizou no TikTok e testei',fmt:'review',img:'./img9.png',grad:'grad-fitness',views:'720K',likes:'58K',dur:'1:45',fmtClass:'fmt-review',url:'tiktok.com/@alexiasabrinaf/video/7512045250714602808',hook:'Vi esse produto no feed 10 vezes...',reveal:'Testei e vou contar a verdade...',cta:'Spoiler: link na bio com frete grátis'},
+  {id:'10',title:'Maquiagem 5 minutos — resultado profissional sem sair de casa',fmt:'tutorial',img:'./img10.png',grad:'grad-tech',views:'2.1M',likes:'189K',dur:'3:15',fmtClass:'fmt-tutorial',url:'https://www.tiktok.com/@bellaayar/video/7548853143132589319',hook:'5 minutos para transformar seu look...',reveal:'Base, contorno, olho — passo a passo...',cta:'Kit completo no link da bio'},
   {id:'29',title:'Tudo que comprei no TikTok Shop: o que valeu a pena',fmt:'review',img:'./img10.png',grad:'grad-moda',views:'670K',likes:'74K',dur:'3:34',fmtClass:'fmt-review',url:'https://vt.tiktok.com/ZS472hoRh/',hook:'Tudo que comprei no TikTok Shop: o que foi bom e o que foi ruim.',reveal:'Mostra vários produtos e dá uma opinião sincera sobre cada um.',cta:'Sem CTA direto, mas abre espaço para uma parte 2.'},
-  {id:'30',title:'Recebidos acumulados',fmt:'ugc',img:'./img31.png',grad:'grad-moda',views:'175.7K',likes:'35.8K',dur:'6:00',fmtClass:'fmt-ugc',url:'https://vt.tiktok.com/ZS4727qeo/',hook:'Mostrando a quantidade de recebidos acumulados...',reveal:'Apresentação rápida das caixas e produtos, um por um...',cta:'Encerramento após mostrar todos os recebidos'},
+  {id:'2',title:'Unboxing da caixa mais cara que já pedi no TikTok Shop',fmt:'unboxing',img:'./img2.png',grad:'grad-saude',views:'1.9M',likes:'87K',dur:'3:46',fmtClass:'fmt-unboxing',url:'https://vt.tiktok.com/ZSxtn3A2k/',hook:'Gastei R$600 e não sei se valeu...',reveal:'Abrindo item por item ao vivo...',cta:'Link nos comentários — corra!'},
+  {id:'25',title:'Antes e depois: essa tinta de cabelo mudou tudo',fmt:'antes',img:'./img35.png',grad:'grad-beleza',views:'19M',likes:'237K',dur:'0:26',fmtClass:'fmt-antes',url:'https://vt.tiktok.com/ZS476VJ5n/',hook:'Meu cabelo antes dessa tinta...',reveal:'Depois de uma aplicação, olha a transformação...',cta:'Tinta de cabelo com desconto na bio'},
+  {id:'21',title:'Antes e depois: testei essa máscara de cabelo',fmt:'antes',img:'./img33.png',grad:'grad-beleza',views:'297K',likes:'9K',dur:'0:20',fmtClass:'fmt-antes',url:'https://vt.tiktok.com/ZS47jEaUA/',hook:'Meu cabelo antes de usar essa máscara...',reveal:'Depois de uma aplicação, olha a diferença...',cta:'Máscara de cabelo linkada na bio'},
   {id:'31',title:'Voltei de viagem e chegou um monte de caixa',fmt:'unboxing',img:'./img32.png',grad:'grad-casa',views:'3M',likes:'540K',dur:'1:26',fmtClass:'fmt-unboxing',url:'https://vt.tiktok.com/ZS472wArR/',hook:'Voltei de viagem e as marcas mandaram um monte de caixas...',reveal:'Abrindo pacote por pacote com vocês...',cta:'Fala nos comentários qual quer ver primeiro'},
+  {id:'19',title:'Vale a pena o carregador magnético 3 em 1?',fmt:'review',img:'./img30.png',grad:'grad-tech',views:'1.4M',likes:'62K',dur:'0:11',fmtClass:'fmt-review',url:'https://www.tiktok.com/@jayko_art/video/7645716144719990030',hook:'Carrega celular, fone e relógio junto?',reveal:'Testei os 3 dispositivos ao mesmo tempo...',cta:'Minha opinião sincera no final'},
+  {id:'14',title:'Como aplicar blush certo em 10 segundos',fmt:'tutorial',img:'./img6.png',grad:'grad-beleza',views:'5.1M',likes:'607K',dur:'0:11',fmtClass:'fmt-tutorial',url:'https://www.tiktok.com/@carlaswan15/video/7636021547504782610',hook:'Você tá aplicando blush errado...',reveal:'O truque que ninguém te conta...',cta:'Produto usado no vídeo, link na bio'},
+  {id:'6',title:'Esse cortador de grama não parece real — e foi IA que fez',fmt:'ai',img:'./img6.png',grad:'grad-casa',views:'13M',likes:'144K',dur:'0:36',fmtClass:'fmt-ai',url:'https://vt.tiktok.com/ZSxtWmp3t/',hook:'Você está brincando comigo?',reveal:'Esse cortador de grama está bombando',cta:'Os primeiros 100 clientes ganham 50% de desconto'},
+  {id:'11',title:'Substitui todo meu skincare por isso e virou rotina',fmt:'ugc',img:'./img28.png',grad:'grad-beleza',views:'412K',likes:'75.6K',dur:'0:25',fmtClass:'fmt-ugc',url:'https://www.tiktok.com/@of.swgmia/video/7651982366956702997',hook:'Troquei 5 produtos por só 1 kit...',reveal:'Minha pele depois de 2 semanas usando...',cta:'Kit completo com desconto no link'},
+  {id:'8',title:'Unbox da coleção limitada que esgotou em 2 horas',fmt:'unboxing',img:'./img8.png',grad:'grad-saude',views:'1.9M',likes:'167K',dur:'0:55',fmtClass:'fmt-unboxing',url:'https://www.tiktok.com',hook:'Consegui uma das últimas unidades...',reveal:'Abrindo tudo ao vivo com vocês...',cta:'Avisa quando voltar ao estoque!'},
+  {id:'22',title:'Testei esse pincel de maquiagem viral',fmt:'ugc',img:'./img6.png',grad:'grad-beleza',views:'1.5M',likes:'36K',dur:'0:18',fmtClass:'fmt-ugc',url:'https://vt.tiktok.com/ZS476pNdj/',hook:'Esse pincel de maquiagem tá em todo lugar...',reveal:'Testando na base e no pó...',cta:'Pincel disponível no link da bio'},
+  {id:'5',title:'Conjunto feminino que virou obsessão: review completa',fmt:'ugc',img:'./img5.png',grad:'grad-moda',views:'7.3M',likes:'190K',dur:'0:38',fmtClass:'fmt-ugc',url:'https://vt.tiktok.com/ZSxtWRAeU/',hook:'Olha que perfeição desse conjunto',reveal:'Olha como ele é de perto',cta:'Clica no carrinho laranja'},
+  {id:'30',title:'Recebidos acumulados',fmt:'ugc',img:'./img31.png',grad:'grad-moda',views:'175.7K',likes:'35.8K',dur:'6:00',fmtClass:'fmt-ugc',url:'https://vt.tiktok.com/ZS4727qeo/',hook:'Mostrando a quantidade de recebidos acumulados...',reveal:'Apresentação rápida das caixas e produtos, um por um...',cta:'Encerramento após mostrar todos os recebidos'},
+  {id:'4',title:'Esse acessório brilha no escuro — DIY em 30 segundos',fmt:'tutorial',img:'./img4.png',grad:'grad-tech',views:'4M',likes:'202K',dur:'0:12',fmtClass:'fmt-tutorial',url:'https://vt.tiktok.com/ZSxtnV1CG/',hook:'Brilha no escuro de verdade?',reveal:'Mostrando o processo ao vivo',cta:'Tutorial completo no YouTube'},
+  {id:'28',title:'Unboxing: coisas para casa que pedi na Amazon',fmt:'unboxing',img:'./img11.png',grad:'grad-casa',views:'480K',likes:'121K',dur:'2:40',fmtClass:'fmt-unboxing',url:'https://vt.tiktok.com/ZS47YsjCT/',hook:'',reveal:'',cta:''},
   {id:'32',title:'Unboxing de produtos Apple',fmt:'unboxing',img:'./img14.png',grad:'grad-tech',views:'1.1M',likes:'189K',dur:'3:12',fmtClass:'fmt-unboxing',url:'https://vt.tiktok.com/ZS47jD68E/',hook:'Chegaram os produtos Apple que eu pedi...',reveal:'Abrindo cada um e mostrando os detalhes...',cta:'Qual produto Apple você quer ver primeiro?'},
+  {id:'12',title:'Abri a caixa de tecnologia mais cara que já comprei esse mês',fmt:'unboxing',img:'./img30.png',grad:'grad-tech',views:'990K',likes:'74.8K',dur:'0:44',fmtClass:'fmt-unboxing',url:'https://www.tiktok.com/@mandyinrio/video/7643660370162289938',hook:'Gastei tudo que tinha nesse mês...',reveal:'Abrindo cada peça com vocês...',cta:'Link do carregador nos comentários'},
+  {id:'24',title:'IA criou esse sapato de salto e ele parece 100% real',fmt:'ai',img:'./img19.png',grad:'grad-moda',views:'24.7M',likes:'430K',dur:'0:15',fmtClass:'fmt-ai',url:'https://vt.tiktok.com/ZS476XGhD/',hook:'Esse sapato de salto alto com dedos é real?',reveal:'Comparando com o produto de verdade...',cta:'Link do sapato na bio'},
+  {id:'15',title:'Anel de Safira',fmt:'review',img:'./img2.png',grad:'grad-tech',views:'224K',likes:'27.4K',dur:'0:10',fmtClass:'fmt-review',url:'https://www.tiktok.com/@gems_magic/video/7661344587549625631',hook:'Um anel pode substituir meu relógio?',reveal:'Depois de 7 dias usando 24h por dia...',cta:'Meu resultado completo e onde comprar'},
+  {id:'18',title:'Unboxing do kit skincare coreano que todo mundo tá usando',fmt:'unboxing',img:'./img28.png',grad:'grad-beleza',views:'9M',likes:'55K',dur:'0:24',fmtClass:'fmt-unboxing',url:'https://www.tiktok.com/@juliana.indicaa/video/7615441801658240277',hook:'Chegou o kit que tá em todo lugar...',reveal:'Abrindo os 5 passos com vocês...',cta:'Kit completo no link da bio'},
 ];
 
 const avatars = [
@@ -312,6 +310,54 @@ function productCard(p, selectable, i=0, clickFn='selectStudioProduct'){
 
 /* ===== RENDERS ===== */
 function renderProducts(){document.getElementById('product-grid').innerHTML=allProducts().map((p,i)=>productCard(p,false,i)).join('');}
+
+/* ===== MINING STATS (calculado a partir da lista de produtos/vídeos) ===== */
+function parseViews(str){
+  if(!str) return 0;
+  const n=parseFloat(str);
+  if(str.includes('M')) return n*1000000;
+  if(str.includes('K')) return n*1000;
+  return n;
+}
+function formatViews(n){
+  if(n>=1000000) return (n/1000000).toFixed(1).replace(/\.0$/,'')+'M';
+  if(n>=1000) return (n/1000).toFixed(1).replace(/\.0$/,'')+'K';
+  return String(n);
+}
+const catLabels={beleza:'Beleza',saude:'Saúde',fitness:'Fitness',moda:'Moda',casa:'Casa',tech:'Tech'};
+function renderMiningStats(){
+  const bar=document.getElementById('stats-bar');
+  if(!bar) return;
+
+  const total=products.length;
+  const novos=products.filter(p=>p.isNew).length;
+
+  const catCount={};
+  products.forEach(p=>{catCount[p.cat]=(catCount[p.cat]||0)+1;});
+  const catQtd=Object.keys(catCount).length;
+  const catLider=Object.entries(catCount).sort((a,b)=>b[1]-a[1])[0];
+  const catLiderLabel=catLider?catLabels[catLider[0]]||catLider[0]:'—';
+
+  const viralCount=videos.length;
+  const maxViews=videos.reduce((max,v)=>Math.max(max,parseViews(v.views)),0);
+
+  bar.innerHTML=`
+    <div class="stat-card">
+      <div class="stat-value">${total}</div>
+      <div class="stat-label">Produtos rastreados</div>
+      <div class="stat-delta">↑ ${novos} novos esta semana</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="background:linear-gradient(90deg,#00e5b3,#4facfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent">${catQtd}</div>
+      <div class="stat-label">Categorias</div>
+      <div class="stat-delta">${catLiderLabel} lidera</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="background:linear-gradient(90deg,#f5c542,#ff6b8a);-webkit-background-clip:text;-webkit-text-fill-color:transparent">${viralCount}</div>
+      <div class="stat-label">Vídeos virais</div>
+      <div class="stat-delta">↑ ${formatViews(maxViews)} views líder</div>
+    </div>`;
+}
 
 function parseViewsCount(str){
   if(!str)return 0;
@@ -1003,6 +1049,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAddModal();});
   showSkeletons('video-grid',6);
   showSkeletons('studio-product-grid',8);
   showSkeletons('vid-product-grid',8);
+  renderMiningStats();
   setTimeout(()=>{
     renderProducts();
     renderVideos();
