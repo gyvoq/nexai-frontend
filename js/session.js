@@ -370,15 +370,21 @@ const Session = (() => {
     // Título
     const title = document.createElement('div');
     title.className = 'act-title';
+    title.id = 'act-title';
     title.textContent = 'Ativar Licença';
 
     const sub = document.createElement('div');
     sub.className = 'act-sub';
+    sub.id = 'act-sub';
     sub.textContent = 'Insira seu código de ativação de 5 dígitos para acessar o painel.';
 
-    // Inputs (5 dígitos)
+    const field = document.createElement('div');
+    field.className = 'act-field';
+    field.id = 'act-field';
+
     const inputsWrap = document.createElement('div');
     inputsWrap.className = 'act-inputs';
+    inputsWrap.id = 'act-inputs';
     inputsWrap.setAttribute('role', 'group');
     inputsWrap.setAttribute('aria-label', 'Código de ativação');
 
@@ -388,56 +394,66 @@ const Session = (() => {
       inp.className = 'act-digit';
       inp.id = `d${i}`;
       inp.maxLength = 1;
-      inp.autocomplete = 'off';
+      inp.autocomplete = i === 0 ? 'one-time-code' : 'off';
       inp.spellcheck = false;
       inp.inputMode = 'text';
+      inp.style.setProperty('--i', i);
       inp.setAttribute('aria-label', `Dígito ${i + 1} de 5`);
       inp.setAttribute('placeholder', '·');
       inputsWrap.appendChild(inp);
       digits.push(inp);
     }
 
-    // Mensagens de feedback — textContent apenas, nunca innerHTML com input
-    const errorEl = document.createElement('div');
-    errorEl.className = 'act-error-msg';
-    errorEl.id = 'act-error';
-    errorEl.setAttribute('role', 'alert');
-    errorEl.setAttribute('aria-live', 'polite');
+    const track = document.createElement('div');
+    track.className = 'act-track';
+    const trackFill = document.createElement('i');
+    trackFill.id = 'act-fill';
+    track.appendChild(trackFill);
 
-    const successEl = document.createElement('div');
-    successEl.className = 'act-success-msg';
-    successEl.id = 'act-success';
-    successEl.setAttribute('aria-live', 'polite');
+    const bloom = document.createElement('div');
+    bloom.className = 'act-bloom';
+
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+    const seal = document.createElement('div');
+    seal.className = 'act-seal';
+    const disc = document.createElement('div');
+    disc.className = 'act-seal-disc';
+    const sealSvg = document.createElementNS(SVG_NS, 'svg');
+    sealSvg.setAttribute('viewBox', '0 0 32 32');
+    const sealPath = document.createElementNS(SVG_NS, 'path');
+    sealPath.setAttribute('d', 'M8 17 l6 6 l11 -14');
+    sealSvg.appendChild(sealPath);
+    seal.append(disc, sealSvg);
+
+    field.append(inputsWrap, track, bloom, seal);
+
+    const msgEl = document.createElement('div');
+    msgEl.className = 'act-msg';
+    msgEl.id = 'act-msg';
+    msgEl.setAttribute('role', 'status');
+    msgEl.setAttribute('aria-live', 'polite');
 
     // Botão
     const btn = document.createElement('button');
     btn.className = 'act-btn';
     btn.id = 'act-submit-btn';
     btn.type = 'button';
+    btn.disabled = true;
     btn.textContent = 'Ativar Agora';
     btn.addEventListener('click', () => window.submitActivation());
 
-    // Info de expiração
-    const expiryInfo = document.createElement('div');
-    expiryInfo.id = 'act-expiry-info';
-    expiryInfo.style.display = 'none';
-    const expiryText = document.createElement('div');
-    expiryText.className = 'act-expiry';
-    expiryText.textContent = 'Licença válida até ';
-    const expiryDate = document.createElement('span');
-    expiryDate.id = 'act-expiry-date';
-    expiryText.appendChild(expiryDate);
-    expiryInfo.appendChild(expiryText);
-
-    // Footer
     const footer = document.createElement('div');
     footer.className = 'act-footer';
     footer.textContent = 'Cada código é válido por até 1 mês após ativação';
 
-    card.append(logo, title, sub, inputsWrap, errorEl, successEl, btn, expiryInfo, footer);
+    const actions = document.createElement('div');
+    actions.className = 'act-actions';
+    actions.id = 'act-actions';
+    actions.append(btn, footer);
+
+    card.append(logo, title, sub, field, msgEl, actions);
     ov.appendChild(card);
 
-    // ── Eventos dos inputs ──
     _bindDigitEvents(digits);
 
     return ov;
@@ -459,6 +475,7 @@ const Session = (() => {
         this.classList.toggle('filled', !!this.value);
         if (this.value && i < 4) digits[i + 1].focus();
         clearMsg();
+        paintTrack();
       });
 
       inp.addEventListener('keydown', function (e) {
@@ -483,6 +500,7 @@ const Session = (() => {
         });
         digits[Math.min(clean.length, 4)].focus();
         clearMsg();
+        paintTrack();
       });
     });
 
@@ -505,80 +523,121 @@ const Session = (() => {
         return;
       }
 
-      const btn = document.getElementById('act-submit-btn');
-      if (btn) { btn.disabled = true; btn.textContent = 'Verificando...'; }
+      const btnEl = document.getElementById('act-submit-btn');
+      if (btnEl) { btnEl.disabled = true; btnEl.classList.add('busy'); btnEl.textContent = 'Verificando...'; }
+      digits.forEach(d => d.blur());
+      setMsg('Conferindo a licença…', false);
 
       try {
         const result = await activate(code);
-
-        // Sucesso
         saveSession(result.token, result.expiresAt);
-        digits.forEach(d => { d.classList.remove('error', 'filled'); d.classList.add('success'); });
+        if (btnEl) btnEl.classList.remove('busy');
 
-        const successEl = document.getElementById('act-success');
-        if (successEl) successEl.textContent = '✓ Licença ativada! Bem-vindo ao Nex AI.';
-        successEl && successEl.classList.add('visible');
+        accept();
+        attempts = 0;
 
-        const expiryDateEl = document.getElementById('act-expiry-date');
-        if (expiryDateEl) expiryDateEl.textContent = fmtDate(result.expiresAt);
-
-        const expiryInfo = document.getElementById('act-expiry-info');
-        if (expiryInfo) expiryInfo.style.display = '';
-
-        // Fecha overlay após animação
         setTimeout(() => {
           const ov = document.getElementById('activation-overlay');
           if (ov) { ov.classList.add('hiding'); setTimeout(() => ov.remove(), 600); }
-        }, 1400);
-
-        attempts = 0;
+        }, 2000);
 
       } catch (err) {
         attempts++;
+        if (btnEl) btnEl.classList.remove('busy');
 
         const isDeviceLock = /outro dispositivo/i.test(err.message || '');
+        let text;
 
-        // Bloqueio por dispositivo: mostra a mensagem real do servidor,
-        // não conta como tentativa de força bruta (a chave está correta).
         if (isDeviceLock) {
           attempts--;
-          showError(err.message);
+          text = err.message;
         } else if (attempts >= MAX_CLIENT_ATTEMPTS) {
-          // Após 5 falhas client-side, bloqueia por 60s localmente
           blockedUntil = Date.now() + 60_000;
-          showError('Muitas tentativas. Aguarde 60 segundos.');
+          text = 'Muitas tentativas. Aguarde 60 segundos.';
           attempts = 0;
         } else {
-          // Mensagem genérica — não revela se a chave existe ou não
-          showError('Código inválido. Verifique e tente novamente.');
+          text = 'Código inválido. Verifique e tente novamente.';
         }
 
-        digits.forEach(d => d.classList.add('error'));
-
-        setTimeout(() => {
-          digits.forEach(d => { d.classList.remove('error'); d.value = ''; d.classList.remove('filled'); });
-          const btn = document.getElementById('act-submit-btn');
-          if (btn) { btn.disabled = false; btn.textContent = 'Ativar Agora'; }
-          digits[0].focus();
-        }, 900);
+        deny(text);
       }
     };
 
+    function setMsg(text, isErr) {
+      const el = document.getElementById('act-msg');
+      if (!el) return;
+      el.className = 'act-msg' + (isErr ? ' err' : '');
+      el.textContent = '';
+      if (text) {
+        const s = document.createElement('span');
+        s.textContent = text;
+        el.appendChild(s);
+      }
+    }
+
     function clearMsg() {
-      const err = document.getElementById('act-error');
-      const suc = document.getElementById('act-success');
-      if (err) err.classList.remove('visible');
-      if (suc) suc.classList.remove('visible');
-      digits.forEach(d => d.classList.remove('error', 'success'));
+      setMsg('', false);
     }
 
     function showError(msg) {
-      const el = document.getElementById('act-error');
-      if (el) {
-        // textContent — nunca innerHTML com msg de erro (poderia conter input do usuário)
-        el.textContent = msg;
-        el.classList.add('visible');
-      }
+      setMsg(msg, true);
+    }
+
+    function paintTrack() {
+      const n = digits.filter(d => d.value).length;
+      const fillEl = document.getElementById('act-fill');
+      if (fillEl) fillEl.style.transform = `scaleX(${n / 5})`;
+      const btnEl = document.getElementById('act-submit-btn');
+      if (btnEl) btnEl.disabled = n < 5;
+    }
+
+    function accept() {
+      setMsg('', false);
+      const field = document.getElementById('act-field');
+      const card = document.querySelector('.act-card');
+      if (field) field.classList.add('win');
+
+      setTimeout(() => {
+        if (field) field.classList.add('merge');
+        if (card) card.classList.add('done');
+        const t = document.getElementById('act-title');
+        const s = document.getElementById('act-sub');
+        if (t) t.textContent = 'Licença ativada';
+        if (s) s.textContent = 'Tudo pronto. Bem-vindo ao Nex AI.';
+      }, 580);
+    }
+
+    function deny(text) {
+      const field = document.getElementById('act-field');
+      const inputs = document.getElementById('act-inputs');
+      const card = document.querySelector('.act-card');
+      const btnEl = document.getElementById('act-submit-btn');
+      const fillEl = document.getElementById('act-fill');
+
+      if (btnEl) btnEl.textContent = 'Ativar Agora';
+      if (field) field.classList.add('deny');
+      if (card) card.classList.add('denied');
+      setMsg(text, true);
+
+      setTimeout(() => { if (inputs) inputs.classList.add('shake'); }, 180);
+      setTimeout(() => { if (inputs) inputs.classList.remove('shake'); }, 640);
+
+      setTimeout(() => {
+        digits.forEach(d => { d.value = ''; d.classList.remove('filled'); });
+        if (field) { field.classList.add('release'); field.classList.remove('deny'); }
+        if (card) card.classList.remove('denied');
+        if (fillEl) {
+          fillEl.style.transition = 'none';
+          fillEl.style.transform = 'scaleX(0)';
+          requestAnimationFrame(() => { fillEl.style.transition = ''; });
+        }
+      }, 1180);
+
+      setTimeout(() => {
+        if (field) field.classList.remove('release');
+        if (btnEl) btnEl.disabled = true;
+        digits[0].focus();
+      }, 1700);
     }
   }
 
