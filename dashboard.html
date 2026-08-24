@@ -630,17 +630,17 @@
         </div>
       </div>
       <div class="settings-grid">
-        <div class="settings-card">
+        <div class="settings-card settings-desktop-only">
           <div class="settings-title"><div class="settings-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>Geração</div>
           <div class="settings-row"><div><div class="settings-row-label">Idioma dos prompts</div></div><select class="form-select"><option selected>Inglês (recomendado)</option><option>Português</option><option>Espanhol</option></select></div>
           <div class="settings-row"><div><div class="settings-row-label">Qualidade padrão</div></div><select class="form-select"><option>Draft</option><option>HD</option><option selected>Ultra</option></select></div>
           <div class="settings-row"><div><div class="settings-row-label">Auto-copiar ao gerar</div><div class="settings-row-desc">Copiar prompt automaticamente</div></div><div class="toggle-wrap"><div class="toggle" id="toggle-autocopy" tabindex="0" role="switch" aria-checked="false" onclick="toggleSwitch(this)" onkeydown="toggleSwitchKey(event,this)"></div></div></div>
         </div>
-        <div class="settings-card">
+        <div class="settings-card settings-desktop-only">
           <div class="settings-title"><div class="settings-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>Tema</div>
           <div class="theme-grid"><div class="theme-opt theme-dark selected" onclick="selectTheme(this)"><span>Dark</span></div><div class="theme-opt theme-light" onclick="selectTheme(this)"><span>Light</span></div><div class="theme-opt theme-futuristic" onclick="selectTheme(this)"><span>Futurista</span></div></div>
         </div>
-        <div class="settings-card">
+        <div class="settings-card settings-desktop-only">
           <div class="settings-title"><div class="settings-icon"><svg viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.29"/></svg></div>Exportar Dados</div>
           <div class="settings-row"><div><div class="settings-row-label">Prompts gerados</div><div class="settings-row-desc">Exportar histórico</div></div></div>
           <div class="export-row">
@@ -663,7 +663,7 @@
           <input type="file" id="backup-file-input" accept="application/json,.json" style="display:none" onchange="importBackup(event)">
           <div class="settings-row-desc" id="backup-status" style="margin-top:8px;min-height:14px"></div>
         </div>
-        <div class="settings-card">
+        <div class="settings-card settings-desktop-only">
           <div class="settings-title"><div class="settings-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>Atalhos de Teclado</div>
           <div class="shortcut-grid">
             <div class="shortcut-item">Copiar prompt <span class="shortcut-key">C</span></div>
