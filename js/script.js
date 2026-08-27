@@ -1858,19 +1858,44 @@ function saveNewProduct() {
     prompt: promptVisual,
     custom: true
   };
-  customProducts.push(newProd);
+  customProducts.unshift(newProd);
   safeSet(PRODUCTS_KEY, customProducts);
   document.getElementById("np-nome").value = "";
   document.getElementById("np-prompt").value = "";
   document.getElementById("np-counter").textContent = "0 / 200";
   closeAddModal();
+  renderProducts();
+  reapplyMiningFilter();
   renderStudioProducts();
   renderVidProducts();
+  scrollToFirstProduct();
   showToast(`"${nome}" adicionado com sucesso!`);
 }
 
+/* Produtos personalizados aparecem primeiro, do mais novo para o mais antigo */
 function allProducts() {
-  return [ ...products, ...customProducts ];
+  return [ ...customProducts, ...products ];
+}
+
+/* Reaplica o filtro de categoria ativo depois de redesenhar a grade de mineracao */
+function reapplyMiningFilter() {
+  const chip = document.querySelector("#mining-filters .filter-chip.active");
+  if (!chip) return;
+  const val = chip.dataset.cat;
+  document.querySelectorAll("#product-grid .product-card").forEach(card => {
+    card.style.display = (val === "all" || card.dataset.cat === val) ? "" : "none";
+  });
+}
+
+/* Leva o usuario ate o produto recem-adicionado, que agora fica no topo da grade */
+function scrollToFirstProduct() {
+  const grid = document.getElementById("studio-product-grid") || document.getElementById("vid-product-grid");
+  const first = grid && grid.querySelector(".product-card");
+  if (first && typeof first.scrollIntoView === "function") {
+    first.scrollIntoView({ behavior: "smooth", block: "center" });
+    first.classList.add("just-added");
+    setTimeout(() => first.classList.remove("just-added"), 1600);
+  }
 }
 
 function productCard(p, selectable, i = 0, clickFn = "selectStudioProduct") {
@@ -2767,23 +2792,105 @@ function showConfirm(msg, onConfirm) {
   });
 }
 
+/* ====== CARD EXPLICATIVO DO BACKUP ====== */
+function openBackupInfo() {
+  const m = document.getElementById("backup-info-modal");
+  if (m) m.classList.add("open");
+}
+
+function closeBackupInfo() {
+  const m = document.getElementById("backup-info-modal");
+  if (m) m.classList.remove("open");
+}
+
+/* ====== EXCLUIR TUDO (confirmacao digitando a palavra) ====== */
+const DELETE_ALL_WORD = "excluir";
+
+function openDeleteAllModal() {
+  const m = document.getElementById("delete-all-modal");
+  if (!m) return;
+  const input = document.getElementById("delete-all-input");
+  const hint = document.getElementById("delete-all-hint");
+  const btn = document.getElementById("delete-all-confirm");
+  if (input) { input.value = ""; input.classList.remove("match"); }
+  if (hint) { hint.textContent = ""; hint.classList.remove("match"); }
+  if (btn) btn.disabled = true;
+  m.classList.add("open");
+  setTimeout(() => input && input.focus(), 120);
+}
+
+function closeDeleteAllModal() {
+  const m = document.getElementById("delete-all-modal");
+  if (m) m.classList.remove("open");
+}
+
+function isDeleteAllConfirmed() {
+  const input = document.getElementById("delete-all-input");
+  return !!input && input.value.trim().toLowerCase() === DELETE_ALL_WORD;
+}
+
+function validateDeleteAll() {
+  const input = document.getElementById("delete-all-input");
+  const hint = document.getElementById("delete-all-hint");
+  const btn = document.getElementById("delete-all-confirm");
+  if (!input) return;
+  const typed = input.value.trim();
+  const ok = isDeleteAllConfirmed();
+  input.classList.toggle("match", ok);
+  if (btn) btn.disabled = !ok;
+  if (hint) {
+    hint.classList.toggle("match", ok);
+    if (ok) hint.textContent = "Confirmado. O botão está liberado.";
+    else if (!typed) hint.textContent = "";
+    else hint.textContent = 'Digite exatamente a palavra "excluir".';
+  }
+}
+
+function confirmDeleteAll() {
+  if (!isDeleteAllConfirmed()) {
+    showToast('Digite a palavra "excluir" para confirmar.');
+    const input = document.getElementById("delete-all-input");
+    if (input) input.focus();
+    return;
+  }
+  closeDeleteAllModal();
+  wipeAllData();
+  showToast("Tudo foi excluído.");
+}
+
+/* Apaga os dados do app. Nao mexe na sessao nem no aceite dos termos. */
+function wipeAllData() {
+  try {
+    localStorage.removeItem(FAV_KEY);
+    localStorage.removeItem(AVATARS_KEY);
+    localStorage.removeItem(PRODUCTS_KEY);
+    localStorage.removeItem(PROMPTS_KEY);
+  } catch (e) {}
+  favorites = {};
+  customAvatars = [];
+  customProducts = [];
+  promptHistory = [];
+  selectedStudioProduct = null;
+  selectedVidProduct = null;
+  selectedStudioAvatar = null;
+  selectedVidAvatar = null;
+  resetProductPagination("studio");
+  resetProductPagination("vid");
+  renderProducts();
+  reapplyMiningFilter();
+  renderVideos();
+  renderStudioProducts();
+  renderVidProducts();
+  renderAvatars("all");
+  if (typeof renderHistoryPanel === "function") renderHistoryPanel();
+  if (typeof updateHistNotif === "function") updateHistNotif();
+  const status = document.getElementById("backup-status");
+  if (status) status.textContent = "";
+}
+
 function clearAllData() {
   showConfirm("Isso vai remover favoritos, produtos e avatares personalizados. Continuar?", () => {
-    try {
-      localStorage.removeItem(FAV_KEY);
-      localStorage.removeItem(AVATARS_KEY);
-      localStorage.removeItem(PRODUCTS_KEY);
-      localStorage.removeItem(PROMPTS_KEY);
-    } catch (e) {}
-    favorites = {};
-    customAvatars = [];
-    customProducts = [];
-    promptHistory = [];
-    renderProducts();
-    renderVideos();
-    renderStudioProducts();
-    renderVidProducts();
-    renderAvatars("all");
+    wipeAllData();
     showToast("Dados removidos com sucesso!");
   });
 }
@@ -3055,7 +3162,21 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape") closeAddModal();
+  if (e.key === "Escape") {
+    closeAddModal();
+    closeBackupInfo();
+    closeDeleteAllModal();
+  }
+});
+
+/* Clicar fora do card fecha os modais de ajuda e de exclusao */
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("backup-info-modal")?.addEventListener("click", e => {
+    if (e.target === e.currentTarget) closeBackupInfo();
+  });
+  document.getElementById("delete-all-modal")?.addEventListener("click", e => {
+    if (e.target === e.currentTarget) closeDeleteAllModal();
+  });
 });
 
 let productPageResizeTimer = null;
