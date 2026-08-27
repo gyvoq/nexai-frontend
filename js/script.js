@@ -1957,27 +1957,60 @@ function renderVideos() {
 
 const productPageState = { studio: false, vid: false };
 
+/* Limite inicial de produtos: 20 no celular, 30 no PC */
+const PRODUCTS_LIMIT_MOBILE = 20;
+const PRODUCTS_LIMIT_DESKTOP = 30;
+const PRODUCTS_MOBILE_BREAKPOINT = 768;
+
 function getProductPageLimit() {
-  return window.innerWidth <= 768 ? 20 : 30;
+  return window.innerWidth <= PRODUCTS_MOBILE_BREAKPOINT ? PRODUCTS_LIMIT_MOBILE : PRODUCTS_LIMIT_DESKTOP;
 }
 
 function applyProductPagination(which) {
   const gridId = which === "studio" ? "studio-product-grid" : "vid-product-grid";
   const btnId = which === "studio" ? "studio-more-btn" : "vid-more-btn";
-  const cards = Array.from(document.querySelectorAll(`#${gridId} .product-card`));
+  const grid = document.getElementById(gridId);
+  if (!grid) return;
+  const cards = Array.from(grid.querySelectorAll(".product-card"));
   const limit = getProductPageLimit();
   const expanded = productPageState[which];
   cards.forEach((card, i) => {
     if (!expanded && i >= limit) card.classList.add("page-hidden"); else card.classList.remove("page-hidden");
   });
   const btn = document.getElementById(btnId);
-  if (btn) btn.style.display = (!expanded && cards.length > limit) ? "flex" : "none";
+  if (!btn) return;
+  const restantes = cards.length - limit;
+  const mostrar = !expanded && restantes > 0;
+  btn.style.display = mostrar ? "flex" : "none";
+  if (mostrar) {
+    const countEl = document.getElementById(`${which}-more-count`);
+    if (countEl) countEl.textContent = `+${restantes}`;
+    btn.setAttribute("aria-label", `Mostrar mais ${restantes} produtos`);
+  }
 }
 
 function showMoreProducts(which) {
   productPageState[which] = true;
   applyProductPagination(which);
 }
+
+/* Reajusta o limite ao girar o celular ou redimensionar a janela */
+let _productPageBreakpoint = null;
+function refreshProductPagination() {
+  const bp = getProductPageLimit();
+  if (bp === _productPageBreakpoint) return;
+  _productPageBreakpoint = bp;
+  applyProductPagination("studio");
+  applyProductPagination("vid");
+}
+(function () {
+  let t = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(t);
+    t = setTimeout(refreshProductPagination, 150);
+  });
+  window.addEventListener("orientationchange", () => setTimeout(refreshProductPagination, 250));
+})();
 
 function renderStudioProducts() {
   productPageState.studio = false;
