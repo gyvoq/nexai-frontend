@@ -1955,9 +1955,10 @@ function renderVideos() {
   }).join("");
 }
 
-const productPageState = { studio: false, vid: false };
+/* Quantos produtos estao visiveis agora em cada aba */
+const productPageState = { studio: 0, vid: 0 };
 
-/* Limite inicial de produtos: 20 no celular, 30 no PC */
+/* Lote inicial e passo de cada clique: 20 no celular, 30 no PC */
 const PRODUCTS_LIMIT_MOBILE = 20;
 const PRODUCTS_LIMIT_DESKTOP = 30;
 const PRODUCTS_MOBILE_BREAKPOINT = 768;
@@ -1966,35 +1967,72 @@ function getProductPageLimit() {
   return window.innerWidth <= PRODUCTS_MOBILE_BREAKPOINT ? PRODUCTS_LIMIT_MOBILE : PRODUCTS_LIMIT_DESKTOP;
 }
 
+function productGridEl(which) {
+  return document.getElementById(which === "studio" ? "studio-product-grid" : "vid-product-grid");
+}
+
+function resetProductPagination(which) {
+  productPageState[which] = getProductPageLimit();
+}
+
 function applyProductPagination(which) {
-  const gridId = which === "studio" ? "studio-product-grid" : "vid-product-grid";
-  const btnId = which === "studio" ? "studio-more-btn" : "vid-more-btn";
-  const grid = document.getElementById(gridId);
+  const grid = productGridEl(which);
   if (!grid) return;
   const cards = Array.from(grid.querySelectorAll(".product-card"));
-  const limit = getProductPageLimit();
-  const expanded = productPageState[which];
+  const total = cards.length;
+  const passo = getProductPageLimit();
+
+  if (!productPageState[which] || productPageState[which] < passo) productPageState[which] = passo;
+  if (productPageState[which] > total) productPageState[which] = total;
+  const visiveis = productPageState[which];
+
   cards.forEach((card, i) => {
-    if (!expanded && i >= limit) card.classList.add("page-hidden"); else card.classList.remove("page-hidden");
+    if (i >= visiveis) card.classList.add("page-hidden"); else card.classList.remove("page-hidden");
   });
-  const btn = document.getElementById(btnId);
-  if (!btn) return;
-  const restantes = cards.length - limit;
-  const mostrar = !expanded && restantes > 0;
-  btn.style.display = mostrar ? "flex" : "none";
-  if (mostrar) {
-    const countEl = document.getElementById(`${which}-more-count`);
-    if (countEl) countEl.textContent = `+${restantes}`;
-    btn.setAttribute("aria-label", `Mostrar mais ${restantes} produtos`);
+
+  const moreBtn = document.getElementById(`${which}-more-btn`);
+  const lessBtn = document.getElementById(`${which}-less-btn`);
+  const row = document.getElementById(`${which}-more-row`);
+
+  const restantes = total - visiveis;
+  const proximoLote = Math.min(passo, restantes);
+  const podeMais = restantes > 0;
+  const podeMenos = visiveis > passo;
+
+  if (moreBtn) {
+    moreBtn.style.display = podeMais ? "flex" : "none";
+    if (podeMais) {
+      const countEl = document.getElementById(`${which}-more-count`);
+      if (countEl) countEl.textContent = `+${proximoLote}`;
+      moreBtn.setAttribute("aria-label", `Mostrar mais ${proximoLote} produtos. ${restantes} restantes de ${total}.`);
+    }
   }
+  if (lessBtn) {
+    lessBtn.style.display = podeMenos ? "flex" : "none";
+    lessBtn.setAttribute("aria-label", `Mostrar menos produtos, voltar para ${passo}`);
+  }
+  if (row) row.style.display = (podeMais || podeMenos) ? "flex" : "none";
 }
 
 function showMoreProducts(which) {
-  productPageState[which] = true;
+  const grid = productGridEl(which);
+  if (!grid) return;
+  const total = grid.querySelectorAll(".product-card").length;
+  productPageState[which] = Math.min(productPageState[which] + getProductPageLimit(), total);
   applyProductPagination(which);
 }
 
-/* Reajusta o limite ao girar o celular ou redimensionar a janela */
+function showLessProducts(which) {
+  const passo = getProductPageLimit();
+  productPageState[which] = passo;
+  applyProductPagination(which);
+  const grid = productGridEl(which);
+  if (grid && typeof grid.scrollIntoView === "function") {
+    grid.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+/* Reajusta o lote ao girar o celular ou redimensionar a janela */
 let _productPageBreakpoint = null;
 function refreshProductPagination() {
   const bp = getProductPageLimit();
@@ -2013,14 +2051,14 @@ function refreshProductPagination() {
 })();
 
 function renderStudioProducts() {
-  productPageState.studio = false;
+  resetProductPagination("studio");
   document.getElementById("studio-product-grid").innerHTML = allProducts().map((p, i) => productCard(p, true, i, "selectStudioProduct")).join("");
   reapplySelection("studio-product-grid", "studio");
   applyProductPagination("studio");
 }
 
 function renderVidProducts() {
-  productPageState.vid = false;
+  resetProductPagination("vid");
   document.getElementById("vid-product-grid").innerHTML = allProducts().map((p, i) => productCard(p, true, i, "selectVidProduct")).join("");
   reapplySelection("vid-product-grid", "vid");
   applyProductPagination("vid");
@@ -2434,9 +2472,13 @@ function filterStudioProducts() {
     if (show) visible++;
   });
   document.getElementById("studio-empty").style.display = visible === 0 ? "block" : "none";
-  const btn = document.getElementById("studio-more-btn");
   if (q) {
+    const btn = document.getElementById("studio-more-btn");
+    const less = document.getElementById("studio-less-btn");
+    const row = document.getElementById("studio-more-row");
     if (btn) btn.style.display = "none";
+    if (less) less.style.display = "none";
+    if (row) row.style.display = "none";
   } else {
     applyProductPagination("studio");
   }
@@ -2452,9 +2494,13 @@ function filterVidProducts() {
     if (show) visible++;
   });
   document.getElementById("vid-studio-empty").style.display = visible === 0 ? "block" : "none";
-  const btn = document.getElementById("vid-more-btn");
   if (q) {
+    const btn = document.getElementById("vid-more-btn");
+    const less = document.getElementById("vid-less-btn");
+    const row = document.getElementById("vid-more-row");
     if (btn) btn.style.display = "none";
+    if (less) less.style.display = "none";
+    if (row) row.style.display = "none";
   } else {
     applyProductPagination("vid");
   }
