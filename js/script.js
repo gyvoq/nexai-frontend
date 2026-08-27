@@ -1955,14 +1955,42 @@ function renderVideos() {
   }).join("");
 }
 
+const productPageState = { studio: false, vid: false };
+
+function getProductPageLimit() {
+  return window.innerWidth <= 768 ? 20 : 30;
+}
+
+function applyProductPagination(which) {
+  const gridId = which === "studio" ? "studio-product-grid" : "vid-product-grid";
+  const btnId = which === "studio" ? "studio-more-btn" : "vid-more-btn";
+  const cards = Array.from(document.querySelectorAll(`#${gridId} .product-card`));
+  const limit = getProductPageLimit();
+  const expanded = productPageState[which];
+  cards.forEach((card, i) => {
+    if (!expanded && i >= limit) card.classList.add("page-hidden"); else card.classList.remove("page-hidden");
+  });
+  const btn = document.getElementById(btnId);
+  if (btn) btn.style.display = (!expanded && cards.length > limit) ? "flex" : "none";
+}
+
+function showMoreProducts(which) {
+  productPageState[which] = true;
+  applyProductPagination(which);
+}
+
 function renderStudioProducts() {
+  productPageState.studio = false;
   document.getElementById("studio-product-grid").innerHTML = allProducts().map((p, i) => productCard(p, true, i, "selectStudioProduct")).join("");
   reapplySelection("studio-product-grid", "studio");
+  applyProductPagination("studio");
 }
 
 function renderVidProducts() {
+  productPageState.vid = false;
   document.getElementById("vid-product-grid").innerHTML = allProducts().map((p, i) => productCard(p, true, i, "selectVidProduct")).join("");
   reapplySelection("vid-product-grid", "vid");
+  applyProductPagination("vid");
 }
 
 function reapplySelection(gridId, which) {
@@ -2364,25 +2392,39 @@ function deleteCustomAvatar(idx) {
 }
 
 function filterStudioProducts() {
-  const q = document.getElementById("studio-search").value.toLowerCase();
+  const q = document.getElementById("studio-search").value.toLowerCase().trim();
   let visible = 0;
   document.querySelectorAll("#studio-product-grid .product-card").forEach(card => {
     const show = card.querySelector(".card-name").textContent.toLowerCase().includes(q);
     card.style.display = show ? "" : "none";
+    if (q) card.classList.remove("page-hidden");
     if (show) visible++;
   });
   document.getElementById("studio-empty").style.display = visible === 0 ? "block" : "none";
+  const btn = document.getElementById("studio-more-btn");
+  if (q) {
+    if (btn) btn.style.display = "none";
+  } else {
+    applyProductPagination("studio");
+  }
 }
 
 function filterVidProducts() {
-  const q = document.getElementById("vid-studio-search").value.toLowerCase();
+  const q = document.getElementById("vid-studio-search").value.toLowerCase().trim();
   let visible = 0;
   document.querySelectorAll("#vid-product-grid .product-card").forEach(card => {
     const show = card.querySelector(".card-name").textContent.toLowerCase().includes(q);
     card.style.display = show ? "" : "none";
+    if (q) card.classList.remove("page-hidden");
     if (show) visible++;
   });
   document.getElementById("vid-studio-empty").style.display = visible === 0 ? "block" : "none";
+  const btn = document.getElementById("vid-more-btn");
+  if (q) {
+    if (btn) btn.style.display = "none";
+  } else {
+    applyProductPagination("vid");
+  }
 }
 
 function selectDur(el) {
@@ -2935,6 +2977,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") closeAddModal();
+});
+
+let productPageResizeTimer = null;
+window.addEventListener("resize", () => {
+  clearTimeout(productPageResizeTimer);
+  productPageResizeTimer = setTimeout(() => {
+    if (!document.getElementById("studio-search")?.value.trim()) applyProductPagination("studio");
+    if (!document.getElementById("vid-studio-search")?.value.trim()) applyProductPagination("vid");
+  }, 200);
 });
 
 (function init() {
