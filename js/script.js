@@ -329,6 +329,546 @@ const products = [ {
   grad: "grad-fitness",
   tag: "#fitness",
   prompt: "performance running shoe with visible carbon plate sole neon accents"
+}, {
+  id: 44,
+  name: "Ômega 3 Cápsulas Ultra Concentrado",
+  cat: "saude",
+  rank: 37,
+  grad: "grad-saude",
+  tag: "#saude",
+  isNew: true,
+  prompt: "fish oil omega 3 softgel bottle blue and white label"
+}, {
+  id: 45,
+  name: "Probiótico 20 Bilhões UFC",
+  cat: "saude",
+  rank: 38,
+  grad: "grad-saude",
+  tag: "#saude",
+  isNew: true,
+  prompt: "probiotic supplement bottle capsules pastel green packaging"
+}, {
+  id: 46,
+  name: "Melatonina Sublingual Sabor Menta",
+  cat: "saude",
+  rank: 39,
+  grad: "grad-saude",
+  tag: "#saude",
+  isNew: true,
+  prompt: "sublingual melatonin spray bottle mint flavor dark packaging"
+}, {
+  id: 47,
+  name: "Whey Isolado Zero Lactose",
+  cat: "saude",
+  rank: 40,
+  grad: "grad-saude",
+  tag: "#saude",
+  isNew: true,
+  prompt: "lactose free whey protein tub chocolate flavor label"
+}, {
+  id: 48,
+  name: "Chá Detox 7 Ervas Sachês",
+  cat: "saude",
+  rank: 41,
+  grad: "grad-saude",
+  tag: "#saude",
+  isNew: true,
+  prompt: "herbal detox tea box with sachets green packaging"
+}, {
+  id: 49,
+  name: "Ashwagandha KSM-66 Cápsulas",
+  cat: "saude",
+  rank: 42,
+  grad: "grad-saude",
+  tag: "#saude",
+  isNew: true,
+  prompt: "ashwagandha supplement bottle capsules earthy packaging"
+}, {
+  id: 50,
+  name: "Multivitamínico Energia Diária",
+  cat: "saude",
+  rank: 43,
+  grad: "grad-saude",
+  tag: "#saude",
+  isNew: true,
+  prompt: "daily multivitamin bottle bright orange and yellow label"
+}, {
+  id: 51,
+  name: "Creatina Monohidratada Pura 300g",
+  cat: "saude",
+  rank: 44,
+  grad: "grad-saude",
+  tag: "#saude",
+  isNew: true,
+  prompt: "pure creatine monohydrate tub white label minimal design"
+}, {
+  id: 52,
+  name: "Zinco Quelato Imunidade",
+  cat: "saude",
+  rank: 45,
+  grad: "grad-saude",
+  tag: "#saude",
+  isNew: true,
+  prompt: "zinc chelate supplement bottle small white capsules"
+}, {
+  id: 53,
+  name: "Colágeno Verisol Skin Renew",
+  cat: "saude",
+  rank: 46,
+  grad: "grad-saude",
+  tag: "#saude",
+  isNew: true,
+  prompt: "collagen verisol powder jar pink skin renewal packaging"
+}, {
+  id: 54,
+  name: "Sérum Ácido Hialurônico Facial",
+  cat: "beleza",
+  rank: 47,
+  grad: "grad-beleza",
+  tag: "#beleza",
+  isNew: true,
+  prompt: "hyaluronic acid facial serum dropper bottle transparent"
+}, {
+  id: 55,
+  name: "Máscara de Cílios Volume Extremo",
+  cat: "beleza",
+  rank: 48,
+  grad: "grad-beleza",
+  tag: "#beleza",
+  isNew: true,
+  prompt: "extreme volume mascara black tube wand applicator"
+}, {
+  id: 56,
+  name: "Iluminador Líquido Glow Skin",
+  cat: "beleza",
+  rank: 49,
+  grad: "grad-beleza",
+  tag: "#beleza",
+  isNew: true,
+  prompt: "liquid highlighter bottle golden shimmer glow packaging"
+}, {
+  id: 57,
+  name: "Base Fluida Alta Cobertura FPS30",
+  cat: "beleza",
+  rank: 50,
+  grad: "grad-beleza",
+  tag: "#beleza",
+  isNew: true,
+  prompt: "liquid foundation bottle high coverage sleek packaging"
+}, {
+  id: 58,
+  name: "Óleo Reparador de Pontas Capilar",
+  cat: "beleza",
+  rank: 51,
+  grad: "grad-beleza",
+  tag: "#beleza",
+  isNew: true,
+  prompt: "hair oil repair bottle dropper amber glass"
+}, {
+  id: 59,
+  name: "Gloss Labial Efeito Plumper",
+  cat: "beleza",
+  rank: 52,
+  grad: "grad-beleza",
+  tag: "#beleza",
+  isNew: true,
+  prompt: "lip gloss plumper tube glossy pink packaging"
+}, {
+  id: 60,
+  name: "Esfoliante Corporal Café e Coco",
+  cat: "beleza",
+  rank: 53,
+  grad: "grad-beleza",
+  tag: "#beleza",
+  isNew: true,
+  prompt: "coffee coconut body scrub jar brown packaging"
+}, {
+  id: 61,
+  name: "Paleta de Sombras Nude Editorial",
+  cat: "beleza",
+  rank: 54,
+  grad: "grad-beleza",
+  tag: "#beleza",
+  isNew: true,
+  prompt: "nude eyeshadow palette compact editorial packaging"
+}, {
+  id: 62,
+  name: "Creme Anti-idade Retinol Noturno",
+  cat: "beleza",
+  rank: 55,
+  grad: "grad-beleza",
+  tag: "#beleza",
+  isNew: true,
+  prompt: "night retinol anti aging cream jar dark packaging"
+}, {
+  id: 63,
+  name: "Delineador Líquido Ponta Fina",
+  cat: "beleza",
+  rank: 56,
+  grad: "grad-beleza",
+  tag: "#beleza",
+  isNew: true,
+  prompt: "fine tip liquid eyeliner black slim packaging"
+}, {
+  id: 64,
+  name: "Faixa Elástica Kit 5 Níveis",
+  cat: "fitness",
+  rank: 57,
+  grad: "grad-fitness",
+  tag: "#fitness",
+  isNew: true,
+  prompt: "resistance bands set five levels colorful packaging"
+}, {
+  id: 65,
+  name: "Corda de Pular com Contador Digital",
+  cat: "fitness",
+  rank: 58,
+  grad: "grad-fitness",
+  tag: "#fitness",
+  isNew: true,
+  prompt: "jump rope with digital counter handle black design"
+}, {
+  id: 66,
+  name: "Luvas de Treino Anti-derrapante",
+  cat: "fitness",
+  rank: 59,
+  grad: "grad-fitness",
+  tag: "#fitness",
+  isNew: true,
+  prompt: "anti slip workout gloves black gym gear"
+}, {
+  id: 67,
+  name: "Shaker Proteico com Compartimento",
+  cat: "fitness",
+  rank: 60,
+  grad: "grad-fitness",
+  tag: "#fitness",
+  isNew: true,
+  prompt: "protein shaker bottle with storage compartment"
+}, {
+  id: 68,
+  name: "Rolo de Liberação Miofascial",
+  cat: "fitness",
+  rank: 61,
+  grad: "grad-fitness",
+  tag: "#fitness",
+  isNew: true,
+  prompt: "foam roller myofascial release cylinder blue"
+}, {
+  id: 69,
+  name: "Tênis de Corrida Leve Respirável",
+  cat: "fitness",
+  rank: 62,
+  grad: "grad-fitness",
+  tag: "#fitness",
+  isNew: true,
+  prompt: "lightweight breathable running shoe mesh design"
+}, {
+  id: 70,
+  name: "Cinta Modeladora Térmica Abdominal",
+  cat: "fitness",
+  rank: 63,
+  grad: "grad-fitness",
+  tag: "#fitness",
+  isNew: true,
+  prompt: "thermal abdominal shaper belt black neoprene"
+}, {
+  id: 71,
+  name: "Halteres Ajustáveis Neoprene",
+  cat: "fitness",
+  rank: 64,
+  grad: "grad-fitness",
+  tag: "#fitness",
+  isNew: true,
+  prompt: "adjustable neoprene dumbbells set colorful weights"
+}, {
+  id: 72,
+  name: "Garrafa Motivacional 2L com Marcadores",
+  cat: "fitness",
+  rank: 65,
+  grad: "grad-fitness",
+  tag: "#fitness",
+  isNew: true,
+  prompt: "motivational water bottle 2 liters time markers"
+}, {
+  id: 73,
+  name: "Step Aeróbico Ajustável 3 Alturas",
+  cat: "fitness",
+  rank: 66,
+  grad: "grad-fitness",
+  tag: "#fitness",
+  isNew: true,
+  prompt: "adjustable aerobic step platform three heights"
+}, {
+  id: 74,
+  name: "Fone Bluetooth TWS Cancelamento de Ruído",
+  cat: "tech",
+  rank: 67,
+  grad: "grad-tech",
+  tag: "#tech",
+  isNew: true,
+  prompt: "wireless earbuds noise cancelling charging case"
+}, {
+  id: 75,
+  name: "Mini Projetor Portátil Full HD",
+  cat: "tech",
+  rank: 68,
+  grad: "grad-tech",
+  tag: "#tech",
+  isNew: true,
+  prompt: "portable mini projector full hd compact design"
+}, {
+  id: 76,
+  name: "Carregador Magnético 3 em 1",
+  cat: "tech",
+  rank: 69,
+  grad: "grad-tech",
+  tag: "#tech",
+  isNew: true,
+  prompt: "magnetic wireless charger 3 in 1 station"
+}, {
+  id: 77,
+  name: "Câmera de Segurança Wi-Fi 360°",
+  cat: "tech",
+  rank: 70,
+  grad: "grad-tech",
+  tag: "#tech",
+  isNew: true,
+  prompt: "wifi security camera 360 degree white housing"
+}, {
+  id: 78,
+  name: "Suporte Articulado para Celular Mesa",
+  cat: "tech",
+  rank: 71,
+  grad: "grad-tech",
+  tag: "#tech",
+  isNew: true,
+  prompt: "articulated phone holder desk mount black"
+}, {
+  id: 79,
+  name: "Power Bank 20000mAh Carga Rápida",
+  cat: "tech",
+  rank: 72,
+  grad: "grad-tech",
+  tag: "#tech",
+  isNew: true,
+  prompt: "fast charging power bank 20000mah sleek design"
+}, {
+  id: 80,
+  name: "Anel Inteligente Monitor de Saúde",
+  cat: "tech",
+  rank: 73,
+  grad: "grad-tech",
+  tag: "#tech",
+  isNew: true,
+  prompt: "smart ring health monitor minimal metallic design"
+}, {
+  id: 81,
+  name: "Luz de LED RGB para Quarto Gamer",
+  cat: "tech",
+  rank: 74,
+  grad: "grad-tech",
+  tag: "#tech",
+  isNew: true,
+  prompt: "rgb led strip light gamer room setup"
+}, {
+  id: 82,
+  name: "Teclado Mecânico Compacto Wireless",
+  cat: "tech",
+  rank: 75,
+  grad: "grad-tech",
+  tag: "#tech",
+  isNew: true,
+  prompt: "compact wireless mechanical keyboard rgb backlight"
+}, {
+  id: 83,
+  name: "Mouse Ergonômico Vertical Sem Fio",
+  cat: "tech",
+  rank: 76,
+  grad: "grad-tech",
+  tag: "#tech",
+  isNew: true,
+  prompt: "vertical ergonomic wireless mouse black design"
+}, {
+  id: 84,
+  name: "Bolsa Transversal Couro Sintético",
+  cat: "moda",
+  rank: 77,
+  grad: "grad-moda",
+  tag: "#moda",
+  isNew: true,
+  prompt: "crossbody bag synthetic leather minimal design"
+}, {
+  id: 85,
+  name: "Óculos de Sol Polarizado Retrô",
+  cat: "moda",
+  rank: 78,
+  grad: "grad-moda",
+  tag: "#moda",
+  isNew: true,
+  prompt: "polarized retro sunglasses tortoiseshell frame"
+}, {
+  id: 86,
+  name: "Relógio Minimalista Aço Inoxidável",
+  cat: "moda",
+  rank: 79,
+  grad: "grad-moda",
+  tag: "#moda",
+  isNew: true,
+  prompt: "minimalist stainless steel watch slim design"
+}, {
+  id: 87,
+  name: "Conjunto Moletom Oversized Unissex",
+  cat: "moda",
+  rank: 80,
+  grad: "grad-moda",
+  tag: "#moda",
+  isNew: true,
+  prompt: "oversized unisex sweatsuit set streetwear style"
+}, {
+  id: 88,
+  name: "Tênis Casual Chunky Plataforma",
+  cat: "moda",
+  rank: 81,
+  grad: "grad-moda",
+  tag: "#moda",
+  isNew: true,
+  prompt: "chunky platform casual sneaker trendy design"
+}, {
+  id: 89,
+  name: "Cinto Reversível Fivela Dourada",
+  cat: "moda",
+  rank: 82,
+  grad: "grad-moda",
+  tag: "#moda",
+  isNew: true,
+  prompt: "reversible belt gold buckle leather design"
+}, {
+  id: 90,
+  name: "Brincos Argola Banhados a Ouro",
+  cat: "moda",
+  rank: 83,
+  grad: "grad-moda",
+  tag: "#moda",
+  isNew: true,
+  prompt: "gold plated hoop earrings minimal jewelry"
+}, {
+  id: 91,
+  name: "Jaqueta Corta-vento Impermeável",
+  cat: "moda",
+  rank: 84,
+  grad: "grad-moda",
+  tag: "#moda",
+  isNew: true,
+  prompt: "waterproof windbreaker jacket lightweight design"
+}, {
+  id: 92,
+  name: "Carteira Slim Anti-RFID",
+  cat: "moda",
+  rank: 85,
+  grad: "grad-moda",
+  tag: "#moda",
+  isNew: true,
+  prompt: "slim rfid blocking wallet leather minimal"
+}, {
+  id: 93,
+  name: "Lenço de Seda Estampado Multiuso",
+  cat: "moda",
+  rank: 86,
+  grad: "grad-moda",
+  tag: "#moda",
+  isNew: true,
+  prompt: "printed silk scarf multiuse colorful pattern"
+}, {
+  id: 94,
+  name: "Umidificador de Ar Aromaterapia LED",
+  cat: "casa",
+  rank: 87,
+  grad: "grad-casa",
+  tag: "#casa",
+  isNew: true,
+  prompt: "led aromatherapy air humidifier wood grain design"
+}, {
+  id: 95,
+  name: "Organizador de Gavetas Modular",
+  cat: "casa",
+  rank: 88,
+  grad: "grad-casa",
+  tag: "#casa",
+  isNew: true,
+  prompt: "modular drawer organizer set clear plastic"
+}, {
+  id: 96,
+  name: "Luminária de Mesa Toque Regulável",
+  cat: "casa",
+  rank: 89,
+  grad: "grad-casa",
+  tag: "#casa",
+  isNew: true,
+  prompt: "touch dimmable desk lamp modern minimal design"
+}, {
+  id: 97,
+  name: "Jogo de Panelas Antiaderente 5 Peças",
+  cat: "casa",
+  rank: 90,
+  grad: "grad-casa",
+  tag: "#casa",
+  isNew: true,
+  prompt: "nonstick cookware set five pieces black design"
+}, {
+  id: 98,
+  name: "Aspirador Portátil Sem Fio 2 em 1",
+  cat: "casa",
+  rank: 91,
+  grad: "grad-casa",
+  tag: "#casa",
+  isNew: true,
+  prompt: "cordless portable vacuum 2 in 1 handheld"
+}, {
+  id: 99,
+  name: "Difusor de Aromas Ultrassônico",
+  cat: "casa",
+  rank: 92,
+  grad: "grad-casa",
+  tag: "#casa",
+  isNew: true,
+  prompt: "ultrasonic aroma diffuser wood base minimal"
+}, {
+  id: 100,
+  name: "Kit Organizador de Armário Cápsulas",
+  cat: "casa",
+  rank: 93,
+  grad: "grad-casa",
+  tag: "#casa",
+  isNew: true,
+  prompt: "capsule wardrobe organizer kit clear boxes"
+}, {
+  id: 101,
+  name: "Cortina Blackout Térmica Corta Luz",
+  cat: "casa",
+  rank: 94,
+  grad: "grad-casa",
+  tag: "#casa",
+  isNew: true,
+  prompt: "thermal blackout curtain light blocking fabric"
+}, {
+  id: 102,
+  name: "Tapete Antiderrapante para Banheiro",
+  cat: "casa",
+  rank: 95,
+  grad: "grad-casa",
+  tag: "#casa",
+  isNew: true,
+  prompt: "non slip bathroom mat soft microfiber design"
+}, {
+  id: 103,
+  name: "Suporte de Plantas Escalonado Madeira",
+  cat: "casa",
+  rank: 96,
+  grad: "grad-casa",
+  tag: "#casa",
+  isNew: true,
+  prompt: "tiered wooden plant stand minimal design"
 } ];
 
 const videos = [ {
