@@ -734,21 +734,40 @@ input[type=range] { width: 100%; accent-color: var(--accent1); cursor: pointer; 
 
 /* ====== SHOW MORE PRODUCTS BUTTON ====== */
 .show-more-btn {
-  width: 100%; padding: 16px 20px;
+  width: 100%; padding: 20px 24px;
   background: linear-gradient(135deg, var(--accent1), var(--accent2));
   border: none; border-radius: var(--radius);
-  color: white; font-size: 14.5px; font-weight: 700;
+  color: white; font-size: 16.5px; font-weight: 800;
   font-family: 'Inter', sans-serif; cursor: pointer;
   transition: all var(--transition);
-  margin-bottom: 16px; position: relative; overflow: hidden;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  letter-spacing: .2px;
-  box-shadow: 0 6px 20px rgba(254,44,85,0.28);
+  margin: 4px 0 18px; position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  letter-spacing: .2px; min-height: 60px;
+  box-shadow: 0 10px 30px rgba(254,44,85,0.34);
 }
-.show-more-btn svg { width: 17px; height: 17px; stroke: white; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: transform var(--transition); }
-.show-more-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(254,44,85,0.4); }
-.show-more-btn:hover svg { transform: translateY(2px); }
+.show-more-btn::after {
+  content: ''; position: absolute; top: 0; left: -60%; width: 45%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,0.28), transparent);
+  transform: skewX(-18deg); animation: showMoreShine 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes showMoreShine { 0% { left: -60%; } 55%, 100% { left: 130%; } }
+.show-more-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 40px; padding: 3px 10px; border-radius: 999px;
+  background: rgba(255,255,255,0.22); font-size: 14px; font-weight: 800;
+  letter-spacing: 0; line-height: 1.5;
+}
+.show-more-btn svg { width: 20px; height: 20px; stroke: white; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; transition: transform var(--transition); }
+.show-more-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(254,44,85,0.46); }
+.show-more-btn:hover svg { transform: translateY(3px); }
 .show-more-btn:active { transform: translateY(0); }
+.show-more-btn:focus-visible { outline: 3px solid rgba(255,255,255,0.75); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .show-more-btn::after { animation: none; display: none; } }
+@media (max-width: 768px) {
+  .show-more-btn { padding: 18px 18px; font-size: 15.5px; min-height: 58px; gap: 8px; }
+  .show-more-count { min-width: 36px; font-size: 13px; }
+}
 
 /* ====== AVATAR CARDS ====== */
 .avatar-card {
