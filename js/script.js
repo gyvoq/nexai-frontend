@@ -1876,17 +1876,7 @@ function allProducts() {
 function productCard(p, selectable, i = 0, clickFn = "selectStudioProduct") {
   const rankClass = p.rank === 1 ? "rank-1" : p.rank === 2 ? "rank-2" : p.rank === 3 ? "rank-3" : "rank-other";
   const fav = isFav("prod", p.id);
-  const emojiMap = {
-    beleza: "💄",
-    saude: "💊",
-    fitness: "🏋️",
-    tech: "📱",
-    moda: "👗",
-    casa: "🏠",
-    custom: "📦"
-  };
-  const emoji = emojiMap[p.cat] || "📦";
-  const imgContent = p.img ? `<img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<span style="font-size:26px" aria-hidden="true">${emoji}</span>`;
+  const imgContent = p.img ? `<img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.55"><path d="M21 8L12 3 3 8l9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>`;
   const customBadge = p.custom ? `<span style="position:absolute;bottom:7px;right:7px;background:rgba(124,107,255,0.85);color:white;font-size:8px;padding:2px 6px;border-radius:7px;font-weight:700;backdrop-filter:blur(4px)">MEU</span>` : "";
   const promptBadge = p.prompt ? `<span style="position:absolute;bottom:7px;left:7px;background:rgba(0,229,179,0.18);color:#00e5b3;font-size:8px;padding:2px 6px;border-radius:7px;border:1px solid rgba(0,229,179,0.3);font-weight:700;backdrop-filter:blur(4px)">PROMPT ✓</span>` : "";
   const trendBadge = p.rank <= 5 ? `<div class="trending-badge" style="bottom:${p.prompt ? "28px" : "7px"}">TOP ${p.rank}</div>` : "";
