@@ -1407,6 +1407,20 @@ body.theme-light .theme-toggle-btn { background: #fff; border-color: var(--borde
 .credit-label { color: var(--text); font-size: 10.5px; font-weight: 500; }
 
 /* ====== HISTORY TRIGGER BTN ====== */
+.settings-trigger {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 20px; padding: 5px 12px; cursor: pointer;
+  font-size: 12px; font-weight: 600; color: var(--text);
+  font-family: 'Inter', sans-serif;
+  transition: all var(--transition); position: relative;
+}
+.settings-trigger svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform var(--transition); }
+.settings-trigger:hover { border-color: var(--accent1); color: var(--accent1); }
+.settings-trigger:hover svg { transform: rotate(45deg); }
+.settings-trigger.active { border-color: var(--accent1); color: var(--accent1); background: rgba(254,44,85,0.08); }
+.settings-trigger:focus-visible { outline: 2px solid var(--accent1); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .settings-trigger:hover svg { transform: none; } }
 .history-trigger {
   display: flex; align-items: center; gap: 6px;
   background: var(--surface2); border: 1px solid var(--border2);
