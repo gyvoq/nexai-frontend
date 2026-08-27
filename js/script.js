@@ -3098,6 +3098,8 @@ window.addEventListener("resize", () => {
     document.getElementById("search-label-desk").style.display = "inline";
     document.getElementById("search-kbd").style.display = "inline";
     document.getElementById("hist-label").style.display = "inline";
+    const cfgLabel = document.getElementById("settings-label");
+    if (cfgLabel) cfgLabel.style.display = "inline";
   }
   const imgStepper = document.getElementById("img-stepper");
   const vidStepper = document.getElementById("vid-stepper");
