@@ -303,6 +303,8 @@ h1,h2,h3,h4 { font-family: 'Inter', sans-serif; letter-spacing: -0.3px; }
 @media (min-width:1100px) { .product-grid { grid-template-columns: repeat(5,1fr); } }
 @media (min-width:1400px) { .product-grid { grid-template-columns: repeat(6,1fr); } }
 
+.product-card.page-hidden { display: none !important; }
+
 /* ====== PRODUCT CARD ====== */
 .product-card {
   background: var(--surface);
@@ -729,6 +731,24 @@ input[type=range] { width: 100%; accent-color: var(--accent1); cursor: pointer; 
 }
 .add-product-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .add-product-btn:hover { border-color: var(--accent1); color: var(--accent1); background: rgba(254,44,85,0.04); }
+
+/* ====== SHOW MORE PRODUCTS BUTTON ====== */
+.show-more-btn {
+  width: 100%; padding: 16px 20px;
+  background: linear-gradient(135deg, var(--accent1), var(--accent2));
+  border: none; border-radius: var(--radius);
+  color: white; font-size: 14.5px; font-weight: 700;
+  font-family: 'Inter', sans-serif; cursor: pointer;
+  transition: all var(--transition);
+  margin-bottom: 16px; position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  letter-spacing: .2px;
+  box-shadow: 0 6px 20px rgba(254,44,85,0.28);
+}
+.show-more-btn svg { width: 17px; height: 17px; stroke: white; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: transform var(--transition); }
+.show-more-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(254,44,85,0.4); }
+.show-more-btn:hover svg { transform: translateY(2px); }
+.show-more-btn:active { transform: translateY(0); }
 
 /* ====== AVATAR CARDS ====== */
 .avatar-card {
