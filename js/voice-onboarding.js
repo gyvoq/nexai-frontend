@@ -258,6 +258,7 @@ const VoiceOnboarding = (() => {
       '    float gauss = exp(-pow(xN*FALLOFF, 2.0));\n' +
       '    col *= mix(1.0, em*gauss, res);\n' +
       '    col *= res;\n' +
+      '    col = max(col, vec3(0.0588, 0.0588, 0.0745));\n' +
       '    fragColor = vec4(col, 1.0);\n' +
       '}\n' +
       'void main(){ mainImage(gl_FragColor, gl_FragCoord.xy); }';
