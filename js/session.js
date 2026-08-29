@@ -105,6 +105,22 @@ const Session = (() => {
     } catch { /* ignore */ }
   }
 
+  // ─── PORTÃO DE ENTRADA (anti-flash) ──────────────────────────────────────
+  // A página nasce "fechada" pelo CSS (html sem a classe .nex-ready), com uma
+  // capa opaca pintada já no primeiro frame. Só liberamos quando a sessão é
+  // confirmada — assim o app nunca aparece por um instante antes do overlay.
+  const READY_CLASS = 'nex-ready';
+
+  /** Libera a tela: o conteúdo do app fica visível */
+  function releaseGate() {
+    document.documentElement.classList.add(READY_CLASS);
+  }
+
+  /** Fecha a tela de novo (logout, sessão expirada, etc.) */
+  function lockGate() {
+    document.documentElement.classList.remove(READY_CLASS);
+  }
+
   /** Formata data para exibição em pt-BR */
   function fmtDate(iso) {
     try { return new Date(iso).toLocaleDateString('pt-BR'); } catch { return '—'; }
@@ -115,16 +131,23 @@ const Session = (() => {
    * Retorna { valid: bool, expiresAt? }
    */
   async function verifyWithServer(token) {
+    // Timeout de 10s: sem isso, um servidor lento deixaria o usuário
+    // preso na tela de carregamento por tempo indeterminado.
+    const ctrl  = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 10_000);
     try {
       const res = await fetch(`${API_BASE}/api/verify-session`, {
         method : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body   : JSON.stringify({ token }),
+        signal : ctrl.signal,
       });
       return await res.json();
     } catch {
       // Se o servidor estiver offline, bloqueia por segurança
       return { valid: false, reason: 'offline' };
+    } finally {
+      clearTimeout(timer);
     }
   }
 
@@ -334,6 +357,8 @@ const Session = (() => {
 
   /** Mostra overlay de ativação sobre o conteúdo */
   function showActivationOverlay() {
+    // Enquanto a ativação estiver na tela, o app continua coberto por baixo
+    lockGate();
     let ov = document.getElementById('activation-overlay');
     if (!ov) {
       ov = buildOverlay();
@@ -537,6 +562,9 @@ const Session = (() => {
         attempts = 0;
 
         setTimeout(() => {
+          // Libera o app ANTES do fade-out, para que o overlay revele a
+          // interface pronta em vez de uma tela preta.
+          releaseGate();
           const ov = document.getElementById('activation-overlay');
           if (ov) { ov.classList.add('hiding'); setTimeout(() => ov.remove(), 600); }
         }, 2000);
@@ -644,35 +672,58 @@ const Session = (() => {
   // ─── INICIALIZAÇÃO ────────────────────────────────────────────────────────
 
   async function init() {
-    // Primeiro passo, sempre: exige aceite dos Termos de Uso e Política de Privacidade
-    if (!hasAcceptedTerms()) {
-      showTermsOverlay(proceedAfterTerms);
-      return;
+    // Rede de segurança: se algo travar, o usuário nunca fica preso numa
+    // tela preta — cai na ativação (que é uma tela utilizável).
+    const watchdog = setTimeout(() => {
+      const gated = !document.documentElement.classList.contains(READY_CLASS);
+      const hasOverlay = document.getElementById('activation-overlay') ||
+                         document.getElementById('terms-overlay');
+      if (gated && !hasOverlay) showActivationOverlay();
+    }, 15_000);
+
+    try {
+      // Primeiro passo, sempre: exige aceite dos Termos de Uso e Política de Privacidade
+      if (!hasAcceptedTerms()) {
+        showTermsOverlay(proceedAfterTerms);
+        return;
+      }
+      await proceedAfterTerms();
+    } finally {
+      clearTimeout(watchdog);
     }
-    proceedAfterTerms();
   }
 
   async function proceedAfterTerms() {
-    const token = getToken();
+    try {
+      const token = getToken();
 
-    if (!token) {
-      // Sem token: mostra ativação
+      if (!token) {
+        // Sem token: mostra ativação
+        showActivationOverlay();
+        return;
+      }
+
+      // Com token: verifica no servidor
+      const result = await verifyWithServer(token);
+
+      if (!result.valid) {
+        clearSession();
+        showActivationOverlay();
+        return;
+      }
+
+      // Sessão válida: atualiza data de expiração na sidebar se existir
+      const expiryEl = document.getElementById('expiry-display');
+      if (expiryEl) expiryEl.textContent = fmtDate(result.expiresAt);
+
+      // Só agora o app aparece
+      releaseGate();
+
+    } catch (err) {
+      // Falha inesperada: bloqueia (fail-closed), mas com tela utilizável
+      console.error('[Session] Erro ao verificar a sessão:', err);
       showActivationOverlay();
-      return;
     }
-
-    // Com token: verifica no servidor
-    const result = await verifyWithServer(token);
-
-    if (!result.valid) {
-      clearSession();
-      showActivationOverlay();
-      return;
-    }
-
-    // Sessão válida: atualiza data de expiração na sidebar se existir
-    const expiryEl = document.getElementById('expiry-display');
-    if (expiryEl) expiryEl.textContent = fmtDate(result.expiresAt);
   }
 
   // Vincula botão de logout se existir na página
