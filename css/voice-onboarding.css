@@ -91,7 +91,7 @@
   box-shadow:
     0 18px 50px rgba(0, 0, 0, 0.45),
     0 0 0 1px rgba(254, 44, 85, 0.06);
-  padding: 10px 12px 8px;
+  padding: 8px 12px 6px;
   font-family: "Inter", sans-serif;
   display: none;
 }
@@ -119,12 +119,12 @@ body.theme-light .vo-panel {
   .vo-panel {
     width: 228px;
     bottom: calc(66px + 12px + env(safe-area-inset-bottom, 0px));
-    padding: 8px 10px 7px;
+    padding: 6px 10px 5px;
   }
   .vo-orb {
     width: calc(100% + 10px);
     margin: 0 -5px;
-    height: 132px;
+    height: 148px;
   }
 }
 
@@ -168,7 +168,7 @@ body.theme-light .vo-panel {
 .vo-head {
   display: flex;
   align-items: center;
-  margin-top: 5px;
+  margin-top: 3px;
 }
 
 .vo-title {
@@ -190,7 +190,7 @@ body.theme-light .vo-panel {
   position: relative;
   width: calc(100% + 12px);
   margin: 0 -6px;
-  height: 152px;
+  height: 172px;
   border-radius: 10px;
   overflow: hidden;
   background: #0f0f13;
@@ -222,8 +222,8 @@ body.theme-light .vo-panel {
   display: flex;
   align-items: center;
   gap: 7px;
-  margin-top: 6px;
-  padding-top: 6px;
+  margin-top: 4px;
+  padding-top: 4px;
   border-top: 1px solid var(--border);
 }
 
