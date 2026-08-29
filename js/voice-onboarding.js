@@ -172,7 +172,7 @@ const VoiceOnboarding = (() => {
 
     const FRAGMENT_SHADER =
       'precision highp float;\n' +
-      'uniform vec2 iResolution; uniform float iTime;\n' +
+      'uniform vec2 iResolution; uniform float iTime; uniform float iAmp;\n' +
       'const float PI = 3.14159265359;\n' +
       'const float AMPLITUDE   = 0.32;\n' +
       'const float FREQ        = 1.1;\n' +
@@ -219,8 +219,9 @@ const VoiceOnboarding = (() => {
       '    float xN  = p.x / max(aspect, 1.0);\n' +
       '    float env = cos(PI*0.5 * min(abs(0.9*xN), 1.0));\n' +
       '    env *= env;\n' +
-      '    float A1    = AMPLITUDE + 0.01*low*LOW_AMP;\n' +
-      '    float A2    = A1 + mid*MID_ABAMP + high*HIGH_ABAMP;\n' +
+      '    float amp   = clamp(iAmp, 0.0, 1.0);\n' +
+      '    float A1    = (AMPLITUDE + 0.01*low*LOW_AMP) * amp;\n' +
+      '    float A2    = A1 + (mid*MID_ABAMP + high*HIGH_ABAMP) * amp;\n' +
       '    float AB    = (ABERRATION + mid*MID_ABER + high*HIGH_ABER)*res;\n' +
       '    float th    = mix(0.1, 0.01*THICKNESS, res);\n' +
       '    float inten = mix(0.1, 0.01*(INTENSITY + low*LOW_INT), res);\n' +
@@ -267,10 +268,19 @@ const VoiceOnboarding = (() => {
       gl = null,
       program = null;
     let uResolution = null,
-      uTime = null;
+      uTime = null,
+      uAmp = null;
     let rafId = 0,
       running = false,
       ready = false;
+    // Amplitude da onda: 1 = falando, 0 = flatline.
+    // `amp` persegue `ampTarget` suavemente, então a onda não corta seco.
+    let amp = 0,
+      ampTarget = 0,
+      lastFrameT = 0,
+      sleeping = false;
+    const RISE_TAU = 0.16; // segundos para "subir" a onda
+    const FALL_TAU = 0.34; // um pouco mais lento para assentar na linha
     let w = 0,
       h = 0;
     const RENDER_SCALE = 0.85;
@@ -312,6 +322,7 @@ const VoiceOnboarding = (() => {
 
       uResolution = gl.getUniformLocation(program, 'iResolution');
       uTime = gl.getUniformLocation(program, 'iTime');
+      uAmp = gl.getUniformLocation(program, 'iAmp');
       gl.clearColor(0, 0, 0, 0);
 
       ready = true;
@@ -333,28 +344,61 @@ const VoiceOnboarding = (() => {
       gl.viewport(0, 0, w, h);
     }
 
-    function frame() {
+    function frame(now) {
       if (!running) return;
+
+      // Interpolação por tempo (não por frame), para ficar igual em 60 e 120Hz
+      const t = typeof now === 'number' ? now : performance.now();
+      const dt = Math.min(Math.max((t - lastFrameT) / 1000, 0), 0.1);
+      lastFrameT = t;
+
+      const tau = ampTarget > amp ? RISE_TAU : FALL_TAU;
+      amp += (ampTarget - amp) * (1 - Math.exp(-dt / tau));
+      if (Math.abs(ampTarget - amp) < 0.001) amp = ampTarget;
+
       gl.uniform2f(uResolution, w, h);
       gl.uniform1f(uTime, (performance.now() - startTime) / 1000);
+      gl.uniform1f(uAmp, amp);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+      // Flatline estável: a imagem não muda mais, então paramos de desenhar
+      // (economiza GPU/bateria). Volta a rodar assim que a voz falar de novo.
+      if (amp === 0 && ampTarget === 0) {
+        sleeping = true;
+        rafId = 0;
+        return;
+      }
+
       rafId = requestAnimationFrame(frame);
+    }
+
+    /** Define o alvo da amplitude: 1 = falando, 0 = flatline */
+    function setAmplitude(v) {
+      ampTarget = Math.min(1, Math.max(0, v));
+      if (running && sleeping && ampTarget !== amp) {
+        sleeping = false;
+        lastFrameT = performance.now();
+        rafId = requestAnimationFrame(frame);
+      }
     }
 
     function start() {
       if (!ready || running) return;
       running = true;
+      sleeping = false;
       resize();
+      lastFrameT = performance.now();
       rafId = requestAnimationFrame(frame);
     }
 
     function stop() {
       running = false;
+      sleeping = false;
       cancelAnimationFrame(rafId);
       rafId = 0;
     }
 
-    return { init, start, stop, resize };
+    return { init, start, stop, resize, setAmplitude };
   })();
 
   function mountPanel() {
@@ -469,6 +513,8 @@ const VoiceOnboarding = (() => {
   function setState(state) {
     panel.classList.remove('idle', 'speaking', 'paused');
     panel.classList.add(state);
+    // A onda só ondula enquanto a voz fala; em idle/pausado vira flatline
+    WaveOrb.setAmplitude(state === 'speaking' ? 1 : 0);
   }
 
   function idleUI() {
@@ -495,6 +541,11 @@ const VoiceOnboarding = (() => {
     audio.preload = 'none';
     audio.addEventListener('ended', onEnded);
     audio.addEventListener('error', onEnded);
+    // Rede de segurança: qualquer parada vinda do próprio <audio>
+    // (pausa do sistema, buffer travando, fim da faixa) também flatlina.
+    audio.addEventListener('pause', () => WaveOrb.setAmplitude(0));
+    audio.addEventListener('waiting', () => WaveOrb.setAmplitude(0));
+    audio.addEventListener('playing', () => WaveOrb.setAmplitude(1));
     if (root) root.appendChild(audio);
     return audio;
   }
