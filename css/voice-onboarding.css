@@ -65,11 +65,18 @@
   animation: voTriggerPulse 2.2s ease-out infinite;
 }
 
+/* Desktop: o botao fica na propria linha do header, ao lado do
+   "Config" e alinhado com o toggle de tema (mesmos 34px).
+   No mobile ele continua exatamente onde estava. */
 @media (min-width: 900px) {
   .voice-trigger {
-    position: absolute;
-    top: calc(100% + 10px);
-    right: 0;
+    position: static;
+    width: 34px;
+    height: 34px;
+    align-self: center;
+  }
+  .vo-anchor {
+    gap: 8px;
   }
 }
 
@@ -78,6 +85,7 @@
 }
 
 .vo-panel {
+  --vo-orb-h: 196px;
   position: fixed;
   left: 50%;
   bottom: 20px;
@@ -91,7 +99,7 @@
   box-shadow:
     0 18px 50px rgba(0, 0, 0, 0.45),
     0 0 0 1px rgba(254, 44, 85, 0.06);
-  padding: 8px 12px 6px;
+  padding: 0 10px 7px;
   font-family: "Inter", sans-serif;
   display: none;
 }
@@ -113,19 +121,6 @@
 
 body.theme-light .vo-panel {
   box-shadow: 0 18px 44px rgba(17, 19, 24, 0.14);
-}
-
-@media (max-width: 899px) {
-  .vo-panel {
-    width: 228px;
-    bottom: calc(66px + 12px + env(safe-area-inset-bottom, 0px));
-    padding: 6px 10px 5px;
-  }
-  .vo-orb {
-    width: calc(100% + 10px);
-    margin: 0 -5px;
-    height: 148px;
-  }
 }
 
 .vo-close {
@@ -166,36 +161,69 @@ body.theme-light .vo-panel {
 }
 
 .vo-head {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: calc(var(--vo-orb-h) - 40px);
+  z-index: 2;
   display: flex;
   align-items: center;
-  margin-top: 3px;
+  pointer-events: none;
+}
+.vo-head > div {
+  min-width: 0;
 }
 
 .vo-title {
   font-size: 12.5px;
   font-weight: 700;
-  color: var(--text);
+  color: #fff;
   letter-spacing: -0.2px;
   line-height: 1.2;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .vo-state {
   font-size: 10.5px;
   font-weight: 500;
-  color: var(--text3);
+  color: rgba(255, 255, 255, 0.62);
   letter-spacing: 0.2px;
   margin-top: 2px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .vo-orb {
   position: relative;
-  width: calc(100% + 12px);
-  margin: 0 -6px;
-  height: 172px;
-  border-radius: 10px;
+  width: calc(100% + 20px);
+  margin: 0 -10px;
+  height: var(--vo-orb-h);
+  border-radius: calc(var(--radius-lg) - 1px) calc(var(--radius-lg) - 1px) 12px
+    12px;
   overflow: hidden;
   background: #0f0f13;
   flex-shrink: 0;
   transition: opacity var(--transition);
+}
+/* escurece a base da onda para o titulo/estado ficarem legiveis por cima */
+.vo-orb::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 64px;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(10, 10, 13, 0.92) 0%,
+    rgba(10, 10, 13, 0.6) 45%,
+    rgba(10, 10, 13, 0) 100%
+  );
 }
 .vo-orb-canvas {
   display: block;
@@ -222,9 +250,7 @@ body.theme-light .vo-panel {
   display: flex;
   align-items: center;
   gap: 7px;
-  margin-top: 4px;
-  padding-top: 4px;
-  border-top: 1px solid var(--border);
+  margin-top: 7px;
 }
 
 .vo-btn {
@@ -307,6 +333,25 @@ body.theme-light .vo-panel {
 }
 .vo-panel.speaking .vo-icon-play {
   display: none;
+}
+
+/* Mobile: mesma estrutura, so um pouco mais estreito.
+   Precisa vir DEPOIS das regras base para nao ser sobrescrito. */
+@media (max-width: 899px) {
+  .vo-panel {
+    --vo-orb-h: 172px;
+    width: 228px;
+    bottom: calc(66px + 12px + env(safe-area-inset-bottom, 0px));
+    padding: 0 9px 6px;
+  }
+  .vo-orb {
+    width: calc(100% + 18px);
+    margin: 0 -9px;
+  }
+  .vo-head {
+    left: 11px;
+    right: 11px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
