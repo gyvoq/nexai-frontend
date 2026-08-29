@@ -190,7 +190,7 @@ body.theme-light .vo-panel {
   height: 124px;
   border-radius: 10px;
   overflow: hidden;
-  background: var(--surface2);
+  background: #0f0f13;
   flex-shrink: 0;
   transition: opacity var(--transition);
 }
