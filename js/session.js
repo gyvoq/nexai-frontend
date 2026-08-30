@@ -574,21 +574,9 @@ const Session = (() => {
         if (btnEl) btnEl.classList.remove('busy');
 
         const isDeviceLock = /outro dispositivo/i.test(err.message || '');
-        const isRevoked = /revogad/i.test(err.message || '');
         let text;
 
-        if (isRevoked) {
-          attempts--;
-          text = 'Chave revogada. Você pediu reembolso, lembra? Some daqui.';
-
-          digits.forEach(d => d.disabled = true);
-          if (btnEl) btnEl.disabled = true;
-          setTimeout(() => {
-            digits.forEach(d => d.disabled = false);
-            if (btnEl) btnEl.disabled = false;
-            clearMsg();
-          }, 15000);
-        } else if (isDeviceLock) {
+        if (isDeviceLock) {
           attempts--;
           text = err.message;
         } else if (attempts >= MAX_CLIENT_ATTEMPTS) {
