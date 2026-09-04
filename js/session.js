@@ -1,50 +1,21 @@
-/**
- * session.js — Nex AI
- * ─────────────────────────────────────────────────────────────────────────────
- * Responsabilidades:
- *  - Verificar token de sessão com o servidor em TODA página carregada
- *  - Redirecionar para ativação se token ausente ou inválido
- *  - Exibir overlay de ativação se não autenticado
- *  - ZERO lógica de validação de licença no client-side
- *
- * Segurança:
- *  - Token guardado em sessionStorage (some ao fechar o browser)
- *  - Verificação obrigatória no servidor a cada carregamento
- *  - Rate limiting tratado com mensagem amigável
- */
+
 
 'use strict';
 
 const Session = (() => {
 
-  const API_BASE    = 'https://nexai-backend-production-5e36.up.railway.app'; // ← trocar pela URL do seu backend em produção
+  const API_BASE    = 'https://nexai-backend-production-5e36.up.railway.app';
   const TOKEN_KEY   = 'nex_session_token';
   const EXPIRY_KEY  = 'nex_session_expiry';
   const TERMS_KEY   = 'nex_terms_accepted';
-  const TERMS_VERSION = '1.0'; // ← incrementar quando os termos/política mudarem, forçando novo aceite
+  const TERMS_VERSION = '1.0';
 
-  /**
-   * Identificador do dispositivo — NÃO depende de localStorage/cookies.
-   * ─────────────────────────────────────────────────────────────────
-   * Antes gerávamos um UUID e guardávamos em localStorage. Bug: ao limpar
-   * o storage/cookies do navegador, um UUID novo era gerado e o backend
-   * enxergava como "outro dispositivo", bloqueando o próprio dono no
-   * mesmo aparelho.
-   *
-   * Agora calculamos uma impressão (fingerprint) determinística a partir
-   * de características estáveis do navegador/hardware (tela, fuso horário,
-   * idioma, núcleos de CPU, renderização de canvas, etc.) e aplicamos
-   * SHA-256. O resultado é o mesmo antes e depois de limpar o storage,
-   * porque não é guardado — é recalculado toda vez a partir do próprio
-   * ambiente do navegador.
-   */
   async function getDeviceId() {
     try {
       const gl = document.createElement('canvas').getContext('webgl') || document.createElement('canvas').getContext('experimental-webgl');
       const debugInfo = gl && gl.getExtension('WEBGL_debug_renderer_info');
       const gpu = debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : '';
 
-      // Canvas fingerprint: mesmo hardware/driver renderiza de forma consistente
       const canvas = document.createElement('canvas');
       canvas.width = 220; canvas.height = 30;
       const ctx = canvas.getContext('2d');
@@ -70,8 +41,7 @@ const Session = (() => {
       const hash = await crypto.subtle.digest('SHA-256', enc);
       return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
     } catch {
-      // Ambiente sem SubtleCrypto (http:// não seguro, navegador muito antigo etc.)
-      // Fallback: ainda assim NÃO usa storage, para não repetir o bug original.
+
       return _hashFallback(navigator.userAgent + screen.width + screen.height + (navigator.language || ''));
     }
   }
@@ -82,12 +52,10 @@ const Session = (() => {
     return 'f' + Math.abs(h).toString(16).padStart(63, '0');
   }
 
-  /** Pega o token salvo no sessionStorage */
   function getToken() {
     try { return sessionStorage.getItem(TOKEN_KEY); } catch { return null; }
   }
 
-  /** Salva token e data de expiração */
   function saveSession(token, expiresAt) {
     try {
       sessionStorage.setItem(TOKEN_KEY, token);
@@ -97,42 +65,29 @@ const Session = (() => {
     }
   }
 
-  /** Remove sessão do navegador */
   function clearSession() {
     try {
       sessionStorage.removeItem(TOKEN_KEY);
       sessionStorage.removeItem(EXPIRY_KEY);
-    } catch { /* ignore */ }
+    } catch {  }
   }
 
-  // ─── PORTÃO DE ENTRADA (anti-flash) ──────────────────────────────────────
-  // A página nasce "fechada" pelo CSS (html sem a classe .nex-ready), com uma
-  // capa opaca pintada já no primeiro frame. Só liberamos quando a sessão é
-  // confirmada — assim o app nunca aparece por um instante antes do overlay.
   const READY_CLASS = 'nex-ready';
 
-  /** Libera a tela: o conteúdo do app fica visível */
   function releaseGate() {
     document.documentElement.classList.add(READY_CLASS);
   }
 
-  /** Fecha a tela de novo (logout, sessão expirada, etc.) */
   function lockGate() {
     document.documentElement.classList.remove(READY_CLASS);
   }
 
-  /** Formata data para exibição em pt-BR */
   function fmtDate(iso) {
     try { return new Date(iso).toLocaleDateString('pt-BR'); } catch { return '—'; }
   }
 
-  /**
-   * Verifica token com o servidor.
-   * Retorna { valid: bool, expiresAt? }
-   */
   async function verifyWithServer(token) {
-    // Timeout de 10s: sem isso, um servidor lento deixaria o usuário
-    // preso na tela de carregamento por tempo indeterminado.
+
     const ctrl  = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), 10_000);
     try {
@@ -144,17 +99,13 @@ const Session = (() => {
       });
       return await res.json();
     } catch {
-      // Se o servidor estiver offline, bloqueia por segurança
+
       return { valid: false, reason: 'offline' };
     } finally {
       clearTimeout(timer);
     }
   }
 
-  /**
-   * Envia a chave de ativação para o servidor.
-   * Retorna { success, token, expiresAt, message? } ou { error }
-   */
   async function activate(code) {
     const deviceId = await getDeviceId();
     const res = await fetch(`${API_BASE}/api/activate`, {
@@ -167,9 +118,6 @@ const Session = (() => {
     return data;
   }
 
-  /**
-   * Faz logout: invalida token no servidor e limpa sessionStorage.
-   */
   async function logout() {
     const token = getToken();
     try {
@@ -178,24 +126,19 @@ const Session = (() => {
         headers: { 'Content-Type': 'application/json' },
         body   : JSON.stringify({ token }),
       });
-    } catch { /* mesmo se falhar, limpa localmente */ }
+    } catch {  }
     clearSession();
     showActivationOverlay();
   }
 
-  // ─── TELA DE TERMOS DE USO & POLÍTICA DE PRIVACIDADE ────────────────────
-
-  /** Verifica se o usuário já aceitou a versão vigente dos termos */
   function hasAcceptedTerms() {
     try { return localStorage.getItem(TERMS_KEY) === TERMS_VERSION; } catch { return false; }
   }
 
-  /** Marca os termos como aceitos (persiste entre sessões, ao contrário do token) */
   function acceptTerms() {
-    try { localStorage.setItem(TERMS_KEY, TERMS_VERSION); } catch { /* ignore */ }
+    try { localStorage.setItem(TERMS_KEY, TERMS_VERSION); } catch {  }
   }
 
-  /** Mostra overlay de consentimento e só chama onAccept após o clique confirmado */
   function showTermsOverlay(onAccept) {
     let ov = document.getElementById('terms-overlay');
     if (ov) { ov.style.display = ''; return; }
@@ -206,7 +149,6 @@ const Session = (() => {
     const card = document.createElement('div');
     card.className = 'act-card terms-card';
 
-    // Logo (mesmo padrão visual da tela de ativação)
     const logo = document.createElement('div');
     logo.className = 'act-logo';
     logo.innerHTML = `
@@ -228,13 +170,9 @@ const Session = (() => {
     sub.className = 'act-sub';
     sub.textContent = 'Para usar a plataforma, você precisa ler e concordar com nossos Termos de Uso e nossa Política de Privacidade.';
 
-    // Links para os documentos (abrem em nova aba)
     const linksWrap = document.createElement('div');
     linksWrap.className = 'terms-links';
 
-    // Página atual (index.html, dashboard.html...), usada para que o link
-    // "Voltar para a página inicial" dentro de terms.html/privacy.html
-    // retorne para cá (a tela de concordar) em vez da landing page.
     const returnPage = (location.pathname.split('/').pop() || 'index.html');
 
     const termsLink = document.createElement('a');
@@ -255,7 +193,6 @@ const Session = (() => {
 
     linksWrap.append(termsLink, sep, privacyLink);
 
-    // Checkbox de concordância
     const checkRow = document.createElement('label');
     checkRow.className = 'terms-check-row';
     checkRow.setAttribute('for', 'terms-checkbox');
@@ -270,7 +207,6 @@ const Session = (() => {
 
     checkRow.append(checkbox, checkText);
 
-    // Botão continuar
     const btn = document.createElement('button');
     btn.className = 'act-btn';
     btn.id = 'terms-continue-btn';
@@ -285,8 +221,7 @@ const Session = (() => {
     btn.addEventListener('click', () => {
       if (!checkbox.checked) return;
       acceptTerms();
-      // Mostra o loading ANTES de iniciar o fade-out dos termos, para que a
-      // transição revele a tela de loading (opaca) e não o dashboard por trás.
+
       showLoadingOverlay();
       ov.classList.add('hiding');
       setTimeout(() => {
@@ -303,9 +238,6 @@ const Session = (() => {
     document.body.prepend(ov);
   }
 
-  // ─── TELA DE LOADING (transição entre termos e ativação) ────────────────
-
-  /** Mostra o overlay de loading */
   function showLoadingOverlay() {
     let ov = document.getElementById('loading-overlay');
     if (ov) { ov.style.display = ''; return ov; }
@@ -345,7 +277,6 @@ const Session = (() => {
     return ov;
   }
 
-  /** Esconde e remove o overlay de loading */
   function hideLoadingOverlay() {
     const ov = document.getElementById('loading-overlay');
     if (!ov) return;
@@ -353,11 +284,8 @@ const Session = (() => {
     setTimeout(() => ov.remove(), 450);
   }
 
-  // ─── UI DA TELA DE ATIVAÇÃO ──────────────────────────────────────────────
-
-  /** Mostra overlay de ativação sobre o conteúdo */
   function showActivationOverlay() {
-    // Enquanto a ativação estiver na tela, o app continua coberto por baixo
+
     lockGate();
     let ov = document.getElementById('activation-overlay');
     if (!ov) {
@@ -369,16 +297,13 @@ const Session = (() => {
     if (d0) d0.focus();
   }
 
-  /** Constrói o overlay de ativação sem innerHTML de dados do usuário */
   function buildOverlay() {
     const ov = document.createElement('div');
     ov.id = 'activation-overlay';
 
-    // ── Card ──
     const card = document.createElement('div');
     card.className = 'act-card';
 
-    // Logo
     const logo = document.createElement('div');
     logo.className = 'act-logo';
     logo.innerHTML = `
@@ -392,7 +317,6 @@ const Session = (() => {
     logoText.textContent = 'Nex AI';
     logo.appendChild(logoText);
 
-    // Título
     const title = document.createElement('div');
     title.className = 'act-title';
     title.id = 'act-title';
@@ -458,7 +382,6 @@ const Session = (() => {
     msgEl.setAttribute('role', 'status');
     msgEl.setAttribute('aria-live', 'polite');
 
-    // Botão
     const btn = document.createElement('button');
     btn.className = 'act-btn';
     btn.id = 'act-submit-btn';
@@ -484,17 +407,15 @@ const Session = (() => {
     return ov;
   }
 
-  /** Vincula eventos de navegação e paste nos campos de dígito */
   function _bindDigitEvents(digits) {
-    // Contador de tentativas no client para feedback visual
-    // (o rate-limit real está no servidor)
+
     let attempts = 0;
     const MAX_CLIENT_ATTEMPTS = 5;
     let blockedUntil = 0;
 
     digits.forEach((inp, i) => {
       inp.addEventListener('input', function () {
-        // Sanitiza: só A-Z e 0-9
+
         const v = Sanitize.sanitizeCode(this.value);
         this.value = v ? v[v.length - 1] : '';
         this.classList.toggle('filled', !!this.value);
@@ -515,7 +436,7 @@ const Session = (() => {
       inp.addEventListener('paste', function (e) {
         e.preventDefault();
         const raw = (e.clipboardData || window.clipboardData).getData('text');
-        // Sanitiza o texto colado
+
         const clean = Sanitize.sanitizeCode(raw).slice(0, 5);
         clean.split('').forEach((ch, j) => {
           if (digits[j]) {
@@ -529,11 +450,9 @@ const Session = (() => {
       });
     });
 
-    // Expõe submitActivation globalmente
     window.submitActivation = async function () {
       const now = Date.now();
 
-      // Bloqueio client-side temporário (complementa o rate-limit do servidor)
       if (now < blockedUntil) {
         const secsLeft = Math.ceil((blockedUntil - now) / 1000);
         showError(`Aguarde ${secsLeft}s antes de tentar novamente.`);
@@ -562,8 +481,7 @@ const Session = (() => {
         attempts = 0;
 
         setTimeout(() => {
-          // Libera o app ANTES do fade-out, para que o overlay revele a
-          // interface pronta em vez de uma tela preta.
+
           releaseGate();
           const ov = document.getElementById('activation-overlay');
           if (ov) { ov.classList.add('hiding'); setTimeout(() => ov.remove(), 600); }
@@ -681,11 +599,8 @@ const Session = (() => {
     }
   }
 
-  // ─── INICIALIZAÇÃO ────────────────────────────────────────────────────────
-
   async function init() {
-    // Rede de segurança: se algo travar, o usuário nunca fica preso numa
-    // tela preta — cai na ativação (que é uma tela utilizável).
+
     const watchdog = setTimeout(() => {
       const gated = !document.documentElement.classList.contains(READY_CLASS);
       const hasOverlay = document.getElementById('activation-overlay') ||
@@ -694,7 +609,7 @@ const Session = (() => {
     }, 15_000);
 
     try {
-      // Primeiro passo, sempre: exige aceite dos Termos de Uso e Política de Privacidade
+
       if (!hasAcceptedTerms()) {
         showTermsOverlay(proceedAfterTerms);
         return;
@@ -710,12 +625,11 @@ const Session = (() => {
       const token = getToken();
 
       if (!token) {
-        // Sem token: mostra ativação
+
         showActivationOverlay();
         return;
       }
 
-      // Com token: verifica no servidor
       const result = await verifyWithServer(token);
 
       if (!result.valid) {
@@ -724,21 +638,18 @@ const Session = (() => {
         return;
       }
 
-      // Sessão válida: atualiza data de expiração na sidebar se existir
       const expiryEl = document.getElementById('expiry-display');
       if (expiryEl) expiryEl.textContent = fmtDate(result.expiresAt);
 
-      // Só agora o app aparece
       releaseGate();
 
     } catch (err) {
-      // Falha inesperada: bloqueia (fail-closed), mas com tela utilizável
+
       console.error('[Session] Erro ao verificar a sessão:', err);
       showActivationOverlay();
     }
   }
 
-  // Vincula botão de logout se existir na página
   document.addEventListener('DOMContentLoaded', () => {
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) logoutBtn.addEventListener('click', logout);
