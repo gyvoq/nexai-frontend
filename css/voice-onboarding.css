@@ -65,9 +65,6 @@
   animation: voTriggerPulse 2.2s ease-out infinite;
 }
 
-/* Desktop: o botao fica na propria linha do header, ao lado do
-   "Config" e alinhado com o toggle de tema (mesmos 34px).
-   No mobile ele continua exatamente onde estava. */
 @media (min-width: 900px) {
   .voice-trigger {
     position: static;
@@ -209,7 +206,7 @@ body.theme-light .vo-panel {
   flex-shrink: 0;
   transition: opacity var(--transition);
 }
-/* escurece a base da onda para o titulo/estado ficarem legiveis por cima */
+
 .vo-orb::after {
   content: "";
   position: absolute;
@@ -335,8 +332,6 @@ body.theme-light .vo-panel {
   display: none;
 }
 
-/* Mobile: mesma estrutura, so um pouco mais estreito.
-   Precisa vir DEPOIS das regras base para nao ser sobrescrito. */
 @media (max-width: 899px) {
   .vo-panel {
     --vo-orb-h: 172px;
