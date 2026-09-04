@@ -1,9 +1,4 @@
-/**
- * greeting.js — Nex AI
- * ─────────────────────────────────────────────────────────────────────────────
- * Insere uma saudação dinâmica e centralizada acima do título da página
- * (ex.: "Produtos Virais"), variando por horário do dia e dia da semana.
- */
+
 
 'use strict';
 
@@ -42,7 +37,6 @@ const Greeting = (() => {
     0: ['Domingo de organizar as ideias?'],
   };
 
-  /** Retorna o período do dia com base na hora local */
   function getPeriod(hour) {
     if (hour >= 5 && hour < 12) return 'morning';
     if (hour >= 12 && hour < 18) return 'afternoon';
@@ -50,15 +44,10 @@ const Greeting = (() => {
     return 'night';
   }
 
-  /** Escolhe aleatoriamente um item de uma lista */
   function pick(list) {
     return list[Math.floor(Math.random() * list.length)];
   }
 
-  /**
-   * Decide a frase a exibir.
-   * ~50% das vezes usa a saudação por horário, ~50% a saudação por dia da semana.
-   */
   function pickPhrase(date = new Date()) {
     const period = getPeriod(date.getHours());
     const weekday = date.getDay();
@@ -70,7 +59,6 @@ const Greeting = (() => {
     return pick(pool);
   }
 
-  /** Cria (ou reaproveita) o elemento de saudação e injeta no DOM */
   function render(targetSelector = '.page-header') {
     const target = document.querySelector(targetSelector);
     if (!target || !target.parentNode) return;
