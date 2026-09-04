@@ -485,19 +485,6 @@
 
 #loading-overlay.hiding { animation: actOut 0.45s ease forwards; }
 
-/* ─── PORTÃO DE ENTRADA (anti-flash) ──────────────────────────────────────
-   Antes, o conteúdo do app era pintado primeiro e só depois o overlay de
-   ativação era criado pelo JS — o que causava o "pisca-pisca" do fundo ao
-   recarregar a página.
-
-   Agora o <html> começa SEM a classe .nex-ready, e esta capa opaca é
-   pintada já no primeiro frame (o CSS é render-blocking, então vale antes
-   de qualquer pixel do app). O session.js adiciona .nex-ready somente
-   quando o acesso é liberado.
-
-   z-index: fica ABAIXO dos overlays de loading (9998), ativação (9999)
-   e termos (10000), para não escondê-los.
-*/
 html:not(.nex-ready) body { overflow: hidden; }
 
 html:not(.nex-ready)::before {
