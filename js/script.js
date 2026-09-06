@@ -6,7 +6,6 @@ const products = [ {
   rank: 1,
   grad: "grad-saude",
   tag: "#saude",
-  isNew: true,
   prompt: "effervescent vitamin C powder tube orange packaging"
 }, {
   id: 38,
@@ -16,7 +15,6 @@ const products = [ {
   rank: 2,
   grad: "grad-saude",
   tag: "#saude",
-  isNew: true,
   prompt: "hydrolyzed collagen supplement pouch fruit flavor pastel packaging"
 }, {
   id: 6,
@@ -35,7 +33,6 @@ const products = [ {
   rank: 4,
   grad: "grad-beleza",
   tag: "#beleza",
-  isNew: true,
   prompt: "dry touch facial sunscreen tube matte finish minimal packaging"
 }, {
   id: 34,
@@ -63,7 +60,6 @@ const products = [ {
   rank: 7,
   grad: "grad-fitness",
   tag: "#fitness",
-  isNew: true,
   prompt: "post workout compression waist band black breathable fabric"
 }, {
   id: 21,
@@ -82,7 +78,6 @@ const products = [ {
   rank: 9,
   grad: "grad-tech",
   tag: "#tech",
-  isNew: true,
   prompt: "adaptive noise cancelling earbuds matte case premium tech"
 }, {
   id: 28,
@@ -110,7 +105,6 @@ const products = [ {
   rank: 12,
   grad: "grad-moda",
   tag: "#moda",
-  isNew: true,
   prompt: "blue light blocking glasses transparent frame minimal desk accessory"
 }, {
   id: 23,
@@ -147,7 +141,6 @@ const products = [ {
   rank: 16,
   grad: "grad-casa",
   tag: "#casa",
-  isNew: true,
   prompt: "modular drawer organizer set clear plastic minimalist storage"
 }, {
   id: 5,
@@ -336,7 +329,6 @@ const products = [ {
   rank: 37,
   grad: "grad-saude",
   tag: "#saude",
-  isNew: true,
   prompt: "fish oil omega 3 softgel bottle blue and white label"
 }, {
   id: 45,
@@ -345,7 +337,6 @@ const products = [ {
   rank: 38,
   grad: "grad-saude",
   tag: "#saude",
-  isNew: true,
   prompt: "probiotic supplement bottle capsules pastel green packaging"
 }, {
   id: 46,
@@ -354,7 +345,6 @@ const products = [ {
   rank: 39,
   grad: "grad-saude",
   tag: "#saude",
-  isNew: true,
   prompt: "sublingual melatonin spray bottle mint flavor dark packaging"
 }, {
   id: 47,
@@ -363,7 +353,6 @@ const products = [ {
   rank: 40,
   grad: "grad-saude",
   tag: "#saude",
-  isNew: true,
   prompt: "lactose free whey protein tub chocolate flavor label"
 }, {
   id: 48,
@@ -372,7 +361,6 @@ const products = [ {
   rank: 41,
   grad: "grad-saude",
   tag: "#saude",
-  isNew: true,
   prompt: "herbal detox tea box with sachets green packaging"
 }, {
   id: 49,
@@ -381,7 +369,6 @@ const products = [ {
   rank: 42,
   grad: "grad-saude",
   tag: "#saude",
-  isNew: true,
   prompt: "ashwagandha supplement bottle capsules earthy packaging"
 }, {
   id: 50,
@@ -390,7 +377,6 @@ const products = [ {
   rank: 43,
   grad: "grad-saude",
   tag: "#saude",
-  isNew: true,
   prompt: "daily multivitamin bottle bright orange and yellow label"
 }, {
   id: 51,
@@ -399,7 +385,6 @@ const products = [ {
   rank: 44,
   grad: "grad-saude",
   tag: "#saude",
-  isNew: true,
   prompt: "pure creatine monohydrate tub white label minimal design"
 }, {
   id: 52,
@@ -408,7 +393,6 @@ const products = [ {
   rank: 45,
   grad: "grad-saude",
   tag: "#saude",
-  isNew: true,
   prompt: "zinc chelate supplement bottle small white capsules"
 }, {
   id: 53,
@@ -417,7 +401,6 @@ const products = [ {
   rank: 46,
   grad: "grad-saude",
   tag: "#saude",
-  isNew: true,
   prompt: "collagen verisol powder jar pink skin renewal packaging"
 }, {
   id: 54,
@@ -426,7 +409,6 @@ const products = [ {
   rank: 47,
   grad: "grad-beleza",
   tag: "#beleza",
-  isNew: true,
   prompt: "hyaluronic acid facial serum dropper bottle transparent"
 }, {
   id: 55,
@@ -435,7 +417,6 @@ const products = [ {
   rank: 48,
   grad: "grad-beleza",
   tag: "#beleza",
-  isNew: true,
   prompt: "extreme volume mascara black tube wand applicator"
 }, {
   id: 56,
@@ -444,7 +425,6 @@ const products = [ {
   rank: 49,
   grad: "grad-beleza",
   tag: "#beleza",
-  isNew: true,
   prompt: "liquid highlighter bottle golden shimmer glow packaging"
 }, {
   id: 57,
@@ -453,7 +433,6 @@ const products = [ {
   rank: 50,
   grad: "grad-beleza",
   tag: "#beleza",
-  isNew: true,
   prompt: "liquid foundation bottle high coverage sleek packaging"
 }, {
   id: 58,
@@ -462,7 +441,6 @@ const products = [ {
   rank: 51,
   grad: "grad-beleza",
   tag: "#beleza",
-  isNew: true,
   prompt: "hair oil repair bottle dropper amber glass"
 }, {
   id: 59,
@@ -471,7 +449,6 @@ const products = [ {
   rank: 52,
   grad: "grad-beleza",
   tag: "#beleza",
-  isNew: true,
   prompt: "lip gloss plumper tube glossy pink packaging"
 }, {
   id: 60,
@@ -480,7 +457,6 @@ const products = [ {
   rank: 53,
   grad: "grad-beleza",
   tag: "#beleza",
-  isNew: true,
   prompt: "coffee coconut body scrub jar brown packaging"
 }, {
   id: 61,
@@ -489,7 +465,6 @@ const products = [ {
   rank: 54,
   grad: "grad-beleza",
   tag: "#beleza",
-  isNew: true,
   prompt: "nude eyeshadow palette compact editorial packaging"
 }, {
   id: 62,
@@ -498,7 +473,6 @@ const products = [ {
   rank: 55,
   grad: "grad-beleza",
   tag: "#beleza",
-  isNew: true,
   prompt: "night retinol anti aging cream jar dark packaging"
 }, {
   id: 63,
@@ -507,7 +481,6 @@ const products = [ {
   rank: 56,
   grad: "grad-beleza",
   tag: "#beleza",
-  isNew: true,
   prompt: "fine tip liquid eyeliner black slim packaging"
 }, {
   id: 64,
@@ -516,7 +489,6 @@ const products = [ {
   rank: 57,
   grad: "grad-fitness",
   tag: "#fitness",
-  isNew: true,
   prompt: "resistance bands set five levels colorful packaging"
 }, {
   id: 65,
@@ -525,7 +497,6 @@ const products = [ {
   rank: 58,
   grad: "grad-fitness",
   tag: "#fitness",
-  isNew: true,
   prompt: "jump rope with digital counter handle black design"
 }, {
   id: 66,
@@ -534,7 +505,6 @@ const products = [ {
   rank: 59,
   grad: "grad-fitness",
   tag: "#fitness",
-  isNew: true,
   prompt: "anti slip workout gloves black gym gear"
 }, {
   id: 67,
@@ -543,7 +513,6 @@ const products = [ {
   rank: 60,
   grad: "grad-fitness",
   tag: "#fitness",
-  isNew: true,
   prompt: "protein shaker bottle with storage compartment"
 }, {
   id: 68,
@@ -552,7 +521,6 @@ const products = [ {
   rank: 61,
   grad: "grad-fitness",
   tag: "#fitness",
-  isNew: true,
   prompt: "foam roller myofascial release cylinder blue"
 }, {
   id: 69,
@@ -561,7 +529,6 @@ const products = [ {
   rank: 62,
   grad: "grad-fitness",
   tag: "#fitness",
-  isNew: true,
   prompt: "lightweight breathable running shoe mesh design"
 }, {
   id: 70,
@@ -570,7 +537,6 @@ const products = [ {
   rank: 63,
   grad: "grad-fitness",
   tag: "#fitness",
-  isNew: true,
   prompt: "thermal abdominal shaper belt black neoprene"
 }, {
   id: 71,
@@ -579,7 +545,6 @@ const products = [ {
   rank: 64,
   grad: "grad-fitness",
   tag: "#fitness",
-  isNew: true,
   prompt: "adjustable neoprene dumbbells set colorful weights"
 }, {
   id: 72,
@@ -588,7 +553,6 @@ const products = [ {
   rank: 65,
   grad: "grad-fitness",
   tag: "#fitness",
-  isNew: true,
   prompt: "motivational water bottle 2 liters time markers"
 }, {
   id: 73,
@@ -597,7 +561,6 @@ const products = [ {
   rank: 66,
   grad: "grad-fitness",
   tag: "#fitness",
-  isNew: true,
   prompt: "adjustable aerobic step platform three heights"
 }, {
   id: 74,
@@ -606,7 +569,6 @@ const products = [ {
   rank: 67,
   grad: "grad-tech",
   tag: "#tech",
-  isNew: true,
   prompt: "wireless earbuds noise cancelling charging case"
 }, {
   id: 75,
@@ -615,7 +577,6 @@ const products = [ {
   rank: 68,
   grad: "grad-tech",
   tag: "#tech",
-  isNew: true,
   prompt: "portable mini projector full hd compact design"
 }, {
   id: 76,
@@ -624,7 +585,6 @@ const products = [ {
   rank: 69,
   grad: "grad-tech",
   tag: "#tech",
-  isNew: true,
   prompt: "magnetic wireless charger 3 in 1 station"
 }, {
   id: 77,
@@ -633,7 +593,6 @@ const products = [ {
   rank: 70,
   grad: "grad-tech",
   tag: "#tech",
-  isNew: true,
   prompt: "wifi security camera 360 degree white housing"
 }, {
   id: 78,
@@ -642,7 +601,6 @@ const products = [ {
   rank: 71,
   grad: "grad-tech",
   tag: "#tech",
-  isNew: true,
   prompt: "articulated phone holder desk mount black"
 }, {
   id: 79,
@@ -651,7 +609,6 @@ const products = [ {
   rank: 72,
   grad: "grad-tech",
   tag: "#tech",
-  isNew: true,
   prompt: "fast charging power bank 20000mah sleek design"
 }, {
   id: 80,
@@ -660,7 +617,6 @@ const products = [ {
   rank: 73,
   grad: "grad-tech",
   tag: "#tech",
-  isNew: true,
   prompt: "smart ring health monitor minimal metallic design"
 }, {
   id: 81,
@@ -669,7 +625,6 @@ const products = [ {
   rank: 74,
   grad: "grad-tech",
   tag: "#tech",
-  isNew: true,
   prompt: "rgb led strip light gamer room setup"
 }, {
   id: 82,
@@ -678,7 +633,6 @@ const products = [ {
   rank: 75,
   grad: "grad-tech",
   tag: "#tech",
-  isNew: true,
   prompt: "compact wireless mechanical keyboard rgb backlight"
 }, {
   id: 83,
@@ -687,7 +641,6 @@ const products = [ {
   rank: 76,
   grad: "grad-tech",
   tag: "#tech",
-  isNew: true,
   prompt: "vertical ergonomic wireless mouse black design"
 }, {
   id: 84,
@@ -696,7 +649,6 @@ const products = [ {
   rank: 77,
   grad: "grad-moda",
   tag: "#moda",
-  isNew: true,
   prompt: "crossbody bag synthetic leather minimal design"
 }, {
   id: 85,
@@ -705,7 +657,6 @@ const products = [ {
   rank: 78,
   grad: "grad-moda",
   tag: "#moda",
-  isNew: true,
   prompt: "polarized retro sunglasses tortoiseshell frame"
 }, {
   id: 86,
@@ -714,7 +665,6 @@ const products = [ {
   rank: 79,
   grad: "grad-moda",
   tag: "#moda",
-  isNew: true,
   prompt: "minimalist stainless steel watch slim design"
 }, {
   id: 87,
@@ -723,7 +673,6 @@ const products = [ {
   rank: 80,
   grad: "grad-moda",
   tag: "#moda",
-  isNew: true,
   prompt: "oversized unisex sweatsuit set streetwear style"
 }, {
   id: 88,
@@ -732,7 +681,6 @@ const products = [ {
   rank: 81,
   grad: "grad-moda",
   tag: "#moda",
-  isNew: true,
   prompt: "chunky platform casual sneaker trendy design"
 }, {
   id: 89,
@@ -741,7 +689,6 @@ const products = [ {
   rank: 82,
   grad: "grad-moda",
   tag: "#moda",
-  isNew: true,
   prompt: "reversible belt gold buckle leather design"
 }, {
   id: 90,
@@ -750,7 +697,6 @@ const products = [ {
   rank: 83,
   grad: "grad-moda",
   tag: "#moda",
-  isNew: true,
   prompt: "gold plated hoop earrings minimal jewelry"
 }, {
   id: 91,
@@ -759,7 +705,6 @@ const products = [ {
   rank: 84,
   grad: "grad-moda",
   tag: "#moda",
-  isNew: true,
   prompt: "waterproof windbreaker jacket lightweight design"
 }, {
   id: 92,
@@ -768,7 +713,6 @@ const products = [ {
   rank: 85,
   grad: "grad-moda",
   tag: "#moda",
-  isNew: true,
   prompt: "slim rfid blocking wallet leather minimal"
 }, {
   id: 93,
@@ -777,7 +721,6 @@ const products = [ {
   rank: 86,
   grad: "grad-moda",
   tag: "#moda",
-  isNew: true,
   prompt: "printed silk scarf multiuse colorful pattern"
 }, {
   id: 94,
@@ -786,7 +729,6 @@ const products = [ {
   rank: 87,
   grad: "grad-casa",
   tag: "#casa",
-  isNew: true,
   prompt: "led aromatherapy air humidifier wood grain design"
 }, {
   id: 95,
@@ -795,7 +737,6 @@ const products = [ {
   rank: 88,
   grad: "grad-casa",
   tag: "#casa",
-  isNew: true,
   prompt: "modular drawer organizer set clear plastic"
 }, {
   id: 96,
@@ -804,7 +745,6 @@ const products = [ {
   rank: 89,
   grad: "grad-casa",
   tag: "#casa",
-  isNew: true,
   prompt: "touch dimmable desk lamp modern minimal design"
 }, {
   id: 97,
@@ -813,7 +753,6 @@ const products = [ {
   rank: 90,
   grad: "grad-casa",
   tag: "#casa",
-  isNew: true,
   prompt: "nonstick cookware set five pieces black design"
 }, {
   id: 98,
@@ -822,7 +761,6 @@ const products = [ {
   rank: 91,
   grad: "grad-casa",
   tag: "#casa",
-  isNew: true,
   prompt: "cordless portable vacuum 2 in 1 handheld"
 }, {
   id: 99,
@@ -831,7 +769,6 @@ const products = [ {
   rank: 92,
   grad: "grad-casa",
   tag: "#casa",
-  isNew: true,
   prompt: "ultrasonic aroma diffuser wood base minimal"
 }, {
   id: 100,
@@ -840,7 +777,6 @@ const products = [ {
   rank: 93,
   grad: "grad-casa",
   tag: "#casa",
-  isNew: true,
   prompt: "capsule wardrobe organizer kit clear boxes"
 }, {
   id: 101,
@@ -849,7 +785,6 @@ const products = [ {
   rank: 94,
   grad: "grad-casa",
   tag: "#casa",
-  isNew: true,
   prompt: "thermal blackout curtain light blocking fabric"
 }, {
   id: 102,
@@ -858,7 +793,6 @@ const products = [ {
   rank: 95,
   grad: "grad-casa",
   tag: "#casa",
-  isNew: true,
   prompt: "non slip bathroom mat soft microfiber design"
 }, {
   id: 103,
@@ -867,11 +801,295 @@ const products = [ {
   rank: 96,
   grad: "grad-casa",
   tag: "#casa",
-  isNew: true,
   prompt: "tiered wooden plant stand minimal design"
 } ];
 
 const videos = [ {
+  id: "51",
+  title: "Jelly Blox ASMR",
+  fmt: "unboxing",
+  img: "./img10.png",
+  grad: "grad-moda",
+  views: "10.5M",
+  likes: "465K",
+  dur: "3:32",
+  fmtClass: "fmt-unboxing",
+  isNew: true,
+  url: "https://www.tiktok.com",
+  hook: "Olha esse som de Jelly Blox...",
+  reveal: "Cortando e apertando cada bloquinho...",
+  cta: "Kit completo com link na bio"
+}, {
+  id: "50",
+  title: "Hello Kitty, Care Bear e Stitch Blind Boxes ASMR",
+  fmt: "unboxing",
+  img: "./img10.png",
+  grad: "grad-moda",
+  views: "2.2M",
+  likes: "303K",
+  dur: "6:59",
+  fmtClass: "fmt-unboxing",
+  isNew: true,
+  url: "https://www.tiktok.com",
+  hook: "Comprei todas as blind boxes fofas...",
+  reveal: "Abrindo uma por uma sem saber o que vem...",
+  cta: "Coleção completa no link da bio"
+}, {
+  id: "49",
+  title: "Hello Kitty Blind Box de Arcade",
+  fmt: "unboxing",
+  img: "./img10.png",
+  grad: "grad-moda",
+  views: "2.3M",
+  likes: "142K",
+  dur: "12:44",
+  fmtClass: "fmt-unboxing",
+  isNew: true,
+  url: "https://www.tiktok.com",
+  hook: "Fui atrás da Hello Kitty rara do arcade...",
+  reveal: "Jogando até conseguir a caixa surpresa...",
+  cta: "Peça disponível no link da bio"
+}, {
+  id: "48",
+  title: "Unboxing Tablet N17",
+  fmt: "unboxing",
+  img: "./img14.png",
+  grad: "grad-tech",
+  views: "2.3M",
+  likes: "30.1K",
+  dur: "6:50",
+  fmtClass: "fmt-unboxing",
+  isNew: true,
+  url: "https://www.tiktok.com",
+  hook: "Chegou o tablet mais barato que eu já vi...",
+  reveal: "Tirando da caixa e testando na hora...",
+  cta: "Tablet disponível no link da bio"
+}, {
+  id: "47",
+  title: "Haul feminino: bolsas, acessórios e bijuterias",
+  fmt: "review",
+  img: "./img10.png",
+  grad: "grad-moda",
+  views: "76K",
+  likes: "2.9K",
+  dur: "4:00",
+  fmtClass: "fmt-review",
+  isNew: true,
+  url: "https://www.tiktok.com",
+  hook: "Fiz um haul de tudo que comprei essa semana...",
+  reveal: "Mostrando peça por peça e o preço de cada uma...",
+  cta: "Lista completa no link da bio"
+}, {
+  id: "46",
+  title: "Eudora Ultra Bond Reset",
+  fmt: "tutorial",
+  img: "./img21.png",
+  grad: "grad-beleza",
+  views: "36.4K",
+  likes: "2.6K",
+  dur: "7:14",
+  fmtClass: "fmt-tutorial",
+  isNew: true,
+  url: "https://www.tiktok.com",
+  hook: "Meu cabelo estava destruído até eu testar isso...",
+  reveal: "Aplicando passo a passo o tratamento completo...",
+  cta: "Produto disponível no link da bio"
+}, {
+  id: "45",
+  title: "Lucky Scoop Squishy",
+  fmt: "unboxing",
+  img: "./img10.png",
+  grad: "grad-moda",
+  views: "739K",
+  likes: "38K",
+  dur: "2:30",
+  fmtClass: "fmt-unboxing",
+  isNew: true,
+  url: "https://www.tiktok.com",
+  hook: "Esse squishy viciante viralizou de novo...",
+  reveal: "Raspando camada por camada até o prêmio...",
+  cta: "Kit Lucky Scoop no link da bio"
+}, {
+  id: "44",
+  title: "Stray Kids – álbum This & That",
+  fmt: "unboxing",
+  img: "./img10.png",
+  grad: "grad-moda",
+  views: "340K",
+  likes: "53K",
+  dur: "0:59",
+  fmtClass: "fmt-unboxing",
+  isNew: true,
+  url: "https://www.tiktok.com",
+  hook: "Chegou meu álbum do Stray Kids...",
+  reveal: "Abrindo photocard por photocard...",
+  cta: "Álbum disponível no link da bio"
+}, {
+  id: "43v",
+  title: "Medicube: manchas e hiperpigmentação",
+  fmt: "review",
+  img: "./img21.png",
+  grad: "grad-beleza",
+  views: "5.3M",
+  likes: "64K",
+  dur: "3:15",
+  fmtClass: "fmt-review",
+  isNew: true,
+  url: "https://www.tiktok.com",
+  hook: "Minhas manchas não saíam com nada...",
+  reveal: "Testando o Medicube por semanas seguidas...",
+  cta: "Produto disponível no link da bio"
+}, {
+  id: "42v",
+  title: "Melhora da pele com tecnologia coreana",
+  fmt: "tutorial",
+  img: "./img21.png",
+  grad: "grad-beleza",
+  views: "3.1M",
+  likes: "33K",
+  dur: "9:22",
+  fmtClass: "fmt-tutorial",
+  isNew: true,
+  url: "https://www.tiktok.com",
+  hook: "Descobri a tecnologia coreana que muda a pele...",
+  reveal: "Mostrando o passo a passo completo da rotina...",
+  cta: "Kit disponível no link da bio"
+}, {
+  id: "41v",
+  title: "Rotina de alimentação, hidratação e exercícios",
+  fmt: "tutorial",
+  img: "./img13.png",
+  grad: "grad-fitness",
+  views: "1.5M",
+  likes: "220K",
+  dur: "4:42",
+  fmtClass: "fmt-tutorial",
+  isNew: true,
+  url: "https://www.tiktok.com",
+  hook: "Mudei 3 hábitos e o resultado surpreendeu...",
+  reveal: "Mostrando a rotina completa do meu dia...",
+  cta: "Guia completo no link da bio"
+}, {
+  id: "40v",
+  title: "Evolução na academia",
+  fmt: "antes",
+  img: "./img13.png",
+  grad: "grad-fitness",
+  views: "939K",
+  likes: "92.9K",
+  dur: "1:00",
+  fmtClass: "fmt-antes",
+  isNew: true,
+  url: "https://www.tiktok.com",
+  hook: "Assim eu era há 6 meses...",
+  reveal: "Mostrando a evolução mês a mês...",
+  cta: "Programa completo no link da bio"
+}, {
+  id: "39v",
+  title: "Skincare coreano com mist",
+  fmt: "tutorial",
+  img: "./img21.png",
+  grad: "grad-beleza",
+  views: "678K",
+  likes: "83.3K",
+  dur: "7:26",
+  fmtClass: "fmt-tutorial",
+  isNew: true,
+  url: "https://www.tiktok.com",
+  hook: "O segredo da pele coreana está no mist...",
+  reveal: "Aplicando camada por camada ao vivo...",
+  cta: "Mist disponível no link da bio"
+}, {
+  id: "38v",
+  title: "Antes e depois após tratamento com Roacutan",
+  fmt: "antes",
+  img: "./img21.png",
+  grad: "grad-beleza",
+  views: "618K",
+  likes: "16.4K",
+  dur: "5:53",
+  fmtClass: "fmt-antes",
+  isNew: true,
+  url: "https://www.tiktok.com",
+  hook: "Minha pele antes do tratamento era assim...",
+  reveal: "Mostrando a transformação real depois do Roacutan...",
+  cta: "Acompanhamento completo no link da bio"
+}, {
+  id: "37v",
+  title: "Antes e depois do verão",
+  fmt: "antes",
+  img: "./img13.png",
+  grad: "grad-fitness",
+  views: "549K",
+  likes: "88K",
+  dur: "8:40",
+  fmtClass: "fmt-antes",
+  isNew: true,
+  url: "https://www.tiktok.com",
+  hook: "Assim eu estava antes do verão começar...",
+  reveal: "Mostrando a mudança até a virada de estação...",
+  cta: "Plano completo no link da bio"
+}, {
+  id: "36v",
+  title: "Axilas manchadas usando creme com ácidos",
+  fmt: "antes",
+  img: "./img21.png",
+  grad: "grad-beleza",
+  views: "572K",
+  likes: "42K",
+  dur: "1:30",
+  fmtClass: "fmt-antes",
+  isNew: true,
+  url: "https://www.tiktok.com",
+  hook: "Minhas axilas manchadas incomodavam muito...",
+  reveal: "Aplicando o creme com ácidos por semanas...",
+  cta: "Creme disponível no link da bio"
+}, {
+  id: "35v",
+  title: "Skincare coreano com ácido tranexâmico",
+  fmt: "tutorial",
+  img: "./img21.png",
+  grad: "grad-beleza",
+  views: "228K",
+  likes: "24K",
+  dur: "7:00",
+  fmtClass: "fmt-tutorial",
+  isNew: true,
+  url: "https://www.tiktok.com",
+  hook: "Descobri o ácido que clareia de verdade...",
+  reveal: "Mostrando como incluir na rotina de skincare...",
+  cta: "Produto disponível no link da bio"
+}, {
+  id: "34v",
+  title: "Minoxidil para sobrancelhas",
+  fmt: "tutorial",
+  img: "./img21.png",
+  grad: "grad-beleza",
+  views: "418K",
+  likes: "16K",
+  dur: "11:00",
+  fmtClass: "fmt-tutorial",
+  isNew: true,
+  url: "https://www.tiktok.com",
+  hook: "Minhas sobrancelhas falhadas me incomodavam...",
+  reveal: "Aplicando minoxidil todos os dias por semanas...",
+  cta: "Produto disponível no link da bio"
+}, {
+  id: "33v",
+  title: "Emagrecimento e transformação corporal",
+  fmt: "antes",
+  img: "./img13.png",
+  grad: "grad-fitness",
+  views: "402K",
+  likes: "41.9K",
+  dur: "8:15",
+  fmtClass: "fmt-antes",
+  isNew: true,
+  url: "https://www.tiktok.com",
+  hook: "Essa era minha rotina antes de emagrecer...",
+  reveal: "Mostrando a transformação corporal completa...",
+  cta: "Programa completo no link da bio"
+},  {
   id: "27",
   title: "Essa caneta chique viralizou no TikTok Shop",
   fmt: "review",
@@ -1976,7 +2194,8 @@ function renderVideos() {
   document.getElementById("video-grid").innerHTML = videos.map((v, i) => {
     const fav = isFav("vid", v.id);
     const hotBadge = hotIds.includes(v.id) ? `<span class="badge-hot">Em alta 🔥</span>` : "";
-    return `<div class="video-card" data-fmt="${v.fmt}" style="animation-delay:${i * .035}s" role="listitem">\n      <div class="video-thumb">\n        <img src="${v.img}" alt="${v.title}" loading="lazy" onerror="this.style.display='none'">\n        <div class="play-overlay" aria-hidden="true"><div class="play-circle"><svg viewBox="0 0 24 24" style="width:32px;height:32px"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>\n        <span class="format-badge ${v.fmtClass}">${v.fmt.toUpperCase()}</span>\n        ${hotBadge}\n        <button class="fav-btn ${fav ? "active" : ""}" style="top:7px;left:7px;right:auto" onclick="this.innerHTML=heartSVG(!this.classList.contains('active'));toggleFav('vid',${v.id},this)" aria-label="${fav ? "Remover dos favoritos" : "Favoritar vídeo"}">${heartSVG(fav)}</button>\n      </div>\n      <div class="video-body">\n        <button class="card-btn" onclick="window.open('${v.url}','_blank')" style="margin-bottom:8px"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>Ver no TikTok</button>\n        <div class="video-title">${v.title}</div>\n        <div class="video-stats">\n          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>${v.views}</span>\n          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>${v.likes}</span>\n          <span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${v.dur}</span>\n        </div>\n        <button class="accordion-btn" onclick="toggleAccordion(this)" aria-expanded="false"><span>Estrutura do Roteiro</span><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>\n        <div class="accordion-body" role="region">\n          <div class="script-step"><span>Hook (0–3s)</span><p>${v.hook}</p></div>\n          <div class="script-step"><span>Reveal (3–12s)</span><p>${v.reveal}</p></div>\n          <div class="script-step"><span>CTA</span><p>${v.cta}</p></div>\n        </div>\n      </div>\n    </div>`;
+    const newBadgeV = v.isNew ? `<span class="badge-new">NOVO</span>` : "";
+    return `<div class="video-card" data-fmt="${v.fmt}" style="animation-delay:${i * .035}s" role="listitem">\n      <div class="video-thumb">\n        <img src="${v.img}" alt="${v.title}" loading="lazy" onerror="this.style.display='none'">\n        <div class="play-overlay" aria-hidden="true"><div class="play-circle"><svg viewBox="0 0 24 24" style="width:32px;height:32px"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>\n        <span class="format-badge ${v.fmtClass}">${v.fmt.toUpperCase()}</span>\n        ${hotBadge}\n        ${newBadgeV}\n        <button class="fav-btn ${fav ? "active" : ""}" style="top:7px;left:7px;right:auto" onclick="this.innerHTML=heartSVG(!this.classList.contains('active'));toggleFav('vid',${v.id},this)" aria-label="${fav ? "Remover dos favoritos" : "Favoritar vídeo"}">${heartSVG(fav)}</button>\n      </div>\n      <div class="video-body">\n        <button class="card-btn" onclick="window.open('${v.url}','_blank')" style="margin-bottom:8px"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>Ver no TikTok</button>\n        <div class="video-title">${v.title}</div>\n        <div class="video-stats">\n          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>${v.views}</span>\n          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>${v.likes}</span>\n          <span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${v.dur}</span>\n        </div>\n        <button class="accordion-btn" onclick="toggleAccordion(this)" aria-expanded="false"><span>Estrutura do Roteiro</span><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>\n        <div class="accordion-body" role="region">\n          <div class="script-step"><span>Hook (0–3s)</span><p>${v.hook}</p></div>\n          <div class="script-step"><span>Reveal (3–12s)</span><p>${v.reveal}</p></div>\n          <div class="script-step"><span>CTA</span><p>${v.cta}</p></div>\n        </div>\n      </div>\n    </div>`;
   }).join("");
 }
 
