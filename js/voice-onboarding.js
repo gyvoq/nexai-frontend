@@ -273,14 +273,13 @@ const VoiceOnboarding = (() => {
     let rafId = 0,
       running = false,
       ready = false;
-    // Amplitude da onda: 1 = falando, 0 = flatline.
-    // `amp` persegue `ampTarget` suavemente, então a onda não corta seco.
+
     let amp = 0,
       ampTarget = 0,
       lastFrameT = 0,
       sleeping = false;
-    const RISE_TAU = 0.16; // segundos para "subir" a onda
-    const FALL_TAU = 0.34; // um pouco mais lento para assentar na linha
+    const RISE_TAU = 0.16;
+    const FALL_TAU = 0.34;
     let w = 0,
       h = 0;
     const RENDER_SCALE = 0.85;
@@ -347,7 +346,6 @@ const VoiceOnboarding = (() => {
     function frame(now) {
       if (!running) return;
 
-      // Interpolação por tempo (não por frame), para ficar igual em 60 e 120Hz
       const t = typeof now === 'number' ? now : performance.now();
       const dt = Math.min(Math.max((t - lastFrameT) / 1000, 0), 0.1);
       lastFrameT = t;
@@ -361,8 +359,6 @@ const VoiceOnboarding = (() => {
       gl.uniform1f(uAmp, amp);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
 
-      // Flatline estável: a imagem não muda mais, então paramos de desenhar
-      // (economiza GPU/bateria). Volta a rodar assim que a voz falar de novo.
       if (amp === 0 && ampTarget === 0) {
         sleeping = true;
         rafId = 0;
@@ -372,7 +368,6 @@ const VoiceOnboarding = (() => {
       rafId = requestAnimationFrame(frame);
     }
 
-    /** Define o alvo da amplitude: 1 = falando, 0 = flatline */
     function setAmplitude(v) {
       ampTarget = Math.min(1, Math.max(0, v));
       if (running && sleeping && ampTarget !== amp) {
@@ -513,7 +508,6 @@ const VoiceOnboarding = (() => {
   function setState(state) {
     panel.classList.remove('idle', 'speaking', 'paused');
     panel.classList.add(state);
-    // A onda só ondula enquanto a voz fala; em idle/pausado vira flatline
     WaveOrb.setAmplitude(state === 'speaking' ? 1 : 0);
   }
 
@@ -541,8 +535,6 @@ const VoiceOnboarding = (() => {
     audio.preload = 'none';
     audio.addEventListener('ended', onEnded);
     audio.addEventListener('error', onEnded);
-    // Rede de segurança: qualquer parada vinda do próprio <audio>
-    // (pausa do sistema, buffer travando, fim da faixa) também flatlina.
     audio.addEventListener('pause', () => WaveOrb.setAmplitude(0));
     audio.addEventListener('waiting', () => WaveOrb.setAmplitude(0));
     audio.addEventListener('playing', () => WaveOrb.setAmplitude(1));
@@ -796,6 +788,7 @@ const VoiceOnboarding = (() => {
     let tries = 0;
     let clear = 0;
     (function tick() {
+      if (isDone()) return;
       if (active) return;
       if (screenIsBlocked()) {
         clear = 0;
