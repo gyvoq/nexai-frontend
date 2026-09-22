@@ -227,7 +227,7 @@ body.theme-light .vo-panel {
   border-radius: calc(var(--radius-lg) - 1px) calc(var(--radius-lg) - 1px) 12px
     12px;
   overflow: hidden;
-  background: #0f0f13;
+  background: #100d17;
   flex-shrink: 0;
   transition: opacity var(--transition);
 }
