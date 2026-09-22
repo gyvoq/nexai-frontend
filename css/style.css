@@ -1,14 +1,14 @@
 
 :root {
-  --bg: #1e1c1a;
-  --surface: #272421;
-  --surface2: #2e2b27;
-  --surface3: #38342f;
-  --border: #3c3833;
-  --border2: #4a453e;
-  --text: #f2efe9;
-  --text2: #a8a297;
-  --text3: #6f6a62;
+  --bg: #141414;
+  --surface: #1c1c1c;
+  --surface2: #232323;
+  --surface3: #2b2b2b;
+  --border: #333333;
+  --border2: #3d3d3d;
+  --text: #f2f2f2;
+  --text2: #a3a3a3;
+  --text3: #6b6b6b;
   --accent1: #8b5cf6;
   --accent2: #a855f7;
   --accent3: #00e5b3;
@@ -895,7 +895,7 @@ input[type=range] { width: 100%; accent-color: var(--accent1); cursor: pointer; 
 .theme-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
 .theme-opt { aspect-ratio: 4/3; border-radius: var(--radius); border: 2px solid var(--border); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 7px; font-size: 10px; font-weight: 600; transition: all var(--transition); overflow: hidden; }
 .theme-opt.selected { border-color: var(--accent1); }
-.theme-dark { background: #1e1c1a; color: #6f6a62; }
+.theme-dark { background: #141414; color: #6b6b6b; }
 .theme-light { background: #f0f0f0; color: #555; }
 .plan-card {
   background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(168,85,247,0.08));
