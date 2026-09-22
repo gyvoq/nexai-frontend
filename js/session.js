@@ -154,12 +154,12 @@ const Session = (() => {
     logo.innerHTML = `
       <div class="act-logo-icon">
         <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:white;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round">
-          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          <polyline points="4 4 12 20 20 4" style="stroke-width:2.6"/>
         </svg>
       </div>`;
     const logoText = document.createElement('span');
     logoText.className = 'act-logo-text';
-    logoText.textContent = 'Nex AI';
+    logoText.textContent = 'Viralyze';
     logo.appendChild(logoText);
 
     const title = document.createElement('div');
@@ -253,12 +253,12 @@ const Session = (() => {
     logo.innerHTML = `
       <div class="act-logo-icon">
         <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:white;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round">
-          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          <polyline points="4 4 12 20 20 4" style="stroke-width:2.6"/>
         </svg>
       </div>`;
     const logoText = document.createElement('span');
     logoText.className = 'act-logo-text';
-    logoText.textContent = 'Nex AI';
+    logoText.textContent = 'Viralyze';
     logo.appendChild(logoText);
 
     const spinner = document.createElement('div');
@@ -309,12 +309,12 @@ const Session = (() => {
     logo.innerHTML = `
       <div class="act-logo-icon">
         <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:white;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round">
-          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          <polyline points="4 4 12 20 20 4" style="stroke-width:2.6"/>
         </svg>
       </div>`;
     const logoText = document.createElement('span');
     logoText.className = 'act-logo-text';
-    logoText.textContent = 'Nex AI';
+    logoText.textContent = 'Viralyze';
     logo.appendChild(logoText);
 
     const title = document.createElement('div');
@@ -561,7 +561,7 @@ const Session = (() => {
         const t = document.getElementById('act-title');
         const s = document.getElementById('act-sub');
         if (t) t.textContent = 'Licença ativada';
-        if (s) s.textContent = 'Tudo pronto. Bem-vindo ao Nex AI.';
+        if (s) s.textContent = 'Tudo pronto. Bem-vindo ao Viralyze.';
       }, 580);
     }
 
