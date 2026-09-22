@@ -2,7 +2,7 @@
   position:fixed;
   inset:0;
   z-index:9999;
-  background:#141414;
+  background:#0c0a12;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -126,7 +126,7 @@
 .act-field.deny .act-digit{
   border-color:rgba(168,85,247,.55);
   background:rgba(168,85,247,.07);
-  color:#ff7a9c;
+  color:#c4b5fd;
   transition:border-color .2s ease, background .2s ease, color .2s ease;
 }
 
@@ -169,7 +169,7 @@
 .act-field.merge .act-seal{opacity:1;transform:scale(1)}
 .act-seal-disc{
   position:absolute;inset:0;border-radius:50%;overflow:hidden;
-  background:linear-gradient(145deg,#ff6b8e,#8b5cf6 52%,#d81244);
+  background:linear-gradient(145deg,#c4b5fd,#8b5cf6 52%,#5b21b6);
   box-shadow:0 0 42px -10px rgba(139,92,246,.95), 0 1px 0 rgba(255,255,255,.4) inset;
 }
 .act-seal svg{position:relative;width:30px;height:30px;overflow:visible}
@@ -266,7 +266,7 @@
   position: fixed;
   inset: 0;
   z-index: 10000; 
-  background: #141414;
+  background: #0c0a12;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -359,7 +359,7 @@
   position: fixed;
   inset: 0;
   z-index: 9998; 
-  background: #141414;
+  background: #0c0a12;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -401,7 +401,7 @@ html:not(.nex-ready)::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: #141414;
+  background: #0c0a12;
   z-index: 9990;
 }
 
