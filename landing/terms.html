@@ -57,7 +57,6 @@ a:focus-visible, button:focus-visible {
   border-radius: 4px;
 }
 
-/* ===== BACKDROP ===== */
 .bg-orb {
   position: fixed;
   border-radius: 50%;
@@ -77,7 +76,6 @@ a:focus-visible, button:focus-visible {
   bottom: -100px; right: -100px;
 }
 
-/* ===== NAV ===== */
 nav {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -206,7 +204,6 @@ nav.scrolled {
   .nav-toggle { display: flex; }
 }
 
-/* ===== LEGAL HERO ===== */
 .legal-hero {
   position: relative;
   z-index: 1;
@@ -271,7 +268,6 @@ nav.scrolled {
   max-width: 560px;
 }
 
-/* ===== LEGAL LAYOUT ===== */
 .legal-wrap {
   position: relative;
   z-index: 1;
@@ -423,10 +419,6 @@ nav.scrolled {
   .legal-toc { position: static; }
   .legal-card { padding: 1.6rem; }
 
-  /* Performance: heavy backdrop-filter blur stacked with fixed/sticky
-     elements causes flicker/invisible-content bugs on mobile Safari &
-     low-end Android GPUs. Trim blur and switch fixed orbs to absolute
-     so they aren't repainted every scroll frame. */
   .bg-orb {
     position: absolute;
     filter: blur(60px);
@@ -456,7 +448,6 @@ nav.scrolled {
   }
 }
 
-/* ===== FOOTER ===== */
 footer {
   position: relative;
   z-index: 1;
@@ -503,26 +494,26 @@ footer {
 <div class="bg-orb bg-orb-2"></div>
 
 <nav id="nav">
-  <a href="https://nexai-frontend-theta.vercel.app/landing/landing.html" class="logo"><span class="logo-text">Viralyze</span></a>
+  <a href="https://viralyze-shop.vercel.app/landing/landing.html" class="logo"><span class="logo-text">Viralyze</span></a>
   <ul class="nav-links">
-    <li><a href="https://nexai-frontend-theta.vercel.app/landing/landing.html#features">Recursos</a></li>
-    <li><a href="https://nexai-frontend-theta.vercel.app/landing/landing.html#pricing">Preços</a></li>
-    <li><a href="https://nexai-frontend-theta.vercel.app/landing/landing.html#faq">FAQ</a></li>
-    <li><a href="https://nexai-frontend-theta.vercel.app/" class="btn-nav">Começar grátis</a></li>
+    <li><a href="https://viralyze-shop.vercel.app/landing/landing.html#features">Recursos</a></li>
+    <li><a href="https://viralyze-shop.vercel.app/landing/landing.html#pricing">Preços</a></li>
+    <li><a href="https://viralyze-shop.vercel.app/landing/landing.html#faq">FAQ</a></li>
+    <li><a href="https://viralyze-shop.vercel.app/" class="btn-nav">Começar grátis</a></li>
   </ul>
   <button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navMobilePanel">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
   </button>
 </nav>
 <div class="nav-mobile-panel" id="navMobilePanel">
-  <a href="https://nexai-frontend-theta.vercel.app/landing/landing.html#features">Recursos</a>
-  <a href="https://nexai-frontend-theta.vercel.app/landing/landing.html#pricing">Preços</a>
-  <a href="https://nexai-frontend-theta.vercel.app/landing/landing.html#faq">FAQ</a>
-  <a href="https://nexai-frontend-theta.vercel.app/" class="btn-nav">Começar grátis</a>
+  <a href="https://viralyze-shop.vercel.app/landing/landing.html#features">Recursos</a>
+  <a href="https://viralyze-shop.vercel.app/landing/landing.html#pricing">Preços</a>
+  <a href="https://viralyze-shop.vercel.app/landing/landing.html#faq">FAQ</a>
+  <a href="https://viralyze-shop.vercel.app/" class="btn-nav">Começar grátis</a>
 </div>
 
 <section class="legal-hero">
-  <a href="https://nexai-frontend-theta.vercel.app/landing/landing.html" class="back-link">
+  <a href="https://viralyze-shop.vercel.app/landing/landing.html" class="back-link">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
     Voltar para a página inicial
   </a>
@@ -652,11 +643,11 @@ footer {
 <footer>
   <div class="footer-logo">Viralyze</div>
   <ul class="footer-links">
-    <li><a href="https://nexai-frontend-theta.vercel.app/landing/landing.html#features">Recursos</a></li>
-    <li><a href="https://nexai-frontend-theta.vercel.app/landing/landing.html#pricing">Preços</a></li>
-    <li><a href="https://nexai-frontend-theta.vercel.app/landing/landing.html#faq">FAQ</a></li>
-    <li><a href="https://nexai-frontend-theta.vercel.app/landing/privacy.html">Privacidade</a></li>
-    <li><a href="https://nexai-frontend-theta.vercel.app/landing/terms.html">Termos</a></li>
+    <li><a href="https://viralyze-shop.vercel.app/landing/landing.html#features">Recursos</a></li>
+    <li><a href="https://viralyze-shop.vercel.app/landing/landing.html#pricing">Preços</a></li>
+    <li><a href="https://viralyze-shop.vercel.app/landing/landing.html#faq">FAQ</a></li>
+    <li><a href="https://viralyze-shop.vercel.app/landing/privacy.html">Privacidade</a></li>
+    <li><a href="https://viralyze-shop.vercel.app/landing/terms.html">Termos</a></li>
   </ul>
   <span class="footer-copy">© 2026 Viralyze. Todos os direitos reservados.</span>
 </footer>
@@ -680,7 +671,6 @@ footer {
     });
   });
 
-  // Highlight active section in the table of contents
   const sections = document.querySelectorAll('.legal-section[id]');
   const tocLinks = document.querySelectorAll('.legal-toc a');
   const tocObserver = new IntersectionObserver((entries) => {
@@ -696,9 +686,6 @@ footer {
   sections.forEach(s => tocObserver.observe(s));
 </script>
 <script>
-  // Se a página foi aberta a partir do app (tela de "concordar com os termos"
-  // ou rodapé do dashboard/app), o link "Voltar para a página inicial" deve
-  // retornar para lá, não para a landing page de marketing.
   (function () {
     var params = new URLSearchParams(location.search);
     var ret = params.get('return');
