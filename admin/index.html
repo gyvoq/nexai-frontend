@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nex AI — Painel Admin</title>
+<title>Viralyze — Painel Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#070709;--surface:#0f0f13;--surface2:#14141a;--surface3:#1a1a22;--border:#1e1e28;--border2:#26263a;--text:#eeeef5;--text2:#9898b0;--text3:#55556a;--accent1:#fe2c55;--accent2:#ff2d78;--accent3:#00e5b3;--accent4:#f5c542;--radius:12px;--radius-sm:8px;}
+:root{--bg:#070709;--surface:#0f0f13;--surface2:#14141a;--surface3:#1a1a22;--border:#1e1e28;--border2:#26263a;--text:#eeeef5;--text2:#9898b0;--text3:#55556a;--accent1:#8b5cf6;--accent2:#a855f7;--accent3:#00e5b3;--accent4:#f5c542;--radius:12px;--radius-sm:8px;}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
 
@@ -28,7 +28,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .header-logo{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:700;}
 .header-logo-icon{width:28px;height:28px;background:linear-gradient(135deg,var(--accent1),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center;}
 .header-logo-icon svg{width:14px;height:14px;stroke:white;fill:none;stroke-width:2.2;}
-.admin-badge{font-size:9px;font-weight:700;background:rgba(254,44,85,.15);color:var(--accent1);border:1px solid rgba(254,44,85,.3);padding:2px 8px;border-radius:8px;letter-spacing:1px;}
+.admin-badge{font-size:9px;font-weight:700;background:rgba(139,92,246,.15);color:var(--accent1);border:1px solid rgba(139,92,246,.3);padding:2px 8px;border-radius:8px;letter-spacing:1px;}
 .logout-btn{background:var(--surface2);border:1px solid var(--border2);color:var(--text2);font-size:12px;font-weight:600;padding:6px 13px;border-radius:var(--radius-sm);cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;}
 .logout-btn:hover{border-color:var(--accent1);color:var(--accent1);}
 
@@ -55,7 +55,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
 .date-mode-row{display:flex;gap:8px;margin-bottom:14px;}
 .date-mode-btn{flex:1;padding:8px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;text-align:center;}
-.date-mode-btn.active{background:rgba(254,44,85,.12);border-color:var(--accent1);color:var(--accent1);}
+.date-mode-btn.active{background:rgba(139,92,246,.12);border-color:var(--accent1);color:var(--accent1);}
 
 .custom-dates{display:none;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
 .custom-dates.visible{display:grid;}
@@ -95,13 +95,13 @@ table{width:100%;border-collapse:collapse;}
 thead{background:var(--surface2);}
 th{padding:11px 14px;text-align:left;font-size:10.5px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
 td{padding:12px 14px;font-size:13px;border-top:1px solid var(--border);white-space:nowrap;}
-tr:hover td{background:rgba(254,44,85,.03);}
+tr:hover td{background:rgba(139,92,246,.03);}
 .key-cell{font-family:monospace;font-size:15px;font-weight:700;color:var(--text);letter-spacing:1px;}
 .date-cell{color:var(--text2);font-size:12px;}
 
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10.5px;font-weight:700;letter-spacing:.3px;}
 .badge-active{background:rgba(0,229,179,.12);color:var(--accent3);border:1px solid rgba(0,229,179,.25);}
-.badge-expired{background:rgba(254,44,85,.12);color:var(--accent1);border:1px solid rgba(254,44,85,.25);}
+.badge-expired{background:rgba(139,92,246,.12);color:var(--accent1);border:1px solid rgba(139,92,246,.25);}
 .badge-unused{background:rgba(245,197,66,.12);color:var(--accent4);border:1px solid rgba(245,197,66,.25);}
 .badge-revoked{background:rgba(150,150,150,.12);color:var(--text3);border:1px solid rgba(150,150,150,.2);}
 .badge-dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
@@ -111,10 +111,10 @@ tr:hover td{background:rgba(254,44,85,.03);}
 .action-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 .btn-revoke{background:rgba(245,197,66,.08);border-color:rgba(245,197,66,.25);color:var(--accent4);}
 .btn-revoke:hover{background:rgba(245,197,66,.15);}
-.btn-delete{background:rgba(254,44,85,.08);border-color:rgba(254,44,85,.25);color:var(--accent1);}
-.btn-delete:hover{background:rgba(254,44,85,.15);}
-.btn-copy{background:rgba(254,44,85,.08);border-color:rgba(254,44,85,.25);color:var(--accent1);}
-.btn-copy:hover{background:rgba(254,44,85,.15);}
+.btn-delete{background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.25);color:var(--accent1);}
+.btn-delete:hover{background:rgba(139,92,246,.15);}
+.btn-copy{background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.25);color:var(--accent1);}
+.btn-copy:hover{background:rgba(139,92,246,.15);}
 .empty-table{text-align:center;padding:48px 20px;color:var(--text3);font-size:13px;}
 
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 18px;font-size:13.5px;font-weight:500;color:var(--text);z-index:300;opacity:0;transition:all .28s;display:flex;align-items:center;gap:8px;box-shadow:0 8px 30px rgba(0,0,0,.4);white-space:nowrap;}
@@ -137,8 +137,8 @@ tr:hover td{background:rgba(254,44,85,.03);}
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">
-      <div class="login-logo-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
-      <span class="login-logo-text">Nex AI</span>
+      <div class="login-logo-icon"><svg viewBox="0 0 24 24" style="stroke-width:2.6"><polyline points="4 4 12 20 20 4"/></svg></div>
+      <span class="login-logo-text">Viralyze</span>
     </div>
     <div class="login-title">Painel Admin</div>
     <div class="login-sub">Digite a senha de administrador</div>
@@ -151,8 +151,8 @@ tr:hover td{background:rgba(254,44,85,.03);}
 <div id="main">
   <header class="header">
     <div class="header-logo">
-      <div class="header-logo-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
-      Nex AI <span class="admin-badge">ADMIN</span>
+      <div class="header-logo-icon"><svg viewBox="0 0 24 24" style="stroke-width:2.6"><polyline points="4 4 12 20 20 4"/></svg></div>
+      Viralyze <span class="admin-badge">ADMIN</span>
     </div>
     <button class="logout-btn" onclick="doLogout()">Sair</button>
   </header>
