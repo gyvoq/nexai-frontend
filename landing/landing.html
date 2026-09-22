@@ -339,7 +339,7 @@ h1 em {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, var(--pink) 0%, #c81f42 100%);
+  background: linear-gradient(135deg, var(--pink) 0%, #6d28d9 100%);
   color: #2a0710;
   padding: 1rem 2.2rem;
   border-radius: 100px;
@@ -424,7 +424,7 @@ h1 em {
 
 .avatars-stack span:first-child { margin-left: 0; }
 
-.av1 { background: linear-gradient(135deg, var(--pink), #c81f42); }
+.av1 { background: linear-gradient(135deg, var(--pink), #6d28d9); }
 .av2 { background: linear-gradient(135deg, #d9d9e0, #ffffff); color: #060b0c; }
 .av3 { background: linear-gradient(135deg, #c4b5fd, var(--pink)); }
 .av4 { background: linear-gradient(135deg, #ffffff, #d9d9e0); color: #060b0c; }
@@ -467,6 +467,10 @@ h1 em {
 }
 
 .marquee-item span { color: var(--pink); font-size: 0.7rem; }
+.stars-svg { display: inline-flex; gap: 2px; }
+.stars-svg svg { width: 12px; height: 12px; }
+.marquee-item span svg { width: 12px; height: 12px; stroke: var(--pink); vertical-align: -2px; }
+
 .marquee-item:nth-child(odd) span { color: var(--aqua); }
 
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
@@ -754,7 +758,7 @@ h1 em {
   color: #2a0710;
 }
 
-.tav1 { background: linear-gradient(135deg, var(--pink), #c81f42); }
+.tav1 { background: linear-gradient(135deg, var(--pink), #6d28d9); }
 .tav2 { background: linear-gradient(135deg, #d9d9e0, #ffffff); color: #060b0c; }
 .tav3 { background: linear-gradient(135deg, #c4b5fd, var(--pink)); }
 
@@ -795,7 +799,7 @@ h1 em {
 .popular-badge {
   position: absolute;
   top: -14px; left: 50%; transform: translateX(-50%);
-  background: linear-gradient(135deg, var(--pink), #c81f42);
+  background: linear-gradient(135deg, var(--pink), #6d28d9);
   color: #2a0710;
   font-size: 0.65rem;
   font-weight: 800;
@@ -853,7 +857,7 @@ h1 em {
 }
 
 .pbtn-solid {
-  background: linear-gradient(135deg, var(--pink), #c81f42);
+  background: linear-gradient(135deg, var(--pink), #6d28d9);
   color: #2a0710;
   box-shadow: 0 4px 30px var(--glow-pink);
 }
@@ -1128,7 +1132,7 @@ footer {
       <span class="social-proof-text"><strong>Criadores</strong> já usando a Viralyze</span>
       <div class="divider-dot"></div>
       <div class="rating">
-        <span class="stars-row">★★★★★</span>
+        <span class="stars-row"><span class="stars-svg" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg></span></span>
         <span class="social-proof-text"><strong>4,8</strong> de satisfação</span>
       </div>
     </div>
@@ -1137,22 +1141,22 @@ footer {
 
 <div class="marquee-section">
   <div class="marquee-track" id="marquee">
-    <div class="marquee-item"><span>✦</span> Avatares UGC ultra-realistas</div>
-    <div class="marquee-item"><span>✦</span> Produtos campeões em tempo real</div>
-    <div class="marquee-item"><span>✦</span> Vídeos que convertem no automático</div>
-    <div class="marquee-item"><span>✦</span> Biblioteca viral atualizada</div>
-    <div class="marquee-item"><span>✦</span> Galeria completa de prompts</div>
-    <div class="marquee-item"><span>✦</span> Análise de concorrentes</div>
-    <div class="marquee-item"><span>✦</span> 7 dias de garantia incondicional</div>
-    <div class="marquee-item"><span>✦</span> Acesso imediato após a compra</div>
-    <div class="marquee-item"><span>✦</span> Avatares UGC ultra-realistas</div>
-    <div class="marquee-item"><span>✦</span> Produtos campeões em tempo real</div>
-    <div class="marquee-item"><span>✦</span> Vídeos que convertem no automático</div>
-    <div class="marquee-item"><span>✦</span> Biblioteca viral atualizada</div>
-    <div class="marquee-item"><span>✦</span> Galeria completa de prompts</div>
-    <div class="marquee-item"><span>✦</span> Análise de concorrentes</div>
-    <div class="marquee-item"><span>✦</span> 7 dias de garantia incondicional</div>
-    <div class="marquee-item"><span>✦</span> Acesso imediato após a compra</div>
+    <div class="marquee-item"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></svg></span> Avatares UGC ultra-realistas</div>
+    <div class="marquee-item"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></svg></span> Produtos campeões em tempo real</div>
+    <div class="marquee-item"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></svg></span> Vídeos que convertem no automático</div>
+    <div class="marquee-item"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></svg></span> Biblioteca viral atualizada</div>
+    <div class="marquee-item"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></svg></span> Galeria completa de prompts</div>
+    <div class="marquee-item"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></svg></span> Análise de concorrentes</div>
+    <div class="marquee-item"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></svg></span> 7 dias de garantia incondicional</div>
+    <div class="marquee-item"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></svg></span> Acesso imediato após a compra</div>
+    <div class="marquee-item"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></svg></span> Avatares UGC ultra-realistas</div>
+    <div class="marquee-item"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></svg></span> Produtos campeões em tempo real</div>
+    <div class="marquee-item"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></svg></span> Vídeos que convertem no automático</div>
+    <div class="marquee-item"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></svg></span> Biblioteca viral atualizada</div>
+    <div class="marquee-item"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></svg></span> Galeria completa de prompts</div>
+    <div class="marquee-item"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></svg></span> Análise de concorrentes</div>
+    <div class="marquee-item"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></svg></span> 7 dias de garantia incondicional</div>
+    <div class="marquee-item"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></svg></span> Acesso imediato após a compra</div>
   </div>
 </div>
 
@@ -1262,7 +1266,7 @@ footer {
     </div>
     <div class="testimonials-grid">
       <div class="tcard featured reveal">
-        <div class="tcard-stars">★★★★★</div>
+        <div class="tcard-stars"><span class="stars-svg" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg></span></div>
         <p class="tcard-text">"Comecei sem entender nada de marketing e em poucos dias já conseguia criar conteúdos que chamavam atenção de verdade. A automação economiza horas por semana e os avatares são indistinguíveis de pessoas reais."</p>
         <div class="tcard-author">
           <div class="tavatar tav1">PR</div>
@@ -1274,7 +1278,7 @@ footer {
       </div>
       <div class="tcard-stack">
         <div class="tcard reveal">
-          <div class="tcard-stars">★★★★★</div>
+          <div class="tcard-stars"><span class="stars-svg" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg></span></div>
           <p class="tcard-text">"Testo ideias e crio vídeos em minutos — algo que antes levava horas. Consegui escalar meus resultados no TikTok Shop de forma consistente."</p>
           <div class="tcard-author">
             <div class="tavatar tav2">AL</div>
@@ -1285,7 +1289,7 @@ footer {
           </div>
         </div>
         <div class="tcard reveal">
-          <div class="tcard-stars">★★★★★</div>
+          <div class="tcard-stars"><span class="stars-svg" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg></span></div>
           <p class="tcard-text">"A qualidade dos avatares parece produção de estúdio. Ninguém acredita que é IA — e isso converte muito bem nas redes sociais."</p>
           <div class="tcard-author">
             <div class="tavatar tav3">BF</div>
