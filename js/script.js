@@ -66,6 +66,31 @@ const videos = [ {
   hook: "Fui atrás da Hello Kitty rara do arcade...",
   reveal: "Jogando até conseguir a caixa surpresa...",
   cta: "Peça disponível no link da bio"} ];
+const ICONS = {
+  beleza: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c4 5 7 8.5 7 12a7 7 0 01-14 0c0-3.5 3-7 7-12z"/></svg>',
+  fitness: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><line x1="6" y1="12" x2="18" y2="12"/><rect x="6" y="7" width="3" height="10" rx="1"/><rect x="15" y="7" width="3" height="10" rx="1"/></svg>',
+  moda: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4a2 2 0 10-2 2"/><path d="M12 6l9 6.5a1.2 1.2 0 01-.7 2.2H3.7A1.2 1.2 0 013 12.5L12 6z"/><line x1="5" y1="18" x2="19" y2="18"/></svg>',
+  tech: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="10" rx="1.5"/><path d="M2 19h20l-1.5-3h-17L2 19z"/></svg>',
+  casa: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5L12 4l8 7.5"/><path d="M6 10v9a1 1 0 001 1h10a1 1 0 001-1v-9"/><path d="M10 20v-5h4v5"/></svg>',
+  saude: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4S9 4 6 9c-3 5 0 10 5 10 6 0 9-5.5 9-11 0-1.5-.2-3-.2-4z"/><path d="M6 19c3-4 7-6 12-9"/></svg>',
+  star: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L12 16.9 6.4 20.1l1.4-6.3-4.8-4.3 6.4-.6z"/></svg>',
+  home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5L12 4l8 7.5"/><path d="M6 10v9a1 1 0 001 1h10a1 1 0 001-1v-9"/><path d="M10 20v-5h4v5"/></svg>',
+  book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 015.5 4H12v16H5.5A1.5 1.5 0 014 18.5v-13z"/><path d="M20 5.5A1.5 1.5 0 0018.5 4H12v16h6.5a1.5 1.5 0 001.5-1.5v-13z"/></svg>',
+  image: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 16l-5.5-5.5L3 21"/></svg>',
+  film: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="1.5"/><line x1="8" y1="4" x2="8" y2="20"/><line x1="16" y1="4" x2="16" y2="20"/><line x1="3" y1="9" x2="8" y2="9"/><line x1="3" y1="15" x2="8" y2="15"/><line x1="16" y1="9" x2="21" y2="9"/><line x1="16" y1="15" x2="21" y2="15"/></svg>',
+  user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg>',
+  gear: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V19.5a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1-1.56 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.7 1.7 0 00.34-1.87 1.7 1.7 0 00-1.55-1H4.5a2 2 0 110-4h.09a1.7 1.7 0 001.56-1 1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06a1.7 1.7 0 001.87.34H10a1.7 1.7 0 001-1.55V4.5a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06a1.7 1.7 0 00-.34 1.87V10a1.7 1.7 0 001.55 1h.09a2 2 0 110 4h-.09a1.7 1.7 0 00-1.55 1z"/></svg>',
+  box: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><line x1="12" y1="13" x2="12" y2="21"/></svg>',
+  close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>',
+  sun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4.5"/><line x1="12" y1="19.5" x2="12" y2="22"/><line x1="4.2" y1="4.2" x2="6" y2="6"/><line x1="18" y1="18" x2="19.8" y2="19.8"/><line x1="2" y1="12" x2="4.5" y2="12"/><line x1="19.5" y1="12" x2="22" y2="12"/><line x1="4.2" y1="19.8" x2="6" y2="18"/><line x1="18" y1="6" x2="19.8" y2="4.2"/></svg>',
+  moon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1110 3a7 7 0 0010 11.5z"/></svg>',
+  sparkle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></svg>',
+  flame: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 3-2 4.5-2 7.5a2 2 0 004 0c1 1 2 2.5 2 4.5a4 4 0 11-8 0c0-3 1.5-4 2-6.5C10.5 6 11 4 12 2z"/></svg>',
+  chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 01-11.5 7.2L4 20l1-4.7A8 8 0 1121 12z"/></svg>',
+  pointDown: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="4" x2="12" y2="18"/><polyline points="6 13 12 19 18 13"/></svg>',
+  heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-9.5-9A5.5 5.5 0 0112 5.5 5.5 5.5 0 0121.5 11c-2.5 4.6-9.5 9-9.5 9z"/></svg>',
+  graduate: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8l10-4 10 4-10 4L2 8z"/><path d="M6 10.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-5.5"/><path d="M22 8v6"/></svg>'
+};
 const avatars = [ {
   id: 1,
   name: "Luna Ferreira",
@@ -73,7 +98,7 @@ const avatars = [ {
   nicho: "Beleza & Skincare",
   style: "Minimalista",
   gender: "f",
-  emoji: "💆",
+  emoji: ICONS.beleza,
   grad: "grad-beleza"
 }, {
   id: 2,
@@ -82,7 +107,7 @@ const avatars = [ {
   nicho: "Fitness & Nutrição",
   style: "Athletic",
   gender: "m",
-  emoji: "💪",
+  emoji: ICONS.fitness,
   grad: "grad-fitness"
 }, {
   id: 3,
@@ -91,7 +116,7 @@ const avatars = [ {
   nicho: "Moda & Lifestyle",
   style: "Streetwear",
   gender: "f",
-  emoji: "👗",
+  emoji: ICONS.moda,
   grad: "grad-moda"
 }, {
   id: 4,
@@ -100,62 +125,26 @@ const avatars = [ {
   nicho: "Tech & Gadgets",
   style: "Minimalista",
   gender: "m",
-  emoji: "💻",
+  emoji: ICONS.tech,
   grad: "grad-tech"
 }, {
   id: 5,
-  name: "Maya Costa",
-  age: 26,
-  nicho: "Beleza & Luxo",
-  style: "Glamour",
-  gender: "f",
-  emoji: "✨",
-  grad: "grad-beleza"
-}, {
-  id: 6,
   name: "Theo Lima",
   age: 25,
   nicho: "Lifestyle & Casa",
   style: "Boho",
   gender: "m",
-  emoji: "🏡",
+  emoji: ICONS.casa,
   grad: "grad-casa"
 }, {
-  id: 7,
+  id: 6,
   name: "Lara Silva",
   age: 20,
   nicho: "Saúde & Wellness",
   style: "Natural",
   gender: "f",
-  emoji: "🌿",
+  emoji: ICONS.saude,
   grad: "grad-saude"
-}, {
-  id: 8,
-  name: "Bruno Vaz",
-  age: 29,
-  nicho: "Moda Masculina",
-  style: "Casual Luxo",
-  gender: "m",
-  emoji: "🕶",
-  grad: "grad-moda"
-}, {
-  id: 9,
-  name: "Nina Rocha",
-  age: 23,
-  nicho: "Fitness & Dança",
-  style: "Energético",
-  gender: "f",
-  emoji: "💃",
-  grad: "grad-fitness"
-}, {
-  id: 10,
-  name: "Caio Melo",
-  age: 27,
-  nicho: "Tech & Gaming",
-  style: "Gamer",
-  gender: "m",
-  emoji: "🎮",
-  grad: "grad-tech"
 } ];
 
 const cameras = [ {
@@ -288,37 +277,37 @@ const vidImprovements = [ "Estabilização", "Transições suaves", "Color gradi
 
 const roteiroTypes = [ {
   id: "transformacao",
-  label: "✨ Transformação",
+  label: "Transformação",
   hook: "Minha vida antes disso era...",
   reveal: "Depois de usar por X dias, olha o que aconteceu...",
   cta: "Link na bio — pega o seu!"
 }, {
   id: "problema",
-  label: "🔥 Problema-Solução",
+  label: "Problema-Solução",
   hook: "Quem mais tem esse problema?",
   reveal: "Esse produto resolveu em X dias o que eu sofria há anos...",
   cta: "Corre que tem desconto hoje!"
 }, {
   id: "honesta",
-  label: "💬 Review Honesta",
+  label: "Review Honesta",
   hook: "Vou ser honesta com vocês sobre esse produto...",
   reveal: "Testei por 2 semanas e olha o que achei...",
   cta: "Vale a pena? Spoiler: sim. Link na bio!"
 }, {
   id: "unboxing",
-  label: "📦 Unboxing",
+  label: "Unboxing",
   hook: "Finalmente chegou! Vamos abrir juntos?",
   reveal: "Primeiras impressões ao vivo, sem filtro...",
   cta: "Já pedi o segundo, link nos comentários!"
 }, {
   id: "pov",
-  label: "📱 POV / Rotina",
+  label: "POV / Rotina",
   hook: "POV: você achou o produto que mudou sua rotina",
   reveal: "Adicionei na minha rotina diária assim...",
   cta: "Salva esse vídeo pra não esquecer!"
 }, {
   id: "tutorial",
-  label: "🎓 Tutorial",
+  label: "Tutorial",
   hook: "Você sabia que dá pra usar isso assim?",
   reveal: "Vou te mostrar o passo a passo completo...",
   cta: "Dúvidas nos comentários, link do produto na bio!"
@@ -328,7 +317,7 @@ const hookPresets = [ "Minha pele estava horrível...", "Gastei e não me arrepe
 
 const revealPresets = [ "Mostrando resultado real", "Aplicando ao vivo", "Comparando antes x depois", "Testando sem filtro", "Step by step devagar" ];
 
-const ctaPresets = [ "Link na bio 👇", "Código desconto nos comentários", "Últimas unidades — corre!", "Segue pra mais dicas 💜", "Salva esse vídeo!" ];
+const ctaPresets = [ "Link na bio", "Código desconto nos comentários", "Últimas unidades — corre!", "Segue pra mais dicas", "Salva esse vídeo!" ];
 
 const tomOptions = [ "Empolgado", "Natural", "Sussurrado", "Educativo", "Humorístico", "Urgente", "Casual" ];
 
@@ -379,7 +368,7 @@ promptHistory = safeGet(PROMPTS_KEY, []);
 
 let toastTimer;
 
-function showToast(msg, icon = "✓") {
+function showToast(msg, icon = ICONS.star) {
   clearTimeout(toastTimer);
   const t = document.getElementById("toast");
   document.getElementById("toast-msg").textContent = msg;
@@ -648,7 +637,7 @@ function productCard(p, selectable, i = 0, clickFn = "selectStudioProduct") {
   const fav = isFav("prod", p.id);
   const imgContent = p.img ? `<img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.55"><path d="M21 8L12 3 3 8l9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>`;
   const customBadge = p.custom ? `<span style="position:absolute;bottom:7px;right:7px;background:rgba(124,107,255,0.85);color:white;font-size:8px;padding:2px 6px;border-radius:7px;font-weight:700;backdrop-filter:blur(4px)">MEU</span>` : "";
-  const promptBadge = p.prompt ? `<span style="position:absolute;bottom:7px;left:7px;background:rgba(0,229,179,0.18);color:#00e5b3;font-size:8px;padding:2px 6px;border-radius:7px;border:1px solid rgba(0,229,179,0.3);font-weight:700;backdrop-filter:blur(4px)">PROMPT ✓</span>` : "";
+  const promptBadge = p.prompt ? `<span style="position:absolute;bottom:7px;left:7px;background:rgba(0,229,179,0.18);color:#00e5b3;font-size:8px;padding:2px 6px;border-radius:7px;border:1px solid rgba(0,229,179,0.3);font-weight:700;backdrop-filter:blur(4px)">PROMPT</span>` : "";
   const trendBadge = p.rank <= 5 ? `<div class="trending-badge" style="bottom:${p.prompt ? "28px" : "7px"}">TOP ${p.rank}</div>` : "";
   const newBadge = p.isNew ? `<span class="badge-new">NOVO</span>` : "";
   const safeName = Sanitize.escapeHTML(p.name);
@@ -720,7 +709,7 @@ function renderVideos() {
   const hotIds = getHotVideoIds(3);
   document.getElementById("video-grid").innerHTML = videos.map((v, i) => {
     const fav = isFav("vid", v.id);
-    const hotBadge = hotIds.includes(v.id) ? `<span class="badge-hot">Em alta 🔥</span>` : "";
+    const hotBadge = hotIds.includes(v.id) ? `<span class="badge-hot">${ICONS.flame}Em alta</span>` : "";
     const newBadgeV = v.isNew ? `<span class="badge-new">NOVO</span>` : "";
     return `<div class="video-card" data-fmt="${v.fmt}" style="animation-delay:${i * .035}s" role="listitem">\n      <div class="video-thumb">\n        <img src="${v.img}" alt="${v.title}" loading="lazy" onerror="this.style.display='none'">\n        <div class="play-overlay" aria-hidden="true"><div class="play-circle"><svg viewBox="0 0 24 24" style="width:32px;height:32px"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>\n        <span class="format-badge ${v.fmtClass}">${v.fmt.toUpperCase()}</span>\n        ${hotBadge}\n        ${newBadgeV}\n        <button class="fav-btn ${fav ? "active" : ""}" style="top:7px;left:7px;right:auto" onclick="this.innerHTML=heartSVG(!this.classList.contains('active'));toggleFav('vid',${v.id},this)" aria-label="${fav ? "Remover dos favoritos" : "Favoritar vídeo"}">${heartSVG(fav)}</button>\n      </div>\n      <div class="video-body">\n        <button class="card-btn" onclick="window.open('${v.url}','_blank')" style="margin-bottom:8px"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>Ver no TikTok</button>\n        <div class="video-title">${v.title}</div>\n        <div class="video-stats">\n          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>${v.views}</span>\n          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>${v.likes}</span>\n          <span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${v.dur}</span>\n        </div>\n        <button class="accordion-btn" onclick="toggleAccordion(this)" aria-expanded="false"><span>Estrutura do Roteiro</span><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>\n        <div class="accordion-body" role="region">\n          <div class="script-step"><span>Hook (0–3s)</span><p>${v.hook}</p></div>\n          <div class="script-step"><span>Reveal (3–12s)</span><p>${v.reveal}</p></div>\n          <div class="script-step"><span>CTA</span><p>${v.cta}</p></div>\n        </div>\n      </div>\n    </div>`;
   }).join("");
@@ -847,10 +836,10 @@ function renderAvatarSelectGrid(containerId, clickFn, selectedAvatar) {
   const all = [ ...avatars, ...customAvatars.map((a, i) => ({
     ...a,
     id: a.id || `c${i}`,
-    emoji: "⭐",
+    emoji: ICONS.star,
     grad: gradients[i % gradients.length]
   })) ];
-  document.getElementById(containerId).innerHTML = all.map(a => `<div class="avatar-select-card ${selectedAvatar && selectedAvatar.id === a.id ? "selected" : ""}" onclick="${clickFn}('${a.id}',this,'${a.custom ? "custom" : "builtin"}')" role="option" tabindex="0" aria-label="${a.name}, ${a.nicho}" aria-selected="${selectedAvatar && selectedAvatar.id === a.id}">\n    <div class="avatar-select-emoji" aria-hidden="true">${a.emoji || "⭐"}</div>\n    <div class="avatar-select-name">${a.name}</div>\n    <div class="avatar-select-nicho">${a.nicho || a.niche || "—"}</div>\n  </div>`).join("");
+  document.getElementById(containerId).innerHTML = all.map(a => `<div class="avatar-select-card ${selectedAvatar && selectedAvatar.id === a.id ? "selected" : ""}" onclick="${clickFn}('${a.id}',this,'${a.custom ? "custom" : "builtin"}')" role="option" tabindex="0" aria-label="${a.name}, ${a.nicho}" aria-selected="${selectedAvatar && selectedAvatar.id === a.id}">\n    <div class="avatar-select-emoji" aria-hidden="true">${a.emoji || ICONS.star}</div>\n    <div class="avatar-select-name">${a.name}</div>\n    <div class="avatar-select-nicho">${a.nicho || a.niche || "—"}</div>\n  </div>`).join("");
 }
 
 function renderStudioAvatars() {
@@ -874,7 +863,7 @@ function renderAvatars(filter = "all") {
       const sName = Sanitize.escapeHTML(a.name || "");
       const sNicho = Sanitize.escapeHTML(a.nicho || "—");
       const sStyle = Sanitize.escapeHTML(a.style || "Personalizado");
-      return `<div class="avatar-card" style="animation-delay:${i * .035}s" role="listitem"><div class="avatar-img ${grad}" aria-hidden="true">⭐</div><div class="avatar-body"><div class="avatar-name">${sName}</div><div class="avatar-meta">${a.age || "—"} anos · ${sNicho}</div><span class="avatar-badge">${sStyle}</span><button class="use-btn" onclick="useCustomAvatar(${i})"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Usar</button><button class="delete-btn" onclick="deleteCustomAvatar(${i})" aria-label="Excluir avatar" title="Excluir avatar"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg></button></div></div>`;
+      return `<div class="avatar-card" style="animation-delay:${i * .035}s" role="listitem"><div class="avatar-img ${grad}" aria-hidden="true">${ICONS.star}</div><div class="avatar-body"><div class="avatar-name">${sName}</div><div class="avatar-meta">${a.age || "—"} anos · ${sNicho}</div><span class="avatar-badge">${sStyle}</span><button class="use-btn" onclick="useCustomAvatar(${i})"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Usar</button><button class="delete-btn" onclick="deleteCustomAvatar(${i})" aria-label="Excluir avatar" title="Excluir avatar"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg></button></div></div>`;
     }).join("");
   } else if (filter === "custom" && customAvatars.length === 0) {
     sect.style.display = "";
@@ -1510,7 +1499,7 @@ function toggleQuickTheme(btn) {
     void btn.offsetWidth;
     btn.classList.add("pulsing");
   }
-  showToast(next === "light" ? "Modo claro ativado ☀️" : "Modo escuro ativado 🌙");
+  showToast(next === "light" ? "Modo claro ativado" : "Modo escuro ativado");
 }
 
 function showConfirm(msg, onConfirm) {
@@ -1769,32 +1758,32 @@ function renderSearchResults(q) {
   const navItems = [ {
     label: "Mineração Viral",
     cat: "Seção",
-    icon: "🏠",
+    icon: ICONS.home,
     tab: "mining"
   }, {
     label: "Biblioteca Viral",
     cat: "Seção",
-    icon: "📚",
+    icon: ICONS.book,
     tab: "library"
   }, {
     label: "Estúdio IA — Imagem",
     cat: "Seção",
-    icon: "🖼️",
+    icon: ICONS.image,
     tab: "studio"
   }, {
     label: "Estúdio IA — Vídeo",
     cat: "Seção",
-    icon: "🎬",
+    icon: ICONS.film,
     tab: "video"
   }, {
     label: "Avatar",
     cat: "Seção",
-    icon: "👤",
+    icon: ICONS.user,
     tab: "influencer"
   }, {
     label: "Configurações",
     cat: "Seção",
-    icon: "⚙️",
+    icon: ICONS.gear,
     tab: "settings"
   } ];
   navItems.filter(n => !ql || n.label.toLowerCase().includes(ql)).forEach(n => {
@@ -1811,7 +1800,7 @@ function renderSearchResults(q) {
       type: "product",
       label: p.name,
       sub: p.cat,
-      icon: "📦",
+      icon: ICONS.box,
       action: `switchTab('studio',null);closeSearch();setTimeout(()=>{selectStudioProduct(${p.id},document.querySelector('[data-id="${p.id}"]'))},300)`
     });
   });
@@ -1848,7 +1837,7 @@ function showAvatarPreview(avatar, containerId) {
   const chip = document.createElement("div");
   chip.className = "avatar-preview-chip";
   chip.id = containerId + "-preview";
-  chip.innerHTML = `<span class="avatar-preview-emoji">${avatar.emoji || "⭐"}</span>\n    <div><div class="avatar-preview-name">${avatar.name}</div><div class="avatar-preview-nicho">${avatar.nicho || "—"}</div></div>\n    <button class="avatar-preview-clear" onclick="clearAvatarSelection('${containerId}')" aria-label="Remover avatar selecionado">✕</button>`;
+  chip.innerHTML = `<span class="avatar-preview-emoji">${avatar.emoji || ICONS.star}</span>\n    <div><div class="avatar-preview-name">${avatar.name}</div><div class="avatar-preview-nicho">${avatar.nicho || "—"}</div></div>\n    <button class="avatar-preview-clear" onclick="clearAvatarSelection('${containerId}')" aria-label="Remover avatar selecionado">${ICONS.close}</button>`;
   const target = document.getElementById(containerId);
   if (target) target.parentNode.insertBefore(chip, target);
 }
