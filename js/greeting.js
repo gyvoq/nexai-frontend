@@ -7,7 +7,7 @@ const Greeting = (() => {
   const BY_PERIOD = {
     morning: [
       'Bom dia! Pronto pra começar o dia?',
-      'Bom dia, café e Nex AI?',
+      'Bom dia, café e Viralyze?',
       'Manhã produtiva por aí?',
     ],
     afternoon: [
