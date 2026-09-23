@@ -82,9 +82,9 @@
 }
 
 .sidebar-item.active {
-  background: linear-gradient(135deg, rgba(254,44,85,0.12), rgba(255,45,120,0.07));
+  background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(168,85,247,0.07));
   color: var(--text);
-  border-color: rgba(254,44,85,0.2);
+  border-color: rgba(139,92,246,0.2);
 }
 
 .sidebar-item.active svg { stroke: var(--accent1); }
@@ -93,9 +93,9 @@
 .sidebar-badge {
   margin-left: auto;
   font-size: 9px; font-weight: 700;
-  background: rgba(254,44,85,0.16);
+  background: rgba(139,92,246,0.16);
   color: var(--accent1);
-  border: 1px solid rgba(254,44,85,0.28);
+  border: 1px solid rgba(139,92,246,0.28);
   padding: 2px 7px;
   border-radius: 8px;
   letter-spacing: 0.5px;
@@ -105,8 +105,8 @@
 .sidebar-license {
   margin-top: auto;
   padding: 12px 13px;
-  background: linear-gradient(135deg, rgba(254,44,85,0.06), rgba(0,229,179,0.05));
-  border: 1px solid rgba(254,44,85,0.15);
+  background: linear-gradient(135deg, rgba(139,92,246,0.06), rgba(168,85,247,0.05));
+  border: 1px solid rgba(139,92,246,0.15);
   border-radius: var(--radius);
 }
 
@@ -241,8 +241,8 @@
 }
 
 .metric-card:hover {
-  border-color: rgba(254,44,85,0.28);
-  box-shadow: 0 4px 24px rgba(254,44,85,0.07);
+  border-color: rgba(139,92,246,0.28);
+  box-shadow: 0 4px 24px rgba(139,92,246,0.07);
 }
 
 .metric-label {
@@ -303,11 +303,11 @@
 }
 
 .bar:hover {
-  background: rgba(254,44,85,0.18);
+  background: rgba(139,92,246,0.18);
 }
 
 .bar.active {
-  background: linear-gradient(180deg, rgba(254,44,85,0.7), rgba(254,44,85,0.3));
+  background: linear-gradient(180deg, rgba(139,92,246,0.7), rgba(139,92,246,0.3));
   color: var(--accent1);
 }
 
@@ -364,4 +364,4 @@ body.theme-light .sidebar          { background: rgba(244,245,247,0.97); }
 body.theme-light .topbar           { background: rgba(244,245,247,0.92); }
 body.theme-light .metric-card      { background: #ffffff; }
 body.theme-light .chart-placeholder{ background: #ffffff; }
-body.theme-light .sidebar-license  { background: rgba(254,44,85,0.04); }
+body.theme-light .sidebar-license  { background: rgba(139,92,246,0.04); }
