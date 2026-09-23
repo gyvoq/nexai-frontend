@@ -227,7 +227,7 @@ const Session = (() => {
       setTimeout(() => {
         ov.remove();
       }, 500);
-      const minDelay = new Promise(resolve => setTimeout(resolve, 900));
+      const minDelay = new Promise(resolve => setTimeout(resolve, 500));
       Promise.all([Promise.resolve(onAccept()), minDelay]).then(() => {
         hideLoadingOverlay();
       });
