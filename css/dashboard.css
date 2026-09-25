@@ -131,14 +131,14 @@
 .expiry-bar-wrap {
   height: 3px;
   background: var(--surface3);
-  border-radius: 99px;
+  border-radius: var(--radius-pill);
   overflow: hidden;
 }
 
 .expiry-bar {
   height: 100%;
   background: linear-gradient(90deg, var(--accent1), var(--accent3));
-  border-radius: 99px;
+  border-radius: var(--radius-pill);
   width: 100%; 
   transition: width 0.6s ease;
 }
