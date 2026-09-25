@@ -6,12 +6,12 @@
 <title>Viralyze — Painel Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#08070c;--surface:#120f1a;--surface2:#171420;--surface3:#1d1928;--border:#221e2e;--border2:#2b2740;--text:#eeeef5;--text2:#9898b0;--text3:#55556a;--accent1:#8b5cf6;--accent2:#a855f7;--accent3:#00e5b3;--accent4:#f5c542;--radius:12px;--radius-sm:8px;}
+:root{--bg:#08070c;--surface:#120f1a;--surface2:#171420;--surface3:#1d1928;--border:#221e2e;--border2:#2b2740;--text:#eeeef5;--text2:#9898b0;--text3:#55556a;--accent1:#8b5cf6;--accent2:#a855f7;--accent3:#00e5b3;--accent4:#f5c542;--radius-sm:8px;--radius:16px;--radius-lg:20px;--radius-xl:24px;--radius-pill:9999px;--shadow-soft:0 4px 20px rgba(0,0,0,0.32);}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
 
 #login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:100;}
-.login-card{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:36px 32px;width:100%;max-width:380px;text-align:center;}
+.login-card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-xl);padding:36px 32px;width:100%;max-width:380px;text-align:center;box-shadow:var(--shadow-soft);}
 .login-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:24px;}
 .login-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent1),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;}
 .login-logo-icon svg{width:18px;height:18px;stroke:white;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
@@ -20,7 +20,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .login-sub{font-size:13px;color:var(--text2);margin-bottom:22px;}
 .login-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-size:14px;padding:11px 14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;margin-bottom:12px;}
 .login-input:focus{border-color:var(--accent1);}
-.login-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--accent1),var(--accent2));border:none;border-radius:var(--radius-sm);color:white;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+.login-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--accent1),var(--accent2));border:none;border-radius:var(--radius-pill);color:white;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
 .login-error{color:var(--accent1);font-size:12.5px;margin-top:8px;min-height:18px;}
 
 #main{display:none;min-height:100vh;}
@@ -68,7 +68,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .qty-btn:hover{border-color:var(--accent1);color:var(--accent1);}
 .qty-display{font-size:16px;font-weight:700;min-width:32px;text-align:center;}
 
-.create-btn{padding:10px 22px;background:linear-gradient(135deg,var(--accent1),var(--accent2));border:none;border-radius:var(--radius-sm);color:white;font-size:13.5px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:7px;}
+.create-btn{padding:10px 22px;background:linear-gradient(135deg,var(--accent1),var(--accent2));border:none;border-radius:var(--radius-pill);color:white;font-size:13.5px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:7px;}
 .create-btn:hover{opacity:.9;transform:translateY(-1px);}
 .create-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 .create-btn svg{width:14px;height:14px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
@@ -83,7 +83,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
 .filters-row{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap;align-items:center;justify-content:space-between;}
 .filter-chips{display:flex;gap:6px;flex-wrap:wrap;}
-.filter-chip{padding:6px 13px;border-radius:20px;border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
+.filter-chip{padding:6px 13px;border-radius:var(--radius-pill);border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
 .filter-chip:hover{border-color:var(--accent1);color:var(--text);}
 .filter-chip.active{background:linear-gradient(135deg,var(--accent1),var(--accent2));border-color:transparent;color:white;}
 .search-input{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-size:13px;padding:7px 12px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;width:200px;}
@@ -102,7 +102,7 @@ tr:hover td{background:rgba(139,92,246,.03);}
 .key-cell{font-family:monospace;font-size:15px;font-weight:700;color:var(--text);letter-spacing:1px;}
 .date-cell{color:var(--text2);font-size:12px;}
 
-.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10.5px;font-weight:700;letter-spacing:.3px;}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:var(--radius-pill);font-size:10.5px;font-weight:700;letter-spacing:.3px;}
 .badge-active{background:rgba(0,229,179,.12);color:var(--accent3);border:1px solid rgba(0,229,179,.25);}
 .badge-expired{background:rgba(139,92,246,.12);color:var(--accent1);border:1px solid rgba(139,92,246,.25);}
 .badge-unused{background:rgba(245,197,66,.12);color:var(--accent4);border:1px solid rgba(245,197,66,.25);}
@@ -126,13 +126,13 @@ tr:hover td{background:rgba(139,92,246,.03);}
 
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .2s;}
 .modal-overlay.open{opacity:1;pointer-events:all;}
-.modal{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:26px;max-width:360px;width:100%;text-align:center;transform:translateY(12px);transition:transform .2s;}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:26px;max-width:360px;width:100%;text-align:center;transform:translateY(12px);transition:transform .2s;}
 .modal-overlay.open .modal{transform:translateY(0);}
 .modal-title{font-size:16px;font-weight:700;margin-bottom:8px;}
 .modal-msg{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.6;}
 .modal-btns{display:flex;gap:9px;}
 .modal-cancel{flex:1;padding:10px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
-.modal-confirm{flex:1;padding:10px;background:linear-gradient(135deg,var(--accent1),var(--accent2));border:none;border-radius:var(--radius-sm);color:white;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+.modal-confirm{flex:1;padding:10px;background:linear-gradient(135deg,var(--accent1),var(--accent2));border:none;border-radius:var(--radius-pill);color:white;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
 </style>
 </head>
 <body>
@@ -371,21 +371,17 @@ function renderTable(){
   }).join('');
 }
 
-// AÇÕES
 function confirmRevoke(key){showConfirm('Revogar Licença',`Revogar a licença <strong>${key}</strong>? O usuário perderá acesso.`,()=>doRevoke(key));}
 function confirmDelete(key){showConfirm('Deletar Licença',`Deletar permanentemente <strong>${key}</strong>? Não pode ser desfeito.`,()=>doDelete(key));}
 async function doRevoke(key){const r=await fetch(`${API}/api/admin/licenses/${key}`,{method:'DELETE',headers:{'X-Admin-Secret':adminSecret}});if(r.ok){showToast(`Licença ${key} revogada.`);loadLicenses();}else showToast('Erro ao revogar');}
 async function doDelete(key){const r=await fetch(`${API}/api/admin/licenses/${key}/hard`,{method:'DELETE',headers:{'X-Admin-Secret':adminSecret}});if(r.ok){showToast(`Licença ${key} deletada.`);loadLicenses();}else showToast('Erro ao deletar');}
 
-// CONFIRM
 function showConfirm(title,msg,onOk){document.getElementById('confirm-title').textContent=title;document.getElementById('confirm-msg').innerHTML=msg;document.getElementById('confirm-modal').classList.add('open');document.getElementById('confirm-ok').onclick=()=>{closeConfirm();onOk();};}
 function closeConfirm(){document.getElementById('confirm-modal').classList.remove('open');}
 
-// TOAST
 let toastTimer;
 function showToast(msg){clearTimeout(toastTimer);const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.classList.add('show');toastTimer=setTimeout(()=>t.classList.remove('show'),2600);}
 
-// Init
 setDateMode('auto');
 </script>
 </body>
