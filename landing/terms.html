@@ -29,6 +29,14 @@
 
   --glow-pink: rgba(139,92,246,0.32);
 
+  --radius-sm: 8px;
+  --radius: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-pill: 100px;
+
+  --shadow-soft: 0 4px 24px rgba(0,0,0,0.35);
+
   --glass-blur: blur(28px) saturate(180%);
   --glass-shine: inset 0 1px 0 rgba(255,255,255,0.14), inset 0 0 0 1px rgba(255,255,255,0.04);
 }
@@ -135,7 +143,7 @@ nav.scrolled {
   background: rgba(255,255,255,0.92);
   color: #060b0c !important;
   padding: 0.55rem 1.4rem;
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   font-size: 0.85rem;
   font-weight: 700;
   text-decoration: none;
@@ -173,7 +181,7 @@ nav.scrolled {
   backdrop-filter: blur(24px) saturate(1.4);
   -webkit-backdrop-filter: blur(24px) saturate(1.4);
   border: 1px solid var(--border2);
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   padding: 1.2rem;
   flex-direction: column;
   gap: 0.2rem;
@@ -195,7 +203,7 @@ nav.scrolled {
   margin-top: 0.4rem;
   color: #060b0c !important;
   background: rgba(255,255,255,0.92);
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   border: 1px solid rgba(255,255,255,0.6);
 }
 
@@ -238,7 +246,7 @@ nav.scrolled {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 0.45rem 0.9rem;
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   box-shadow: var(--glass-shine);
@@ -287,7 +295,7 @@ nav.scrolled {
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 16px;
+  border-radius: var(--radius);
   padding: 1.1rem;
   box-shadow: var(--glass-shine);
 }
@@ -321,7 +329,7 @@ nav.scrolled {
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 22px;
+  border-radius: var(--radius-xl);
   padding: 2.4rem;
   box-shadow: var(--glass-shine), 0 8px 32px rgba(0,0,0,0.35);
 }
@@ -334,7 +342,7 @@ nav.scrolled {
   align-items: center;
   justify-content: center;
   width: 26px; height: 26px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   background: rgba(139,92,246,0.12);
   border: 1px solid rgba(139,92,246,0.25);
   color: var(--pink);
@@ -404,7 +412,7 @@ nav.scrolled {
   background: linear-gradient(135deg, var(--pink) 0%, #6d28d9 100%);
   color: #fff;
   padding: 0.75rem 1.5rem;
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   text-decoration: none;
   font-weight: 700;
   font-size: 0.88rem;
@@ -494,26 +502,26 @@ footer {
 <div class="bg-orb bg-orb-2"></div>
 
 <nav id="nav">
-  <a href="https://viralyze-shop.vercel.app/landing/landing.html" class="logo"><span class="logo-text">Viralyze</span></a>
+  <a href="https://viralyze-tok.vercel.app/landing/landing.html" class="logo"><span class="logo-text">Viralyze</span></a>
   <ul class="nav-links">
-    <li><a href="https://viralyze-shop.vercel.app/landing/landing.html#features">Recursos</a></li>
-    <li><a href="https://viralyze-shop.vercel.app/landing/landing.html#pricing">Preços</a></li>
-    <li><a href="https://viralyze-shop.vercel.app/landing/landing.html#faq">FAQ</a></li>
-    <li><a href="https://viralyze-shop.vercel.app/" class="btn-nav">Começar grátis</a></li>
+    <li><a href="https://viralyze-tok.vercel.app/landing/landing.html#features">Recursos</a></li>
+    <li><a href="https://viralyze-tok.vercel.app/landing/landing.html#pricing">Preços</a></li>
+    <li><a href="https://viralyze-tok.vercel.app/landing/landing.html#faq">FAQ</a></li>
+    <li><a href="https://viralyze-tok.vercel.app/" class="btn-nav">Começar grátis</a></li>
   </ul>
   <button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navMobilePanel">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
   </button>
 </nav>
 <div class="nav-mobile-panel" id="navMobilePanel">
-  <a href="https://viralyze-shop.vercel.app/landing/landing.html#features">Recursos</a>
-  <a href="https://viralyze-shop.vercel.app/landing/landing.html#pricing">Preços</a>
-  <a href="https://viralyze-shop.vercel.app/landing/landing.html#faq">FAQ</a>
-  <a href="https://viralyze-shop.vercel.app/" class="btn-nav">Começar grátis</a>
+  <a href="https://viralyze-tok.vercel.app/landing/landing.html#features">Recursos</a>
+  <a href="https://viralyze-tok.vercel.app/landing/landing.html#pricing">Preços</a>
+  <a href="https://viralyze-tok.vercel.app/landing/landing.html#faq">FAQ</a>
+  <a href="https://viralyze-tok.vercel.app/" class="btn-nav">Começar grátis</a>
 </div>
 
 <section class="legal-hero">
-  <a href="https://viralyze-shop.vercel.app/landing/landing.html" class="back-link">
+  <a href="https://viralyze-tok.vercel.app/landing/landing.html" class="back-link">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
     Voltar para a página inicial
   </a>
@@ -643,11 +651,11 @@ footer {
 <footer>
   <div class="footer-logo">Viralyze</div>
   <ul class="footer-links">
-    <li><a href="https://viralyze-shop.vercel.app/landing/landing.html#features">Recursos</a></li>
-    <li><a href="https://viralyze-shop.vercel.app/landing/landing.html#pricing">Preços</a></li>
-    <li><a href="https://viralyze-shop.vercel.app/landing/landing.html#faq">FAQ</a></li>
-    <li><a href="https://viralyze-shop.vercel.app/landing/privacy.html">Privacidade</a></li>
-    <li><a href="https://viralyze-shop.vercel.app/landing/terms.html">Termos</a></li>
+    <li><a href="https://viralyze-tok.vercel.app/landing/landing.html#features">Recursos</a></li>
+    <li><a href="https://viralyze-tok.vercel.app/landing/landing.html#pricing">Preços</a></li>
+    <li><a href="https://viralyze-tok.vercel.app/landing/landing.html#faq">FAQ</a></li>
+    <li><a href="https://viralyze-tok.vercel.app/landing/privacy.html">Privacidade</a></li>
+    <li><a href="https://viralyze-tok.vercel.app/landing/terms.html">Termos</a></li>
   </ul>
   <span class="footer-copy">© 2026 Viralyze. Todos os direitos reservados.</span>
 </footer>
