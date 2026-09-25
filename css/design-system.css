@@ -237,7 +237,6 @@ body::before {
 .step-next-btn:hover,
 .act-btn:hover,
 .use-btn:hover,
-.add-product-btn:hover,
 .btn-primary:hover,
 .pbtn-solid:hover {
   filter: brightness(1.06);
