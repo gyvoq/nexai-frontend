@@ -2,13 +2,13 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
 <title>Política de Privacidade — Viralyze</title>
 <meta name="description" content="Política de Privacidade da Viralyze: como coletamos, usamos, armazenamos e protegemos seus dados pessoais."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -35,21 +35,20 @@
   --radius-xl: 24px;
   --radius-pill: 100px;
 
-
-  --shadow-soft: 0 4px 24px rgba(0,0,0,0.35);
-
   --glass-blur: blur(28px) saturate(180%);
   --glass-shine: inset 0 1px 0 rgba(255,255,255,0.14), inset 0 0 0 1px rgba(255,255,255,0.04);
+
+  --font-display: 'EB Garamond', 'Times New Roman', serif;
+  --font-ui: 'Inter', sans-serif;
+  --tracking-body: 0.16px;
+  --hairline: rgba(255,255,255,0.10);
+  --hairline-strong: rgba(255,255,255,0.22);
 }
 
-html {
-  scroll-behavior: smooth;
-  overflow-x: hidden;
-  width: 100%;
-}
+html { scroll-behavior: smooth; overflow-x: hidden; width: 100%; }
 
 body {
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: var(--font-ui); letter-spacing: var(--tracking-body);
   background: var(--ink);
   color: var(--text);
   overflow-x: hidden;
@@ -60,419 +59,179 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-a:focus-visible, button:focus-visible {
-  outline: 2px solid var(--pink);
-  outline-offset: 3px;
-  border-radius: 4px;
-}
+a:focus-visible, button:focus-visible { outline: 2px solid var(--pink); outline-offset: 3px; border-radius: 4px; }
 
-.bg-orb {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(100px);
-  pointer-events: none;
-  z-index: 0;
-  max-width: 100vw;
-}
-.bg-orb-1 {
-  width: 600px; height: 600px;
-  background: radial-gradient(circle, rgba(139,92,246,0.14) 0%, transparent 70%);
-  top: -200px; left: 50%; transform: translateX(-50%);
-}
-.bg-orb-2 {
-  width: 500px; height: 400px;
-  background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
-  bottom: -100px; right: -100px;
-}
+.bg-orb { position: fixed; border-radius: 50%; filter: blur(100px); pointer-events: none; z-index: 0; max-width: 100vw; }
+.bg-orb-1 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(139,92,246,0.14) 0%, transparent 70%); top: -200px; left: 50%; transform: translateX(-50%); }
+.bg-orb-2 { width: 500px; height: 400px; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%); bottom: -100px; right: -100px; }
 
+/* ---- Nav: idêntico ao da landing page ---- */
 nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  display: flex;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  justify-content: space-between;
-  padding: 1rem 5%;
-  background: var(--ink2);
+  column-gap: 1.5rem;
+  padding: calc(1rem + env(safe-area-inset-top, 0px)) 5% 1rem;
+  background: rgba(255,255,255,0.03);
   backdrop-filter: blur(18px) saturate(160%);
   -webkit-backdrop-filter: blur(18px) saturate(160%);
-  border-bottom: 1px solid var(--border);
-  transition: background 0.4s, border-color 0.4s;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  transition: background 0.4s, border-color 0.4s, backdrop-filter 0.4s;
 }
+nav.scrolled { background: rgba(0,0,0,0.5); backdrop-filter: blur(28px) saturate(180%); -webkit-backdrop-filter: blur(28px) saturate(180%); border-bottom: 1px solid var(--border); }
 
-nav.scrolled {
-  background: rgba(0,0,0,0.5);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border-bottom: 1px solid var(--border);
-}
+.logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; grid-column: 1; }
+.logo-text { font-family: var(--font-ui); font-weight: 700; font-size: 1.2rem; letter-spacing: -0.01em; color: var(--text); }
 
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  text-decoration: none;
-}
-.logo-img { height: 30px; width: auto; display: block; }
-.logo-text {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-weight: 800;
-  font-size: 1.25rem;
-  letter-spacing: -0.03em;
-  color: var(--text);
-}
+.nav-links-center { grid-column: 2; justify-content: center; }
+.nav-actions-wrap { grid-column: 3; display: flex; align-items: center; gap: 0.9rem; justify-self: end; }
 
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 2.2rem;
-  list-style: none;
-}
-
-.nav-links a {
-  color: var(--text2);
-  text-decoration: none;
-  font-size: 0.88rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  transition: color 0.2s;
-}
-
+.nav-links { display: flex; align-items: center; gap: 1.7rem; list-style: none; white-space: nowrap; }
+.nav-links a { color: var(--text2); text-decoration: none; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.01em; transition: color 0.2s; }
 .nav-links a:hover { color: var(--text); }
 
-.nav-links a.btn-nav {
-  background: var(--surface2);
+.nav-links a.btn-nav, .nav-mobile-panel a.btn-nav {
+  background: rgba(255,255,255,0.92);
   color: #060b0c !important;
   padding: 0.55rem 1.4rem;
-  border-radius: var(--radius-pill);
+  border-radius: 100px;
   font-size: 0.85rem;
   font-weight: 700;
   text-decoration: none;
   letter-spacing: -0.01em;
-  transition: opacity 0.2s, transform 0.15s;
+  transition: opacity 0.2s, transform 0.15s, background 0.2s;
   white-space: nowrap;
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--border2);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), 0 4px 20px rgba(0,0,0,0.12);
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 4px 20px rgba(0,0,0,0.25);
 }
-.nav-links a.btn-nav:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-nav { display: inline-block; }
+.btn-nav:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-nav:active { transform: translateY(0) scale(0.97); }
 
 .nav-toggle {
-  display: none;
-  width: 40px; height: 40px;
-  border-radius: 50%;
-  border: 1px solid var(--border2);
-  background: var(--surface);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--text);
+  display: none; width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--border2); background: var(--surface);
+  align-items: center; justify-content: center; cursor: pointer; color: var(--text); flex-shrink: 0;
 }
 .nav-toggle svg { width: 18px; height: 18px; }
 
 .nav-mobile-panel {
-  display: none;
-  position: fixed;
-  top: 68px; right: 5%; left: 5%;
+  display: none; position: fixed;
+  top: calc(68px + env(safe-area-inset-top, 0px)); right: 5%; left: 5%;
   z-index: 99;
+  max-height: calc(100dvh - 68px - env(safe-area-inset-top, 0px) - 24px);
+  overflow-y: auto;
   background: rgba(0,0,0,0.55);
   backdrop-filter: blur(24px) saturate(1.4);
   -webkit-backdrop-filter: blur(24px) saturate(1.4);
   border: 1px solid var(--border2);
-  border-radius: var(--radius-lg);
+  border-radius: 20px;
   padding: 1.2rem;
+  padding-bottom: calc(1.2rem + env(safe-area-inset-bottom, 0px));
   flex-direction: column;
   gap: 0.2rem;
-  box-shadow: var(--glass-shine);
 }
 .nav-mobile-panel.open { display: flex; }
-.nav-mobile-panel a {
-  color: var(--text2);
-  text-decoration: none;
-  font-size: 0.95rem;
-  font-weight: 600;
-  padding: 0.85rem 0.6rem;
-  border-radius: 10px;
-  transition: background 0.2s, color 0.2s;
-}
-.nav-mobile-panel a:hover { background: var(--surface2); color: var(--text); }
-.nav-mobile-panel a.btn-nav {
-  text-align: center;
-  margin-top: 0.4rem;
-  color: #060b0c !important;
-  background: var(--surface2);
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--border2);
-}
+.nav-mobile-panel a { color: var(--text2); text-decoration: none; font-size: 0.95rem; font-weight: 600; padding: 0.85rem 0.6rem; border-radius: 10px; transition: background 0.2s, color 0.2s; }
+.nav-mobile-panel a:hover, .nav-mobile-panel a:active { background: var(--surface2); color: var(--text); }
+.nav-mobile-panel a.btn-nav { text-align: center; margin-top: 0.4rem; color: var(--ink); }
 
-@media (max-width: 860px) {
+@media (max-width: 900px) {
   .nav-links { display: none; }
   .nav-toggle { display: flex; }
+  .nav-actions-wrap .theme-toggle-btn { width: 40px; height: 40px; }
 }
 
-.legal-hero {
-  position: relative;
-  z-index: 1;
-  padding: 9rem 5% 3rem;
-  max-width: 880px;
-  margin: 0 auto;
-}
+/* ---- Conteúdo legal ---- */
+.legal-hero { position: relative; z-index: 1; padding: 9rem 5% 3rem; max-width: 880px; margin: 0 auto; }
 
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  color: var(--text3);
-  text-decoration: none;
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-bottom: 1.6rem;
-  transition: color 0.2s;
-}
-.back-link:hover { color: var(--text); }
+.back-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--text3); opacity: 0.75; text-decoration: none; font-size: 0.85rem; font-weight: 600; margin-bottom: 1.6rem; transition: color 0.2s, opacity 0.2s; }
+.back-link:hover { color: var(--text); opacity: 1; }
 .back-link svg { width: 15px; height: 15px; }
 
 .legal-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  color: var(--text);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 0.45rem 0.9rem;
-  border-radius: var(--radius-pill);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  box-shadow: var(--glass-shine);
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--surface2); border: 1px solid var(--border2); color: var(--text);
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 0.45rem 0.9rem; border-radius: var(--radius-pill);
+  backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
   margin-bottom: 1.4rem;
 }
 .legal-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pink); }
 
 .legal-hero h1 {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: clamp(2.2rem, 4.5vw, 3.4rem);
-  font-weight: 700;
-  letter-spacing: -0.03em;
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 4.5vw, 3.6rem);
+  font-weight: 300;
+  letter-spacing: -0.02em;
   line-height: 1.08;
   margin-bottom: 1rem;
 }
-.legal-hero h1 em {
-  font-family: 'Instrument Serif', serif;
-  font-style: italic;
-  font-weight: 400;
-  color: var(--pink);
-}
+.legal-hero h1 em { font-family: var(--font-display); font-style: italic; font-weight: 400; color: var(--pink); }
 
-.legal-updated {
-  font-size: 0.88rem;
-  color: var(--text3);
-  line-height: 1.7;
-  max-width: 560px;
-}
+.legal-updated { font-size: 0.88rem; color: var(--text2); opacity: 0.75; line-height: 1.7; max-width: 560px; }
 
-.legal-wrap {
-  position: relative;
-  z-index: 1;
-  max-width: 880px;
-  margin: 0 auto;
-  padding: 1rem 5% 6rem;
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 2.5rem;
-  align-items: start;
-}
+.legal-wrap { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; padding: 1rem 5% 6rem; display: grid; grid-template-columns: 220px 1fr; gap: 2.5rem; align-items: start; }
 
-.legal-toc {
-  position: sticky;
-  top: 6.5rem;
-  background: var(--surface);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.1rem;
-  box-shadow: var(--glass-shine);
-}
-.legal-toc-label {
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--pink);
-  margin-bottom: 0.8rem;
-}
-.legal-toc a {
-  display: block;
-  font-size: 0.82rem;
-  color: var(--text3);
-  text-decoration: none;
-  padding: 0.4rem 0;
-  line-height: 1.4;
-  transition: color 0.2s;
-  border-left: 2px solid transparent;
-  padding-left: 0.7rem;
-  margin-left: -0.7rem;
-}
-.legal-toc a:hover, .legal-toc a.active {
-  color: var(--text);
-  border-left-color: var(--pink);
-}
+.legal-toc { position: sticky; top: 6.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem; }
+.legal-toc-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--pink); margin-bottom: 0.8rem; }
+.legal-toc a { display: block; font-size: 0.82rem; color: var(--text3); opacity: 0.7; text-decoration: none; padding: 0.4rem 0; line-height: 1.4; transition: color 0.2s, opacity 0.2s; border-left: 2px solid transparent; padding-left: 0.7rem; margin-left: -0.7rem; }
+.legal-toc a:hover, .legal-toc a.active { color: var(--text); opacity: 1; border-left-color: var(--pink); }
 
-.legal-card {
-  background: var(--surface);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  padding: 2.4rem;
-  box-shadow: var(--glass-shine), 0 8px 32px rgba(0,0,0,0.35);
-}
+.legal-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 2.4rem; box-shadow: 0 4px 16px rgba(0,0,0,0.24); }
 
 .legal-section { padding-bottom: 2.2rem; margin-bottom: 2.2rem; border-bottom: 1px solid var(--border); scroll-margin-top: 6.5rem; }
 .legal-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 
-.legal-section-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px; height: 26px;
-  border-radius: var(--radius-sm);
-  background: rgba(139,92,246,0.12);
-  border: 1px solid rgba(139,92,246,0.25);
-  color: var(--pink);
-  font-size: 0.72rem;
-  font-weight: 800;
-  margin-right: 0.6rem;
-}
+.legal-section-num { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: var(--radius-sm); background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.25); color: var(--pink); font-size: 0.72rem; font-weight: 800; margin-right: 0.6rem; }
 
-.legal-section h2 {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: 1.15rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.9rem;
-}
+.legal-section h2 { font-family: var(--font-ui); font-size: 1.1rem; font-weight: 700; letter-spacing: -0.01em; display: flex; align-items: center; margin-bottom: 0.9rem; }
 
-.legal-section p {
-  font-size: 0.9rem;
-  line-height: 1.8;
-  color: var(--text2);
-  margin-bottom: 0.9rem;
-}
+.legal-section p { font-size: 0.9rem; line-height: 1.8; color: var(--text2); opacity: 0.82; margin-bottom: 0.9rem; }
 .legal-section p:last-child { margin-bottom: 0; }
 
-.legal-section ul {
-  list-style: none;
-  margin: 0.9rem 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-.legal-section li {
-  font-size: 0.9rem;
-  line-height: 1.7;
-  color: var(--text2);
-  padding-left: 1.4rem;
-  position: relative;
-}
-.legal-section li::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0.55rem;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--pink);
-}
+.legal-section ul { list-style: none; margin: 0.9rem 0; display: flex; flex-direction: column; gap: 0.6rem; }
+.legal-section li { font-size: 0.9rem; line-height: 1.7; color: var(--text2); opacity: 0.82; padding-left: 1.4rem; position: relative; }
+.legal-section li::before { content: ''; position: absolute; left: 0; top: 0.55rem; width: 6px; height: 6px; border-radius: 50%; background: var(--pink); }
 
-.legal-section strong { color: var(--text); font-weight: 700; }
+.legal-section strong { color: var(--text); opacity: 1; font-weight: 700; }
 
-.legal-callout {
-  background: rgba(139,92,246,0.05);
-  border: 1px solid rgba(139,92,246,0.16);
-  border-radius: 14px;
-  padding: 1rem 1.2rem;
-  font-size: 0.85rem;
-  line-height: 1.7;
-  color: var(--text2);
-  margin-top: 1rem;
-}
+.legal-callout { background: rgba(139,92,246,0.05); border: 1px solid rgba(139,92,246,0.16); border-radius: 14px; padding: 1rem 1.2rem; font-size: 0.85rem; line-height: 1.7; color: var(--text2); margin-top: 1rem; }
 
 .legal-contact-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
+  display: inline-flex; align-items: center; gap: 0.5rem;
   background: linear-gradient(135deg, var(--pink) 0%, #6d28d9 100%);
-  color: #fff;
-  padding: 0.75rem 1.5rem;
-  border-radius: var(--radius-pill);
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 0.88rem;
-  margin-top: 0.4rem;
-  box-shadow: 0 4px 30px var(--glow-pink), inset 0 1px 0 rgba(255,255,255,0.3);
-  transition: transform 0.2s;
+  color: #fff; padding: 0.75rem 1.5rem; border-radius: var(--radius-pill);
+  text-decoration: none; font-weight: 700; font-size: 0.88rem; margin-top: 0.4rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.28);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-.legal-contact-btn:hover { transform: translateY(-2px); }
+.legal-contact-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(139,92,246,0.28); }
+
+/* ---- Footer: idêntico ao da landing page ---- */
+footer {
+  position: relative; z-index: 1;
+  padding: 3rem 5% calc(3rem + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;
+}
+.footer-logo { font-family: var(--font-ui); font-weight: 600; font-size: 1.1rem; letter-spacing: -0.01em; color: #ffffff; }
+.footer-links { display: flex; gap: 2rem; list-style: none; flex-wrap: wrap; }
+.footer-links a { color: #ffffff; opacity: 0.85; text-decoration: none; font-size: 0.8rem; transition: opacity 0.2s; }
+.footer-links a:hover { opacity: 1; }
+.footer-copy { font-size: 0.75rem; color: #ffffff; opacity: 0.85; }
 
 @media (max-width: 780px) {
   .legal-wrap { grid-template-columns: 1fr; }
   .legal-toc { position: static; }
   .legal-card { padding: 1.6rem; }
-
-  .bg-orb {
-    position: absolute;
-    filter: blur(60px);
-  }
+  .bg-orb { position: absolute; filter: blur(60px); }
   .bg-orb-1 { width: 380px; height: 380px; }
   .bg-orb-2 { width: 320px; height: 260px; }
-
-  nav {
-    backdrop-filter: blur(10px) saturate(140%);
-    -webkit-backdrop-filter: blur(10px) saturate(140%);
-  }
-  nav.scrolled {
-    backdrop-filter: blur(14px) saturate(150%);
-    -webkit-backdrop-filter: blur(14px) saturate(150%);
-  }
-
-  .legal-toc, .legal-card {
-    background: rgba(18,18,20,0.92);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-
-  .nav-mobile-panel {
-    background: rgba(10,10,12,0.96);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
 }
-
-footer {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1.2rem;
-  padding: 2.2rem 5% 3rem;
-  border-top: 1px solid var(--border);
-}
-.footer-logo { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 1.2rem; letter-spacing: -0.03em; color: var(--text); }
-.footer-links { display: flex; gap: 2rem; list-style: none; flex-wrap: wrap; }
-.footer-links a { color: var(--text); opacity: 0.85; text-decoration: none; font-size: 0.8rem; transition: opacity 0.2s; }
-.footer-links a:hover { opacity: 1; }
-.footer-copy { font-size: 0.75rem; color: var(--text); opacity: 0.85; }
 
 @media (max-width: 600px) {
   footer { flex-direction: column; align-items: flex-start; }
@@ -483,10 +242,10 @@ footer {
   .legal-section h2 { font-size: 1.05rem; }
   .legal-section p, .legal-section li { font-size: 0.87rem; }
   .footer-links { gap: 1.2rem; row-gap: 0.6rem; }
+  nav { padding: 0.85rem 5%; }
 }
 
 @media (max-width: 400px) {
-  nav { padding: 0.85rem 5%; }
   .logo-text { font-size: 1.1rem; }
   .legal-hero { padding: 6.5rem 6% 1.6rem; }
   .legal-hero h1 { font-size: 1.85rem; }
@@ -495,11 +254,70 @@ footer {
   .legal-eyebrow { font-size: 0.62rem; padding: 0.4rem 0.75rem; }
   .legal-contact-btn { width: 100%; justify-content: center; }
 }
+
+/* Blur pesado custa caro no scroll em celulares mais fracos — mesma otimização da landing */
+@media (max-width: 640px) {
+  nav, nav.scrolled, .nav-mobile-panel, .legal-eyebrow, .nav-links a.btn-nav, .nav-mobile-panel a.btn-nav {
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
 </style>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@300;400;500&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="../css/design-system.css"/>
+<style>
+/* ===================================================================
+   Correções de conflito claro/escuro (mesmo padrão da landing page):
+   design-system.css troca as variáveis quando body tem "theme-light",
+   mas os elementos abaixo são específicos desta página e precisam de
+   ajuste próprio. Este bloco carrega depois para vencer a cascata.
+   =================================================================== */
+body.landing.theme-light .btn-nav {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--ink) !important;
+  box-shadow: 0 4px 14px rgba(12,10,9,0.16);
+}
+body.landing.theme-light .nav-mobile-panel { background: rgba(245,245,245,0.94); }
+body.landing.theme-light .bg-orb { opacity: 0.5; }
+body.landing.theme-light .back-link { color: var(--text3); }
+
+body.landing.theme-light .legal-eyebrow,
+body.landing.theme-light .legal-toc,
+body.landing.theme-light .legal-card {
+  background: var(--surface);
+  border-color: var(--border);
+}
+body.landing.theme-light .legal-card { box-shadow: 0 4px 16px rgba(12,10,9,0.08); }
+
+body.landing.theme-light .legal-updated,
+body.landing.theme-light .legal-section p,
+body.landing.theme-light .legal-section li {
+  color: var(--text2);
+  opacity: 1;
+}
+body.landing.theme-light .legal-toc a { color: var(--text3); opacity: 0.85; }
+body.landing.theme-light .legal-toc a:hover,
+body.landing.theme-light .legal-toc a.active { color: var(--text); opacity: 1; }
+
+body.landing.theme-light .legal-section-num {
+  background: rgba(139,92,246,0.1);
+  border-color: rgba(139,92,246,0.28);
+}
+
+body.landing.theme-light .legal-callout {
+  background: rgba(139,92,246,0.06);
+  border-color: rgba(139,92,246,0.2);
+  color: var(--text2);
+}
+
+body.landing.theme-light .legal-contact-btn { box-shadow: 0 4px 14px rgba(12,10,9,0.14); }
+</style>
 <script>
-/* Tema compartilhado com o app (chave nex-theme) */
+/* Tema compartilhado com o app (chave nex-theme) — mesmo script da landing */
 (function () {
   function applyTheme(theme) {
     document.body.classList.toggle('theme-light', theme === 'light');
@@ -512,17 +330,15 @@ footer {
   document.addEventListener('DOMContentLoaded', function () {
     applyTheme(current());
     var nav = document.getElementById('nav');
-    var navList = nav ? nav.querySelector('.nav-links') : null;
-    if (navList && !document.getElementById('landingThemeBtn')) {
-      var li = document.createElement('li');
-      li.className = 'nav-theme-item';
+    var navActionsWrap = nav ? nav.querySelector('.nav-actions-wrap') : null;
+    var navToggleEl = document.getElementById('navToggle');
+    if (navActionsWrap && !document.getElementById('landingThemeBtn')) {
       var btn = document.createElement('button');
       btn.id = 'landingThemeBtn';
-      btn.className = 'theme-toggle-btn';
+      btn.className = 'theme-toggle-btn nav-theme-item';
       btn.type = 'button';
       btn.innerHTML = '<svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/></svg>';
-      li.appendChild(btn);
-      navList.appendChild(li);
+      navActionsWrap.insertBefore(btn, navToggleEl);
       btn.addEventListener('click', function () {
         var next = document.body.classList.contains('theme-light') ? 'dark' : 'light';
         try { localStorage.setItem('nex-theme', next); } catch (e) {}
@@ -540,24 +356,30 @@ footer {
 <div class="bg-orb bg-orb-2"></div>
 
 <nav id="nav">
-<a href="#hero" class="logo">
-    <span class="logo-text">Viralyze</span>
-</a>
-  <ul class="nav-links">
+  <a href="https://viralyze-tok.vercel.app/landing/landing.html" class="logo"><span class="logo-text">Viralyze</span></a>
+  <ul class="nav-links nav-links-center">
     <li><a href="https://viralyze-tok.vercel.app/landing/landing.html#features">Recursos</a></li>
-    <li><a href="https://viralyze-tok.vercel.app/landing/landing.html#pricing">Preços</a></li>
+    <li><a href="https://viralyze-tok.vercel.app/landing/landing.html#galeria">Galeria</a></li>
+    <li><a href="https://viralyze-tok.vercel.app/landing/landing.html#pricing">Planos</a></li>
     <li><a href="https://viralyze-tok.vercel.app/landing/landing.html#faq">FAQ</a></li>
-    <li><a href="https://viralyze-tok.vercel.app/" class="btn-nav">Começar grátis</a></li>
   </ul>
-  <button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navMobilePanel">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
-  </button>
+  <div class="nav-actions-wrap">
+    <ul class="nav-links nav-links-actions">
+      <li><a href="https://viralyze-tok.vercel.app/">Entrar</a></li>
+      <li><a href="https://viralyze-tok.vercel.app/landing/landing.html#pricing" class="btn-nav">Assinar</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navMobilePanel">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+  </div>
 </nav>
 <div class="nav-mobile-panel" id="navMobilePanel">
   <a href="https://viralyze-tok.vercel.app/landing/landing.html#features">Recursos</a>
-  <a href="https://viralyze-tok.vercel.app/landing/landing.html#pricing">Preços</a>
+  <a href="https://viralyze-tok.vercel.app/landing/landing.html#galeria">Galeria</a>
+  <a href="https://viralyze-tok.vercel.app/landing/landing.html#pricing">Planos</a>
   <a href="https://viralyze-tok.vercel.app/landing/landing.html#faq">FAQ</a>
-  <a href="https://viralyze-tok.vercel.app/" class="btn-nav">Começar grátis</a>
+  <a href="https://viralyze-tok.vercel.app/">Entrar</a>
+  <a href="https://viralyze-tok.vercel.app/landing/landing.html#pricing" class="btn-nav">Assinar</a>
 </div>
 
 <section class="legal-hero">
@@ -749,7 +571,6 @@ footer {
   sections.forEach(s => tocObserver.observe(s));
 </script>
 <script>
-
   (function () {
     var params = new URLSearchParams(location.search);
     var ret = params.get('return');
