@@ -14,12 +14,12 @@
 
 :root {
   --ink: #000000;
-  --ink2: rgba(255,255,255,0.035);
-  --ink3: rgba(255,255,255,0.055);
-  --surface: rgba(255,255,255,0.045);
-  --surface2: rgba(255,255,255,0.09);
-  --border: rgba(255,255,255,0.09);
-  --border2: rgba(255,255,255,0.18);
+  --ink2: #0d0d0f;
+  --ink3: #131316;
+  --surface: #141416;
+  --surface2: #1e1e22;
+  --border: #242428;
+  --border2: #3a3a40;
   --text: #ffffff;
   --text2: #ffffff;
   --text3: #ffffff;
@@ -49,8 +49,8 @@
   --font-ui: 'Inter', sans-serif;
   --tracking-display: -0.02em;
   --tracking-body: 0.16px;
-  --hairline: rgba(255,255,255,0.10);
-  --hairline-soft: rgba(255,255,255,0.06);
+  --hairline: #262629;
+  --hairline-soft: #1a1a1d;
 }
 
 html {
@@ -101,7 +101,7 @@ nav {
   column-gap: 1.5rem;
   padding: calc(1rem + env(safe-area-inset-top, 0px)) 5% 1rem;
   background: #0a0a0c;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid #1a1a1d;
   transition: background 0.4s, border-color 0.4s, box-shadow 0.4s;
 }
 
@@ -267,7 +267,7 @@ nav.scrolled {
   align-items: center;
   gap: 0.5rem;
   background: #141416;
-  border: 1px solid rgba(255,255,255,0.18);
+  border: 1px solid #3a3a40;
   color: #ffffff;
   font-size: 0.72rem;
   font-weight: 600;
@@ -369,7 +369,7 @@ h1 em {
 .btn-ghost:hover {
   border-color: rgba(255,255,255,0.4);
   color: var(--text);
-  background: rgba(255,255,255,0.04);
+  background: #17171a;
 }
 .btn-ghost:active { transform: scale(0.98); }
 
@@ -515,7 +515,7 @@ h1 em {
 }
 
 .feature-card:hover {
-  border-color: rgba(255,255,255,0.16);
+  border-color: #333338;
   transform: translateY(-2px);
 }
 
@@ -543,7 +543,6 @@ h1 em {
   border-radius: 14px;
   background: rgba(139,92,246,0.12);
   border: 1px solid rgba(139,92,246,0.25);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -578,8 +577,8 @@ h1 em {
 }
 
 .feature-tag.aqua {
-  background: rgba(255,255,255,0.08);
-  border-color: rgba(255,255,255,0.2);
+  background: #1e1e22;
+  border-color: #35353c;
   color: #ffffff;
 }
 
@@ -594,7 +593,7 @@ h1 em {
   display: grid;
   grid-template-columns: minmax(280px, 380px) 1fr;
   background: var(--surface, #161320);
-  border: 1px solid var(--hairline, rgba(255,255,255,0.1));
+  border: 1px solid var(--hairline, #262629);
   border-radius: 20px;
   overflow: hidden;
   min-height: 420px;
@@ -719,7 +718,7 @@ h1 em {
   overflow: hidden;
   position: relative;
   background: linear-gradient(160deg, rgba(139,92,246,0.16), rgba(0,0,0,0.25));
-  border: 1px solid var(--hairline, rgba(255,255,255,0.1));
+  border: 1px solid var(--hairline, #262629);
 }
 
 .galeria-item img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -737,7 +736,7 @@ h1 em {
 }
 
 .result-item { background: var(--surface, #161320); padding: 2.5rem 2rem; text-align: center; transition: border-color 0.25s; border: 1px solid var(--hairline); border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.24); }
-.result-item:hover { border-color: rgba(255,255,255,0.16); }
+.result-item:hover { border-color: #333338; }
 
 .result-num {
   font-family: var(--font-display);
@@ -832,7 +831,7 @@ h1 em {
   box-shadow: 0 4px 16px rgba(0,0,0,0.28);
 }
 
-.pcard:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.16); }
+.pcard:hover { transform: translateY(-2px); border-color: #333338; }
 
 .pcard.highlight {
   background: var(--surface2, #1c1928);
@@ -874,7 +873,7 @@ h1 em {
   margin-bottom: 1.5rem;
 }
 
-.plan-save.gold { color: #ffffff; background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
+.plan-save.gold { color: #ffffff; background: #1e1e22; border-color: #35353c; }
 
 .plan-sep { height: 1px; background: var(--border); margin: 1.5rem 0; }
 
@@ -1109,7 +1108,7 @@ footer {
 /* --hairline / --hairline-strong nunca eram redefinidas para o tema
    claro, deixando bordas brancas translúcidas (quase invisíveis) em
    cards e painéis com fundo claro. */
-:root { --hairline-strong: rgba(255,255,255,0.22); }
+:root { --hairline-strong: #404046; }
 body.landing.theme-light {
   --hairline: rgba(12,10,9,0.12);
   --hairline-strong: rgba(12,10,9,0.18);
