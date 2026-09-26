@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
 <title>Viralyze — Prompts de IA que vendem por você no TikTok Shop</title>
 <meta name="description" content="Descubra produtos em alta no TikTok Shop e gere prompts profissionais de imagem e vídeo com avatares ultra-realistas para Midjourney, Runway, Kling AI, Pika Labs e Sora — sem gravar, sem aparecer, sem editar."/>
@@ -102,7 +102,7 @@ nav {
   grid-template-columns: auto 1fr auto;
   align-items: center;
   column-gap: 1.5rem;
-  padding: 1rem 5%;
+  padding: calc(1rem + env(safe-area-inset-top, 0px)) 5% 1rem;
   background: rgba(255,255,255,0.03);
   backdrop-filter: blur(18px) saturate(160%);
   -webkit-backdrop-filter: blur(18px) saturate(160%);
@@ -131,8 +131,12 @@ nav.scrolled {
   justify-content: center;
 }
 
-.nav-links-actions {
+.nav-actions-wrap {
   grid-column: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  justify-self: end;
 }
 
 .logo-img {
@@ -203,8 +207,7 @@ nav.scrolled {
   justify-content: center;
   cursor: pointer;
   color: var(--text);
-  grid-column: 3;
-  justify-self: end;
+  flex-shrink: 0;
 }
 
 .nav-toggle svg { width: 18px; height: 18px; }
@@ -212,14 +215,17 @@ nav.scrolled {
 .nav-mobile-panel {
   display: none;
   position: fixed;
-  top: 68px; right: 5%; left: 5%;
+  top: calc(68px + env(safe-area-inset-top, 0px)); right: 5%; left: 5%;
   z-index: 99;
+  max-height: calc(100dvh - 68px - env(safe-area-inset-top, 0px) - 24px);
+  overflow-y: auto;
   background: rgba(0,0,0,0.55);
   backdrop-filter: blur(24px) saturate(1.4);
   -webkit-backdrop-filter: blur(24px) saturate(1.4);
   border: 1px solid var(--border2);
   border-radius: 20px;
   padding: 1.2rem;
+  padding-bottom: calc(1.2rem + env(safe-area-inset-bottom, 0px));
   flex-direction: column;
   gap: 0.2rem;
 }
@@ -1047,7 +1053,7 @@ h1 em {
 .cta-card p { font-size: 1rem; color: var(--text2); font-weight: 400; margin-bottom: 2.5rem; line-height: 1.7; }
 
 footer {
-  padding: 3rem 5%;
+  padding: 3rem 5% calc(3rem + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -1073,6 +1079,7 @@ footer {
 @media (max-width: 900px) {
   .nav-links { display: none; }
   .nav-toggle { display: flex; }
+  .nav-actions-wrap .theme-toggle-btn { width: 40px; height: 40px; }
   .features-header { grid-template-columns: 1fr; gap: 1rem; }
   .feature-card:nth-child(n) { grid-column: span 12; }
   .features-grid { display: flex; flex-direction: column; }
@@ -1108,6 +1115,79 @@ footer {
 </style>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@300;400;500&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="../css/design-system.css"/>
+<style>
+/* ===================================================================
+   Correções de conflitos entre modo claro e escuro da landing page.
+   design-system.css já troca as variáveis --ink/--text/--surface/etc.
+   quando body tem "theme-light", mas vários elementos abaixo usavam
+   cores fixas (branco/preto) que não reagiam à troca de tema. Este
+   bloco carrega depois de design-system.css para vencer a cascata.
+   =================================================================== */
+
+/* --hairline / --hairline-strong nunca eram redefinidas para o tema
+   claro, deixando bordas brancas translúcidas (quase invisíveis) em
+   cards e painéis com fundo claro. */
+:root { --hairline-strong: rgba(255,255,255,0.22); }
+body.landing.theme-light {
+  --hairline: rgba(12,10,9,0.12);
+  --hairline-strong: rgba(12,10,9,0.18);
+  --pink2: #7c3aed; /* mais escuro que o padrão para manter contraste em fundo claro */
+}
+
+/* Botão "Assinar" do menu: no escuro é uma pílula branca com texto
+   escuro; no claro ela ficava quase invisível (branco sobre fundo
+   quase branco). Invertendo para pílula escura mantém a leitura. */
+body.landing.theme-light .btn-nav {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--ink) !important;
+  box-shadow: 0 4px 14px rgba(12,10,9,0.16);
+}
+
+/* Painel do menu mobile usava um overlay preto fixo, deixando o menu
+   escuro (com texto escuro por cima) mesmo no tema claro. */
+body.landing.theme-light .nav-mobile-panel {
+  background: rgba(245,245,245,0.94);
+}
+
+/* Estado hover do botão "Ver como funciona" usava branco translúcido
+   fixo, ficando invisível sobre fundo claro. */
+body.landing.theme-light .btn-ghost:hover {
+  border-color: var(--pink);
+  color: var(--text);
+  background: var(--surface2);
+}
+
+/* Sombra decorativa atrás do "Viralyze" em itálico assumia fundo
+   escuro; no claro o brilho branco simplesmente some. */
+body.landing.theme-light h1 em {
+  text-shadow: -2px 0 0 rgba(12,10,9,0.12);
+}
+
+/* Badges que só existiam com cores brancas fixas — reaproveitando as
+   variáveis de superfície/borda/texto já corretas para cada tema. */
+body.landing.theme-light .feature-tag.aqua {
+  background: var(--surface2);
+  border-color: var(--border2);
+  color: var(--text);
+}
+body.landing.theme-light .plan-save.gold {
+  background: var(--surface2);
+  border-color: var(--border2);
+  color: var(--text);
+}
+
+/* Otimização de performance mobile: blur pesado em vários elementos
+   com backdrop-filter custa caro em GPUs de celulares mais fracos,
+   principalmente durante o scroll (nav fixo). Reduzimos no mobile. */
+@media (max-width: 640px) {
+  nav, nav.scrolled, .nav-mobile-panel, .hero-eyebrow, .guarantee-inner,
+  .nav-links a.btn-nav, .nav-mobile-panel a.btn-nav {
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+  }
+}
+</style>
 <script>
 (function () {
   function applyTheme(theme) {
@@ -1121,17 +1201,17 @@ footer {
   document.addEventListener('DOMContentLoaded', function () {
     applyTheme(current());
     var nav = document.getElementById('nav');
-    var navList = nav ? nav.querySelector('.nav-links-actions') : null;
-    if (navList && !document.getElementById('landingThemeBtn')) {
-      var li = document.createElement('li');
-      li.className = 'nav-theme-item';
+    var navActionsWrap = nav ? nav.querySelector('.nav-actions-wrap') : null;
+    var navToggleEl = document.getElementById('navToggle');
+    if (navActionsWrap && !document.getElementById('landingThemeBtn')) {
       var btn = document.createElement('button');
       btn.id = 'landingThemeBtn';
-      btn.className = 'theme-toggle-btn';
+      btn.className = 'theme-toggle-btn nav-theme-item';
       btn.type = 'button';
       btn.innerHTML = '<svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/></svg>';
-      li.appendChild(btn);
-      navList.appendChild(li);
+      // Insert before the hamburger so it stays visible on both desktop and mobile,
+      // instead of inside the <ul> that gets display:none on small screens.
+      navActionsWrap.insertBefore(btn, navToggleEl);
       btn.addEventListener('click', function () {
         var next = document.body.classList.contains('theme-light') ? 'dark' : 'light';
         try { localStorage.setItem('nex-theme', next); } catch (e) {}
@@ -1155,13 +1235,15 @@ footer {
     <li><a href="#pricing">Planos</a></li>
     <li><a href="#faq">FAQ</a></li>
   </ul>
-  <ul class="nav-links nav-links-actions">
-    <li><a href="https://viralyze-tok.vercel.app/">Entrar</a></li>
-    <li><a href="#pricing" class="btn-nav">Assinar</a></li>
-  </ul>
-  <button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navMobilePanel">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
-  </button>
+  <div class="nav-actions-wrap">
+    <ul class="nav-links nav-links-actions">
+      <li><a href="https://viralyze-tok.vercel.app/">Entrar</a></li>
+      <li><a href="#pricing" class="btn-nav">Assinar</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navMobilePanel">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+  </div>
 </nav>
 <div class="nav-mobile-panel" id="navMobilePanel">
   <a href="#features">Recursos</a>
