@@ -141,10 +141,6 @@
   }
 }
 
-body.theme-light .vo-panel {
-  box-shadow: 0 18px 44px rgba(17, 19, 24, 0.14);
-}
-
 .vo-close {
   position: absolute;
   top: 8px;
