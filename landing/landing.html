@@ -752,74 +752,6 @@ h1 em {
 
 .galeria-item img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 
-.how { padding: 7rem 5%; }
-.how-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  align-items: center;
-}
-.how-header { text-align: left; margin-bottom: 0; }
-.how-header .section-sub { margin: 1.2rem 0 0; max-width: 420px; }
-.how-hint-static { display: none; }
-
-.how-deck {
-  position: relative;
-  height: 340px;
-}
-
-.how-card {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(165deg, rgba(40,35,54,0.98) 0%, rgba(16,14,22,0.99) 100%);
-  border: 1px solid rgba(255,255,255,0.09);
-  border-radius: 18px;
-  padding: 1.8rem 2rem;
-  overflow: hidden;
-  transition: transform 0.45s cubic-bezier(0.22,1,0.36,1), filter 0.45s, box-shadow 0.45s;
-  box-shadow: 0 20px 45px -18px rgba(0,0,0,0.65);
-}
-.how-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(165deg, rgba(255,255,255,0.16), rgba(255,255,255,0) 40%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
-
-.how-card .step-tag { display: flex; justify-content: space-between; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--pink2, #c4b5fd); margin-bottom: 0.9rem; }
-.how-card h4 { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 0.6rem; color: var(--text); }
-.how-card p { font-size: 0.85rem; color: var(--text2); line-height: 1.65; }
-
-.how-deck .how-card:nth-child(1) { z-index: 4; transform: translateY(0) scale(1); filter: brightness(1); }
-.how-deck .how-card:nth-child(2) { z-index: 3; transform: translateY(22px) scale(0.96); filter: brightness(0.82); }
-.how-deck .how-card:nth-child(3) { z-index: 2; transform: translateY(40px) scale(0.92); filter: brightness(0.64); }
-.how-deck .how-card:nth-child(4) { z-index: 1; transform: translateY(55px) scale(0.88); filter: brightness(0.48); }
-
-.how-deck:hover .how-card:nth-child(1) { transform: translateY(0) scale(1); filter: brightness(1); }
-.how-deck:hover .how-card:nth-child(2) { transform: translateY(110px) scale(1); filter: brightness(1); }
-.how-deck:hover .how-card:nth-child(3) { transform: translateY(220px) scale(1); filter: brightness(1); }
-.how-deck:hover .how-card:nth-child(4) { transform: translateY(330px) scale(1); filter: brightness(1); }
-.how-deck:hover { margin-bottom: 300px; }
-
-@media (max-width: 860px) {
-  .how-inner { grid-template-columns: 1fr; }
-  .how-header { text-align: center; }
-  .how-header .section-sub { margin-left: auto; margin-right: auto; }
-  .how-hint-hover { display: none; }
-  .how-hint-static { display: inline; }
-  /* No hover on touch: drop the stacked-deck trick and show four plain, readable cards */
-  .how-deck { height: auto; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 0; }
-  .how-deck .how-card { position: relative; inset: auto; transform: none !important; filter: none !important; }
-}
-
 .results { padding: 6rem 5%; max-width: 1200px; margin: 0 auto; }
 
 .results-grid {
@@ -1188,7 +1120,6 @@ footer {
   .social-proof { flex-direction: column; gap: 1rem; }
   .hero { padding: 6.5rem 6% 4rem; min-height: auto; }
   .features { padding: 4rem 6%; }
-  .how { padding: 4rem 6%; }
   .testimonials { padding: 4rem 6%; }
   .pricing { padding: 4rem 6% !important; }
   .faq { padding: 4rem 6%; }
@@ -1250,7 +1181,6 @@ footer {
   <ul class="nav-links">
     <li><a href="#features">Recursos</a></li>
     <li><a href="#galeria">Galeria</a></li>
-    <li><a href="#how">Como funciona</a></li>
     <li><a href="#pricing">Planos</a></li>
     <li><a href="#faq">FAQ</a></li>
     <li><a href="https://viralyze-tok.vercel.app/">Entrar</a></li>
@@ -1263,7 +1193,6 @@ footer {
 <div class="nav-mobile-panel" id="navMobilePanel">
   <a href="#features">Recursos</a>
   <a href="#galeria">Galeria</a>
-  <a href="#how">Como funciona</a>
   <a href="#pricing">Planos</a>
   <a href="#faq">FAQ</a>
   <a href="https://viralyze-tok.vercel.app/">Entrar</a>
@@ -1293,7 +1222,7 @@ footer {
         Assinar agora
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
       </a>
-      <a href="#how" class="btn-ghost">
+      <a href="#features" class="btn-ghost">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
         Ver como funciona
       </a>
@@ -1452,41 +1381,6 @@ footer {
       <div class="galeria-item"><img src="assets/galeria5.png" alt="Criação 5" loading="lazy"></div>
       <div class="galeria-item"><img src="assets/galeria6.png" alt="Criação 6" loading="lazy"></div>
       <div class="galeria-item"><img src="assets/galeria7.png" alt="Criação 7" loading="lazy"></div>
-    </div>
-  </div>
-</section>
-
-<section class="how" id="how">
-  <div class="how-inner">
-    <div class="how-header reveal">
-      <span class="section-label">Como funciona</span>
-      <h2 class="section-title">Quatro passos.<br>Resultado de <em>estúdio</em>.</h2>
-      <p class="section-sub">Do produto ao vídeo pronto em minutos.
-        <span class="how-hint-hover">Passe o mouse pra abrir o baralho e ver o fluxo completo.</span>
-        <span class="how-hint-static">Veja os 4 passos completos abaixo.</span>
-      </p>
-    </div>
-    <div class="how-deck reveal">
-      <div class="how-card">
-        <div class="step-tag"><span>Passo 01</span><span>01/04</span></div>
-        <h4>Produtos que estão vendendo agora</h4>
-        <p>Veja o que performa no TikTok Shop em tempo real, com dados atualizados e estimativa real de faturamento por produto.</p>
-      </div>
-      <div class="how-card">
-        <div class="step-tag"><span>Passo 02</span><span>02/04</span></div>
-        <h4>Biblioteca viral</h4>
-        <p>Identifique e replique estruturas vencedoras que prendem a atenção e disparam a conversão do seu conteúdo.</p>
-      </div>
-      <div class="how-card">
-        <div class="step-tag"><span>Passo 03</span><span>03/04</span></div>
-        <h4>Galeria de prompts</h4>
-        <p>Prompts prontos e validados para gerar movimentos ultra-realistas no seu influencer virtual com um clique.</p>
-      </div>
-      <div class="how-card">
-        <div class="step-tag"><span>Passo 04</span><span>04/04</span></div>
-        <h4>Gere e publique</h4>
-        <p>Copie o prompt gerado e cole direto no Midjourney, Runway ou sua IA favorita — resultado pronto pra campanha.</p>
-      </div>
     </div>
   </div>
 </section>
