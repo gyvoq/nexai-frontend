@@ -708,10 +708,6 @@ h1 em {
   animation: galeria-scroll 32s linear infinite;
 }
 
-/* Pausar a animação apenas quando o dispositivo realmente tem hover
-   (mouse). Sem isso, no celular o :hover "gruda" depois do primeiro
-   toque e o carrossel trava, parecendo que os cards pararam de se
-   mover. */
 @media (hover: hover) and (pointer: fine) {
   .galeria-viewport:hover .galeria-track { animation-play-state: paused; }
 }
@@ -1108,10 +1104,6 @@ footer {
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@300;400;500&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="../css/design-system.css"/>
 <style>
-/* Só existe modo escuro nesta página: sem toggle, sem tema claro.
-   design-system.css define --ink como um roxo bem escuro (#0c0a12),
-   não preto puro — sobrescrevendo aqui, que carrega por último, para
-   o fundo (e as faixas de seção) ficarem pretos de verdade. */
 :root { --hairline-strong: #404046; }
 body.landing {
   --ink: #000000;
@@ -1454,33 +1446,14 @@ body.landing {
   </ul>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
 <script>
-  let lenis = null;
-  if (typeof Lenis !== 'undefined') {
-    lenis = new Lenis({
-      duration: 1.1,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-    });
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-  }
-
   document.querySelectorAll('a[href^="#"]').forEach((a) => {
     a.addEventListener('click', (e) => {
       const id = a.getAttribute('href');
       const target = document.querySelector(id);
       if (target) {
         e.preventDefault();
-        if (lenis) {
-          lenis.scrollTo(target, { offset: -70 });
-        } else {
-          target.scrollIntoView({ behavior: 'smooth' });
-        }
+        target.scrollIntoView();
       }
     });
   });
