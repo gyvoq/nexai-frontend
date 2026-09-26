@@ -327,17 +327,12 @@ const Session = (() => {
     sub.id = 'act-sub';
     sub.textContent = 'Insira seu código de ativação de 5 dígitos para acessar o painel.';
 
-    const field = document.createElement('div');
-    field.className = 'act-field';
-    field.id = 'act-field';
-
+    const digits = [];
     const inputsWrap = document.createElement('div');
     inputsWrap.className = 'act-inputs';
     inputsWrap.id = 'act-inputs';
     inputsWrap.setAttribute('role', 'group');
     inputsWrap.setAttribute('aria-label', 'Código de ativação');
-
-    const digits = [];
     for (let i = 0; i < 5; i++) {
       const inp = document.createElement('input');
       inp.className = 'act-digit';
@@ -346,35 +341,15 @@ const Session = (() => {
       inp.autocomplete = i === 0 ? 'one-time-code' : 'off';
       inp.spellcheck = false;
       inp.inputMode = 'text';
-      inp.style.setProperty('--i', i);
       inp.setAttribute('aria-label', `Dígito ${i + 1} de 5`);
-      inp.setAttribute('placeholder', '·');
       inputsWrap.appendChild(inp);
       digits.push(inp);
     }
 
-    const track = document.createElement('div');
-    track.className = 'act-track';
-    const trackFill = document.createElement('i');
-    trackFill.id = 'act-fill';
-    track.appendChild(trackFill);
-
-    const bloom = document.createElement('div');
-    bloom.className = 'act-bloom';
-
-    const SVG_NS = 'http://www.w3.org/2000/svg';
-    const seal = document.createElement('div');
-    seal.className = 'act-seal';
-    const disc = document.createElement('div');
-    disc.className = 'act-seal-disc';
-    const sealSvg = document.createElementNS(SVG_NS, 'svg');
-    sealSvg.setAttribute('viewBox', '0 0 32 32');
-    const sealPath = document.createElementNS(SVG_NS, 'path');
-    sealPath.setAttribute('d', 'M8 17 l6 6 l11 -14');
-    sealSvg.appendChild(sealPath);
-    seal.append(disc, sealSvg);
-
-    field.append(inputsWrap, track, bloom, seal);
+    const field = document.createElement('div');
+    field.className = 'act-field';
+    field.id = 'act-field';
+    field.appendChild(inputsWrap);
 
     const msgEl = document.createElement('div');
     msgEl.className = 'act-msg';
@@ -390,14 +365,10 @@ const Session = (() => {
     btn.textContent = 'Ativar Agora';
     btn.addEventListener('click', () => window.submitActivation());
 
-    const footer = document.createElement('div');
-    footer.className = 'act-footer';
-    footer.textContent = 'Cada código é válido por até 1 mês após ativação';
-
     const actions = document.createElement('div');
     actions.className = 'act-actions';
     actions.id = 'act-actions';
-    actions.append(btn, footer);
+    actions.append(btn);
 
     card.append(logo, title, sub, field, msgEl, actions);
     ov.appendChild(card);
@@ -484,7 +455,7 @@ const Session = (() => {
 
           releaseGate();
           const ov = document.getElementById('activation-overlay');
-          if (ov) { ov.classList.add('hiding'); setTimeout(() => ov.remove(), 600); }
+          if (ov) ov.remove();
         }, 2000);
 
       } catch (err) {
@@ -543,59 +514,32 @@ const Session = (() => {
 
     function paintTrack() {
       const n = digits.filter(d => d.value).length;
-      const fillEl = document.getElementById('act-fill');
-      if (fillEl) fillEl.style.transform = `scaleX(${n / 5})`;
       const btnEl = document.getElementById('act-submit-btn');
       if (btnEl) btnEl.disabled = n < 5;
     }
 
     function accept() {
       setMsg('', false);
-      const field = document.getElementById('act-field');
       const card = document.querySelector('.act-card');
-      if (field) field.classList.add('win');
-
-      setTimeout(() => {
-        if (field) field.classList.add('merge');
-        if (card) card.classList.add('done');
-        const t = document.getElementById('act-title');
-        const s = document.getElementById('act-sub');
-        if (t) t.textContent = 'Licença ativada';
-        if (s) s.textContent = 'Tudo pronto. Bem-vindo ao Viralyze.';
-      }, 580);
+      if (card) card.classList.add('done');
+      const t = document.getElementById('act-title');
+      const s = document.getElementById('act-sub');
+      if (t) t.textContent = 'Licença ativada';
+      if (s) s.textContent = 'Tudo pronto. Bem-vindo ao Viralyze.';
     }
 
     function deny(text) {
-      const field = document.getElementById('act-field');
-      const inputs = document.getElementById('act-inputs');
       const card = document.querySelector('.act-card');
       const btnEl = document.getElementById('act-submit-btn');
-      const fillEl = document.getElementById('act-fill');
 
       if (btnEl) btnEl.textContent = 'Ativar Agora';
-      if (field) field.classList.add('deny');
       if (card) card.classList.add('denied');
       setMsg(text, true);
 
-      setTimeout(() => { if (inputs) inputs.classList.add('shake'); }, 180);
-      setTimeout(() => { if (inputs) inputs.classList.remove('shake'); }, 640);
-
-      setTimeout(() => {
-        digits.forEach(d => { d.value = ''; d.classList.remove('filled'); });
-        if (field) { field.classList.add('release'); field.classList.remove('deny'); }
-        if (card) card.classList.remove('denied');
-        if (fillEl) {
-          fillEl.style.transition = 'none';
-          fillEl.style.transform = 'scaleX(0)';
-          requestAnimationFrame(() => { fillEl.style.transition = ''; });
-        }
-      }, 1180);
-
-      setTimeout(() => {
-        if (field) field.classList.remove('release');
-        if (btnEl) btnEl.disabled = true;
-        digits[0].focus();
-      }, 1700);
+      digits.forEach(d => { d.value = ''; d.classList.remove('filled'); });
+      if (card) card.classList.remove('denied');
+      if (btnEl) btnEl.disabled = true;
+      digits[0].focus();
     }
   }
 
