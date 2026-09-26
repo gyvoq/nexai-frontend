@@ -128,7 +128,6 @@ nav.scrolled {
   height: 30px;
   width: auto;
   display: block;
-  animation: reveal-up 0.8s cubic-bezier(0.22,1,0.36,1) both;
 }
 
 .logo-text {
@@ -137,7 +136,6 @@ nav.scrolled {
   font-size: 1.2rem;
   letter-spacing: -0.01em;
   color: var(--text);
-  animation: reveal-up 0.8s cubic-bezier(0.22,1,0.36,1) both;
 }
 
 .nav-links {
@@ -271,7 +269,6 @@ nav.scrolled {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin-bottom: 2rem;
-  animation: reveal-up 0.8s cubic-bezier(0.22,1,0.36,1) both;
 }
 
 .hero-eyebrow-dot {
@@ -290,7 +287,6 @@ h1 {
   letter-spacing: -0.02em;
   line-height: 1.05;
   margin-bottom: 1.5rem;
-  animation: reveal-up 0.8s 0.1s cubic-bezier(0.22,1,0.36,1) both;
 }
 
 h1 em {
@@ -309,7 +305,6 @@ h1 em {
   margin: 0 auto 2.5rem;
   font-weight: 400;
   line-height: 1.75;
-  animation: reveal-up 0.8s 0.2s cubic-bezier(0.22,1,0.36,1) both;
 }
 
 .hero-actions {
@@ -318,7 +313,6 @@ h1 em {
   justify-content: center;
   flex-wrap: wrap;
   margin-bottom: 4rem;
-  animation: reveal-up 0.8s 0.3s cubic-bezier(0.22,1,0.36,1) both;
 }
 
 .btn-primary {
@@ -378,7 +372,6 @@ h1 em {
   justify-content: center;
   gap: 1.5rem;
   flex-wrap: wrap;
-  animation: reveal-up 0.8s 0.4s cubic-bezier(0.22,1,0.36,1) both;
 }
 
 .avatars-stack { display: flex; }
@@ -1049,7 +1042,7 @@ footer {
 
 .footer-copy { font-size: 0.75rem; color: #ffffff; opacity: 0.85; }
 
-@keyframes reveal-up { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+ to { opacity: 1; transform: translateY(0); } }
 
 @media (prefers-reduced-motion: reduce) {
   .marquee-track, .hero-eyebrow-dot { animation: none !important; }
