@@ -58,7 +58,6 @@ body {
 
 a:focus-visible, button:focus-visible { outline: 2px solid var(--pink); outline-offset: 3px; border-radius: 4px; }
 
-/* ---- Nav: idêntico ao da landing page ---- */
 nav {
   position: fixed; top: calc(1rem + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); z-index: 100;
   display: grid;
@@ -133,11 +132,9 @@ nav.scrolled { background: #000000; border-color: var(--border); box-shadow: 0 8
 @media (max-width: 900px) {
   .nav-links { display: none; }
   .nav-toggle { display: flex; }
-  .nav-actions-wrap .theme-toggle-btn { width: 40px; height: 40px; }
   nav { width: 94%; padding: 0.7rem 1.1rem; }
 }
 
-/* ---- Conteúdo legal ---- */
 .legal-hero { position: relative; z-index: 1; padding: 9rem 5% 3rem; max-width: 880px; margin: 0 auto; }
 
 .back-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--text3); opacity: 0.75; text-decoration: none; font-size: 0.85rem; font-weight: 600; margin-bottom: 1.6rem; transition: color 0.2s, opacity 0.2s; }
@@ -194,7 +191,6 @@ nav.scrolled { background: #000000; border-color: var(--border); box-shadow: 0 8
 }
 .legal-contact-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(139,92,246,0.28); }
 
-/* ---- Footer: idêntico ao da landing page ---- */
 footer {
   position: relative; z-index: 1;
   padding: 1.6rem 5% calc(1.6rem + env(safe-area-inset-bottom, 0px));
@@ -233,83 +229,13 @@ footer {
 </style>
 <link rel="stylesheet" href="../css/design-system.css"/>
 <style>
-/* ===================================================================
-   Correções de conflito claro/escuro (mesmo padrão da landing page):
-   design-system.css troca as variáveis quando body tem "theme-light",
-   mas os elementos abaixo são específicos desta página e precisam de
-   ajuste próprio. Este bloco carrega depois para vencer a cascata.
-   =================================================================== */
-body.landing.theme-light .btn-nav {
-  background: var(--text);
-  border-color: var(--text);
-  color: var(--ink) !important;
-  box-shadow: 0 4px 14px rgba(12,10,9,0.16);
-}
-body.landing.theme-light .nav-mobile-panel { background: rgba(245,245,245,0.94); }
-body.landing.theme-light .back-link { color: var(--text3); }
 
-body.landing.theme-light .legal-eyebrow {
-  background: var(--surface);
-  border-color: var(--border);
-}
-
-body.landing.theme-light .legal-updated,
-body.landing.theme-light .legal-section p,
-body.landing.theme-light .legal-section li {
-  color: var(--text2);
-  opacity: 1;
-}
-
-body.landing.theme-light .legal-section-num { color: var(--text); }
-
-body.landing.theme-light .legal-callout {
-  background: rgba(139,92,246,0.06);
-  border-color: rgba(139,92,246,0.2);
-  color: var(--text2);
-}
-
-body.landing.theme-light .legal-contact-btn { box-shadow: 0 4px 14px rgba(12,10,9,0.14); }
-
-/* Preto total no modo escuro (mesmo ajuste da landing page). */
-body.landing:not(.theme-light) {
+body.landing {
   --ink: #000000;
   --ink2: #000000;
   --ink3: #000000;
 }
 </style>
-<script>
-/* Tema compartilhado com o app (chave nex-theme) — mesmo script da landing */
-(function () {
-  function applyTheme(theme) {
-    document.body.classList.toggle('theme-light', theme === 'light');
-    var btn = document.getElementById('landingThemeBtn');
-    if (btn) btn.setAttribute('aria-label', theme === 'light' ? 'Ativar modo escuro' : 'Ativar modo claro');
-  }
-  function current() {
-    try { return localStorage.getItem('nex-theme') || 'dark'; } catch (e) { return 'dark'; }
-  }
-  document.addEventListener('DOMContentLoaded', function () {
-    applyTheme(current());
-    var nav = document.getElementById('nav');
-    var navActionsWrap = nav ? nav.querySelector('.nav-actions-wrap') : null;
-    var navToggleEl = document.getElementById('navToggle');
-    if (navActionsWrap && !document.getElementById('landingThemeBtn')) {
-      var btn = document.createElement('button');
-      btn.id = 'landingThemeBtn';
-      btn.className = 'theme-toggle-btn nav-theme-item';
-      btn.type = 'button';
-      btn.innerHTML = '<svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/></svg>';
-      navActionsWrap.insertBefore(btn, navToggleEl);
-      btn.addEventListener('click', function () {
-        var next = document.body.classList.contains('theme-light') ? 'dark' : 'light';
-        try { localStorage.setItem('nex-theme', next); } catch (e) {}
-        applyTheme(next);
-      });
-    }
-    if (nav) applyTheme(current());
-  });
-})();
-</script>
 </head>
 <body class="landing">
 
