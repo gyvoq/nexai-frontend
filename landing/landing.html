@@ -93,22 +93,26 @@ body::after {
 
 nav {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: calc(1rem + env(safe-area-inset-top, 0px));
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 100;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
   column-gap: 1.5rem;
-  padding: calc(1rem + env(safe-area-inset-top, 0px)) 5% 1rem;
+  width: min(1180px, 92%);
+  padding: 0.8rem 1.6rem;
   background: #0a0a0c;
-  border-bottom: 1px solid #1a1a1d;
+  border: 1px solid #1e1e22;
+  border-radius: 100px;
   transition: background 0.4s, border-color 0.4s, box-shadow 0.4s;
 }
 
 nav.scrolled {
   background: #000000;
-  border-bottom: 1px solid var(--border);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  border-color: var(--border);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
 }
 
 .logo {
@@ -207,9 +211,9 @@ nav.scrolled {
 .nav-mobile-panel {
   display: none;
   position: fixed;
-  top: calc(68px + env(safe-area-inset-top, 0px)); right: 5%; left: 5%;
+  top: calc(82px + env(safe-area-inset-top, 0px)); right: 5%; left: 5%;
   z-index: 99;
-  max-height: calc(100dvh - 68px - env(safe-area-inset-top, 0px) - 24px);
+  max-height: calc(100dvh - 82px - env(safe-area-inset-top, 0px) - 24px);
   overflow-y: auto;
   background: #0a0a0c;
   border: 1px solid var(--border2);
@@ -704,7 +708,13 @@ h1 em {
   animation: galeria-scroll 32s linear infinite;
 }
 
-.galeria-viewport:hover .galeria-track { animation-play-state: paused; }
+/* Pausar a animação apenas quando o dispositivo realmente tem hover
+   (mouse). Sem isso, no celular o :hover "gruda" depois do primeiro
+   toque e o carrossel trava, parecendo que os cards pararam de se
+   mover. */
+@media (hover: hover) and (pointer: fine) {
+  .galeria-viewport:hover .galeria-track { animation-play-state: paused; }
+}
 
 @keyframes galeria-scroll {
   from { transform: translateX(0); }
@@ -1034,22 +1044,24 @@ h1 em {
 .cta-card p { font-size: 1rem; color: var(--text2); font-weight: 400; margin-bottom: 2.5rem; line-height: 1.7; }
 
 footer {
-  padding: 3rem 5% calc(3rem + env(safe-area-inset-bottom, 0px));
+  padding: 1.6rem 5% calc(1.6rem + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
-.footer-logo { font-family: var(--font-ui); font-weight: 600; font-size: 1.1rem; letter-spacing: -0.01em; color: #ffffff; }
+.footer-left { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
 
-.footer-links { display: flex; gap: 2rem; list-style: none; flex-wrap: wrap; }
+.footer-logo { font-family: var(--font-ui); font-weight: 600; font-size: 0.95rem; letter-spacing: -0.01em; color: #ffffff; }
+
+.footer-links { display: flex; gap: 1.6rem; list-style: none; flex-wrap: wrap; }
 .footer-links a { color: #ffffff; opacity: 0.85; text-decoration: none; font-size: 0.8rem; transition: opacity 0.2s; }
 .footer-links a:hover { opacity: 1; }
 
-.footer-copy { font-size: 0.75rem; color: #ffffff; opacity: 0.85; }
+.footer-copy { font-size: 0.75rem; color: #ffffff; opacity: 0.7; }
 
  to { opacity: 1; transform: translateY(0); } }
 
@@ -1091,7 +1103,7 @@ footer {
   .cta-card { padding: 2.4rem 1.4rem; }
   .feature-card { padding: 1.5rem; }
   .pcard { padding: 1.6rem; }
-  nav { padding: 0.85rem 5%; }
+  nav { width: 94%; padding: 0.7rem 1.1rem; }
 }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@300;400;500&display=swap" rel="stylesheet"/>
@@ -1158,6 +1170,16 @@ body.landing.theme-light .plan-save.gold {
   color: var(--text);
 }
 
+/* Preto total no modo escuro: design-system.css define --ink como um
+   roxo bem escuro (#0c0a12), não preto puro. Sobrescrevendo aqui, que
+   carrega por último, para o fundo (e as faixas de seção) ficarem
+   pretos de verdade no dark mode. */
+body.landing:not(.theme-light) {
+  --ink: #000000;
+  --ink2: #000000;
+  --ink3: #000000;
+}
+
 </style>
 <script>
 (function () {
@@ -1198,6 +1220,7 @@ body.landing.theme-light .plan-save.gold {
 
 <nav id="nav">
   <a href="#hero" class="logo">
+    <img src="assets/favicon.svg" alt="" class="logo-img" width="34" height="34">
     <span class="logo-text">Viralyze</span>
 </a>
   <ul class="nav-links nav-links-center">
@@ -1229,11 +1252,6 @@ body.landing.theme-light .plan-save.gold {
   <div class="hero-grid"></div>
 
   <div class="hero-content">
-    <div class="hero-eyebrow">
-      <span class="hero-eyebrow-dot"></span>
-      Feito para criadores de TikTok Shop
-    </div>
-
     <h1>Viralyze</h1>
 
     <p class="hero-sub">
@@ -1243,27 +1261,10 @@ body.landing.theme-light .plan-save.gold {
     <div class="hero-actions">
       <a href="#pricing" class="btn-primary">
         Assinar agora
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
       </a>
       <a href="#features" class="btn-ghost">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
         Ver como funciona
       </a>
-    </div>
-
-    <div class="social-proof">
-      <div class="avatars-stack">
-        <span class="av1">PR</span>
-        <span class="av2">AL</span>
-        <span class="av3">BF</span>
-        <span class="av4">MR</span>
-      </div>
-      <span class="social-proof-text"><strong>Criadores</strong> já usando a Viralyze</span>
-      <div class="divider-dot"></div>
-      <div class="rating">
-        <span class="stars-row"><span class="stars-svg" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6.4 7 .7-5.3 4.7 1.6 7-6.2-3.6-6.2 3.6 1.6-7-5.3-4.7 7-.7z"/></svg></span></span>
-        <span class="social-proof-text"><strong>4,8</strong> de satisfação</span>
-      </div>
     </div>
   </div>
 </section>
@@ -1539,12 +1540,14 @@ body.landing.theme-light .plan-save.gold {
 </section>
 
 <footer>
-  <div class="footer-logo">Viralyze</div>
+  <div class="footer-left">
+    <span class="footer-logo">Viralyze</span>
+    <span class="footer-copy">© 2026 Viralyze. Todos os direitos reservados.</span>
+  </div>
   <ul class="footer-links">
     <li><a href="https://viralyze-tok.vercel.app/landing/privacy.html">Privacidade</a></li>
     <li><a href="https://viralyze-tok.vercel.app/landing/terms.html">Termos</a></li>
   </ul>
-  <span class="footer-copy">© 2026 Viralyze. Todos os direitos reservados.</span>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
