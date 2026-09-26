@@ -1072,7 +1072,6 @@ footer {
 @media (max-width: 900px) {
   .nav-links { display: none; }
   .nav-toggle { display: flex; }
-  .nav-actions-wrap .theme-toggle-btn { width: 40px; height: 40px; }
   .features-header { grid-template-columns: 1fr; gap: 1rem; }
   .feature-card:nth-child(n) { grid-column: span 12; }
   .features-grid { display: flex; flex-direction: column; }
@@ -1109,112 +1108,17 @@ footer {
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@300;400;500&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="../css/design-system.css"/>
 <style>
-/* ===================================================================
-   Correções de conflitos entre modo claro e escuro da landing page.
-   design-system.css já troca as variáveis --ink/--text/--surface/etc.
-   quando body tem "theme-light", mas vários elementos abaixo usavam
-   cores fixas (branco/preto) que não reagiam à troca de tema. Este
-   bloco carrega depois de design-system.css para vencer a cascata.
-   =================================================================== */
-
-/* --hairline / --hairline-strong nunca eram redefinidas para o tema
-   claro, deixando bordas brancas translúcidas (quase invisíveis) em
-   cards e painéis com fundo claro. */
+/* Só existe modo escuro nesta página: sem toggle, sem tema claro.
+   design-system.css define --ink como um roxo bem escuro (#0c0a12),
+   não preto puro — sobrescrevendo aqui, que carrega por último, para
+   o fundo (e as faixas de seção) ficarem pretos de verdade. */
 :root { --hairline-strong: #404046; }
-body.landing.theme-light {
-  --hairline: rgba(12,10,9,0.12);
-  --hairline-strong: rgba(12,10,9,0.18);
-  --pink2: #7c3aed; /* mais escuro que o padrão para manter contraste em fundo claro */
-}
-
-/* Botão "Assinar" do menu: no escuro é uma pílula branca com texto
-   escuro; no claro ela ficava quase invisível (branco sobre fundo
-   quase branco). Invertendo para pílula escura mantém a leitura. */
-body.landing.theme-light .btn-nav {
-  background: var(--text);
-  border-color: var(--text);
-  color: var(--ink) !important;
-  box-shadow: 0 4px 14px rgba(12,10,9,0.16);
-}
-
-/* Painel do menu mobile usava um overlay preto fixo, deixando o menu
-   escuro (com texto escuro por cima) mesmo no tema claro. */
-body.landing.theme-light .nav-mobile-panel {
-  background: rgba(245,245,245,0.94);
-}
-
-/* Estado hover do botão "Ver como funciona" usava branco translúcido
-   fixo, ficando invisível sobre fundo claro. */
-body.landing.theme-light .btn-ghost:hover {
-  border-color: var(--pink);
-  color: var(--text);
-  background: var(--surface2);
-}
-
-/* Sombra decorativa atrás do "Viralyze" em itálico assumia fundo
-   escuro; no claro o brilho branco simplesmente some. */
-body.landing.theme-light h1 em {
-  text-shadow: -2px 0 0 rgba(12,10,9,0.12);
-}
-
-/* Badges que só existiam com cores brancas fixas — reaproveitando as
-   variáveis de superfície/borda/texto já corretas para cada tema. */
-body.landing.theme-light .feature-tag.aqua {
-  background: var(--surface2);
-  border-color: var(--border2);
-  color: var(--text);
-}
-body.landing.theme-light .plan-save.gold {
-  background: var(--surface2);
-  border-color: var(--border2);
-  color: var(--text);
-}
-
-/* Preto total no modo escuro: design-system.css define --ink como um
-   roxo bem escuro (#0c0a12), não preto puro. Sobrescrevendo aqui, que
-   carrega por último, para o fundo (e as faixas de seção) ficarem
-   pretos de verdade no dark mode. */
-body.landing:not(.theme-light) {
+body.landing {
   --ink: #000000;
   --ink2: #000000;
   --ink3: #000000;
 }
-
 </style>
-<script>
-(function () {
-  function applyTheme(theme) {
-    document.body.classList.toggle('theme-light', theme === 'light');
-    var btn = document.getElementById('landingThemeBtn');
-    if (btn) btn.setAttribute('aria-label', theme === 'light' ? 'Ativar modo escuro' : 'Ativar modo claro');
-  }
-  function current() {
-    try { return localStorage.getItem('nex-theme') || 'dark'; } catch (e) { return 'dark'; }
-  }
-  document.addEventListener('DOMContentLoaded', function () {
-    applyTheme(current());
-    var nav = document.getElementById('nav');
-    var navActionsWrap = nav ? nav.querySelector('.nav-actions-wrap') : null;
-    var navToggleEl = document.getElementById('navToggle');
-    if (navActionsWrap && !document.getElementById('landingThemeBtn')) {
-      var btn = document.createElement('button');
-      btn.id = 'landingThemeBtn';
-      btn.className = 'theme-toggle-btn nav-theme-item';
-      btn.type = 'button';
-      btn.innerHTML = '<svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/></svg>';
-      // Insert before the hamburger so it stays visible on both desktop and mobile,
-      // instead of inside the <ul> that gets display:none on small screens.
-      navActionsWrap.insertBefore(btn, navToggleEl);
-      btn.addEventListener('click', function () {
-        var next = document.body.classList.contains('theme-light') ? 'dark' : 'light';
-        try { localStorage.setItem('nex-theme', next); } catch (e) {}
-        applyTheme(next);
-      });
-    }
-    if (nav) applyTheme(current());
-  });
-})();
-</script>
 </head>
 <body class="landing">
 
