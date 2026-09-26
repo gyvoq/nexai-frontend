@@ -98,9 +98,10 @@ nav {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  justify-content: space-between;
+  column-gap: 1.5rem;
   padding: 1rem 5%;
   background: rgba(255,255,255,0.03);
   backdrop-filter: blur(18px) saturate(160%);
@@ -122,6 +123,16 @@ nav.scrolled {
   gap: 0.6rem;
   position: relative;
   text-decoration: none;
+  grid-column: 1;
+}
+
+.nav-links-center {
+  grid-column: 2;
+  justify-content: center;
+}
+
+.nav-links-actions {
+  grid-column: 3;
 }
 
 .logo-img {
@@ -192,6 +203,8 @@ nav.scrolled {
   justify-content: center;
   cursor: pointer;
   color: var(--text);
+  grid-column: 3;
+  justify-self: end;
 }
 
 .nav-toggle svg { width: 18px; height: 18px; }
@@ -687,15 +700,25 @@ h1 em {
 .galeria-inner { max-width: 1200px; margin: 0 auto; }
 .galeria-header { text-align: center; margin-bottom: 3.5rem; }
 
+.galeria-viewport {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
 .galeria-track {
   display: flex;
   gap: 1rem;
-  overflow-x: auto;
-  padding-bottom: 0.5rem;
-  scroll-snap-type: x proximity;
-  scrollbar-width: none;
+  width: max-content;
+  animation: galeria-scroll 32s linear infinite;
 }
-.galeria-track::-webkit-scrollbar { display: none; }
+
+.galeria-viewport:hover .galeria-track { animation-play-state: paused; }
+
+@keyframes galeria-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
 
 .galeria-item {
   flex: 0 0 220px;
@@ -705,7 +728,6 @@ h1 em {
   position: relative;
   background: linear-gradient(160deg, rgba(139,92,246,0.16), rgba(0,0,0,0.25));
   border: 1px solid var(--hairline, rgba(255,255,255,0.1));
-  scroll-snap-align: start;
 }
 
 .galeria-item img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -1045,7 +1067,7 @@ footer {
  to { opacity: 1; transform: translateY(0); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track, .hero-eyebrow-dot { animation: none !important; }
+  .marquee-track, .hero-eyebrow-dot, .galeria-track { animation: none !important; }
 }
 
 @media (max-width: 900px) {
@@ -1099,7 +1121,7 @@ footer {
   document.addEventListener('DOMContentLoaded', function () {
     applyTheme(current());
     var nav = document.getElementById('nav');
-    var navList = nav ? nav.querySelector('.nav-links') : null;
+    var navList = nav ? nav.querySelector('.nav-links-actions') : null;
     if (navList && !document.getElementById('landingThemeBtn')) {
       var li = document.createElement('li');
       li.className = 'nav-theme-item';
@@ -1127,11 +1149,13 @@ footer {
   <a href="#hero" class="logo">
     <span class="logo-text">Viralyze</span>
 </a>
-  <ul class="nav-links">
+  <ul class="nav-links nav-links-center">
     <li><a href="#features">Recursos</a></li>
     <li><a href="#galeria">Galeria</a></li>
     <li><a href="#pricing">Planos</a></li>
     <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <ul class="nav-links nav-links-actions">
     <li><a href="https://viralyze-tok.vercel.app/">Entrar</a></li>
     <li><a href="#pricing" class="btn-nav">Assinar</a></li>
   </ul>
@@ -1319,14 +1343,23 @@ footer {
       <h2 class="section-title">Galeria de <em>criações</em>.</h2>
       <p class="section-sub">Uma amostra do que é possível criar dentro da Viralyze.</p>
     </div>
-    <div class="galeria-track">
-      <div class="galeria-item"><img src="assets/galeria1.png" alt="Criação 1" loading="lazy"></div>
-      <div class="galeria-item"><img src="assets/galeria2.png" alt="Criação 2" loading="lazy"></div>
-      <div class="galeria-item"><img src="assets/galeria3.png" alt="Criação 3" loading="lazy"></div>
-      <div class="galeria-item"><img src="assets/galeria4.png" alt="Criação 4" loading="lazy"></div>
-      <div class="galeria-item"><img src="assets/galeria5.png" alt="Criação 5" loading="lazy"></div>
-      <div class="galeria-item"><img src="assets/galeria6.png" alt="Criação 6" loading="lazy"></div>
-      <div class="galeria-item"><img src="assets/galeria7.png" alt="Criação 7" loading="lazy"></div>
+    <div class="galeria-viewport">
+      <div class="galeria-track">
+        <div class="galeria-item"><img src="assets/galeria1.png" alt="Criação 1" loading="lazy"></div>
+        <div class="galeria-item"><img src="assets/galeria2.png" alt="Criação 2" loading="lazy"></div>
+        <div class="galeria-item"><img src="assets/galeria3.png" alt="Criação 3" loading="lazy"></div>
+        <div class="galeria-item"><img src="assets/galeria4.png" alt="Criação 4" loading="lazy"></div>
+        <div class="galeria-item"><img src="assets/galeria5.png" alt="Criação 5" loading="lazy"></div>
+        <div class="galeria-item"><img src="assets/galeria6.png" alt="Criação 6" loading="lazy"></div>
+        <div class="galeria-item"><img src="assets/galeria7.png" alt="Criação 7" loading="lazy"></div>
+        <div class="galeria-item" aria-hidden="true"><img src="assets/galeria1.png" alt="" loading="lazy"></div>
+        <div class="galeria-item" aria-hidden="true"><img src="assets/galeria2.png" alt="" loading="lazy"></div>
+        <div class="galeria-item" aria-hidden="true"><img src="assets/galeria3.png" alt="" loading="lazy"></div>
+        <div class="galeria-item" aria-hidden="true"><img src="assets/galeria4.png" alt="" loading="lazy"></div>
+        <div class="galeria-item" aria-hidden="true"><img src="assets/galeria5.png" alt="" loading="lazy"></div>
+        <div class="galeria-item" aria-hidden="true"><img src="assets/galeria6.png" alt="" loading="lazy"></div>
+        <div class="galeria-item" aria-hidden="true"><img src="assets/galeria7.png" alt="" loading="lazy"></div>
+      </div>
     </div>
   </div>
 </section>
