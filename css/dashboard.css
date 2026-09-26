@@ -360,8 +360,4 @@
 }
 
 
-body.theme-light .sidebar          { background: rgba(244,245,247,0.97); }
-body.theme-light .topbar           { background: rgba(244,245,247,0.92); }
-body.theme-light .metric-card      { background: #ffffff; }
-body.theme-light .chart-placeholder{ background: #ffffff; }
-body.theme-light .sidebar-license  { background: rgba(139,92,246,0.04); }
+
