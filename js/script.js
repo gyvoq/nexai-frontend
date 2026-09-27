@@ -1465,10 +1465,33 @@ function infPrevStep() {
   if (currentInfStep > 1) goInfStep(currentInfStep - 1);
 }
 
+const ETNIA_IMG_CODES = {
+  latina:   { "Feminino": "LAF", "Masculino": "LAM" },
+  branca:   { "Feminino": "BRF", "Masculino": "BRM" },
+  negra:    { "Feminino": "NEF", "Masculino": "NEM" },
+  asiatica: { "Feminino": "ASF", "Masculino": "ASM" },
+  indigena: { "Feminino": "INF", "Masculino": "INM" },
+  oriente:  { "Feminino": "ORF", "Masculino": "ORM" }
+};
+
+function updateEtniaImages(genero) {
+  const codes = ETNIA_IMG_CODES;
+  const grid = document.getElementById("etnia-option-grid");
+  if (!grid) return;
+  grid.querySelectorAll(".inf-photo-card[data-etnia]").forEach(card => {
+    const key = card.dataset.etnia;
+    const code = (codes[key] || {})[genero];
+    if (!code) return;
+    const img = card.querySelector("img");
+    if (img) img.src = `assets/influencers/${code}.PNG`;
+  });
+}
+
 function selectInfOption(el, hiddenInputId, value) {
   document.getElementById(hiddenInputId).value = value;
   el.parentElement.querySelectorAll(".inf-photo-card").forEach(c => c.classList.remove("selected"));
   el.classList.add("selected");
+  if (hiddenInputId === "av-genero") updateEtniaImages(value);
   updateInfSummary();
 }
 
