@@ -592,10 +592,12 @@ function saveNewProduct() {
   showToast(`"${nome}" adicionado com sucesso!`);
 }
 
+/* Produtos personalizados aparecem primeiro, do mais novo para o mais antigo */
 function allProducts() {
   return [ ...customProducts, ...products ];
 }
 
+/* Reaplica o filtro de categoria ativo depois de redesenhar a grade de mineracao */
 function reapplyMiningFilter() {
   const chip = document.querySelector("#mining-filters .filter-chip.active");
   if (!chip) return;
@@ -605,6 +607,7 @@ function reapplyMiningFilter() {
   });
 }
 
+/* Leva o usuario ate o produto recem-adicionado, que agora fica no topo da grade */
 function scrollToFirstProduct() {
   const grid = document.getElementById("studio-product-grid") || document.getElementById("vid-product-grid");
   const first = grid && grid.querySelector(".product-card");
@@ -690,8 +693,10 @@ function renderVideos() {
   }).join("");
 }
 
+/* Quantos produtos estao visiveis agora em cada aba */
 const productPageState = { studio: 0, vid: 0 };
 
+/* Lote inicial e passo de cada clique: 20 no celular, 30 no PC */
 const PRODUCTS_LIMIT_MOBILE = 20;
 const PRODUCTS_LIMIT_DESKTOP = 30;
 const PRODUCTS_MOBILE_BREAKPOINT = 768;
@@ -765,6 +770,7 @@ function showLessProducts(which) {
   }
 }
 
+/* Reajusta o lote ao girar o celular ou redimensionar a janela */
 let _productPageBreakpoint = null;
 function refreshProductPagination() {
   const bp = getProductPageLimit();
@@ -1428,6 +1434,7 @@ function toggleChip(el) {
   el.classList.toggle("selected");
 }
 
+/* ---- Influencer creation wizard (Identidade / Corpo / Rosto / Cabelo / Estilo / Renderização) ---- */
 let currentInfStep = 1;
 const INF_STEP_COUNT = 6;
 
@@ -1510,6 +1517,7 @@ function showConfirm(msg, onConfirm) {
   });
 }
 
+/* ====== CARD EXPLICATIVO DO BACKUP ====== */
 function openBackupInfo() {
   const m = document.getElementById("backup-info-modal");
   if (m) m.classList.add("open");
@@ -1520,6 +1528,7 @@ function closeBackupInfo() {
   if (m) m.classList.remove("open");
 }
 
+/* ====== EXCLUIR TUDO (confirmacao digitando a palavra) ====== */
 const DELETE_ALL_WORD = "excluir";
 
 function openDeleteAllModal() {
@@ -1574,6 +1583,7 @@ function confirmDeleteAll() {
   showToast("Tudo foi excluído.");
 }
 
+/* Apaga os dados do app. Nao mexe na sessao nem no aceite dos termos. */
 function wipeAllData() {
   try {
     localStorage.removeItem(FAV_KEY);
@@ -1877,6 +1887,7 @@ document.addEventListener("keydown", e => {
   }
 });
 
+/* Clicar fora do card fecha os modais de ajuda e de exclusao */
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("backup-info-modal")?.addEventListener("click", e => {
     if (e.target === e.currentTarget) closeBackupInfo();
