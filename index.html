@@ -43,16 +43,8 @@
 </div>
 
 <header class="header">
-  <div class="logo" tabindex="0" role="banner">
-    <div class="logo-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:white;fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round">
-        <polyline points="4 4 12 20 20 4"/>
-      </svg>
-    </div>
-    <span class="logo-text">Viralyze</span>
-  </div>
-  <div style="display:flex;align-items:center;gap:8px">
-    <button onclick="openSearch()" aria-label="Busca global" id="header-search-btn" style="background:var(--surface2);border:1px solid var(--border2);border-radius:20px;padding:5px 11px;display:flex;align-items:center;gap:6px;color:var(--text3);font-size:12px;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif;">
+  <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+    <button onclick="openSearch()" aria-label="Busca global" id="header-search-btn" style="display:none;background:var(--surface2);border:1px solid var(--border2);border-radius:20px;padding:5px 11px;align-items:center;gap:6px;color:var(--text3);font-size:12px;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif;">
       <svg style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <span id="search-label-desk" style="display:none">Buscar</span>
       <kbd id="search-kbd" style="background:var(--surface3);border:1px solid var(--border2);border-radius:4px;font-size:9.5px;padding:1px 5px;font-family:monospace;color:var(--text3);display:none">/</kbd>
@@ -67,6 +59,14 @@
 <div class="layout">
 
     <nav class="sidebar" role="navigation" aria-label="Menu principal">
+    <div class="logo" tabindex="0" role="banner" style="padding:6px 10px 16px">
+      <div class="logo-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:white;fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round">
+          <polyline points="4 4 12 20 20 4"/>
+        </svg>
+      </div>
+      <span class="logo-text">Viralyze</span>
+    </div>
     <div class="sidebar-section">Principal</div>
     <div class="sidebar-item active" onclick="switchTab('mining',this)" tabindex="0" role="menuitem" aria-current="page" onkeydown="if(event.key==='Enter')switchTab('mining',this)">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -79,7 +79,7 @@
     </div>
     <div class="sidebar-item" onclick="switchTab('viralize',this)" tabindex="0" role="menuitem" onkeydown="if(event.key==='Enter')switchTab('viralize',this)">
       <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      Viralize Aí
+      Viralize A.I
     </div>
     <div class="sidebar-item" onclick="switchTab('influencer',this)" tabindex="0" role="menuitem" onkeydown="if(event.key==='Enter')switchTab('influencer',this)">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -113,9 +113,8 @@
           <h1 class="page-title">Inventário</h1>
           <p class="page-sub">Todos os produtos virais que estamos monitorando pra você, prontos pra usar nas suas criações.</p>
         </div>
+        <div class="stats-bar stats-bar-compact" id="stats-bar"></div>
       </div>
-
-      <div class="stats-bar" id="stats-bar"></div>
 
       <div class="niche-filter-wrap" id="niche-filter-wrap">
         <button type="button" class="niche-filter-btn" onclick="toggleNicheFilter()" aria-haspopup="true" aria-expanded="false">
@@ -198,7 +197,7 @@
         <div class="tab-content" id="tab-viralize">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Viralize Aí</h1>
+          <h1 class="page-title">Viralize A.I</h1>
           <p class="page-sub">Escolha um avatar e receba na hora um prompt de vídeo viral pronto pra usar.</p>
         </div>
       </div>
@@ -497,7 +496,7 @@
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
     <span class="nav-label">Estúdio</span>
   </div>
-  <div class="nav-item" onclick="switchTab('viralize',this)" role="menuitem" tabindex="0" aria-label="Viralize Aí">
+  <div class="nav-item" onclick="switchTab('viralize',this)" role="menuitem" tabindex="0" aria-label="Viralize A.I">
     <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
     <span class="nav-label">Viralize</span>
   </div>
