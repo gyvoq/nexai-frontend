@@ -1363,8 +1363,10 @@ function generateAvatarPromptAI() {
   const idade = document.getElementById("av-idade").value || "28";
   const genero = document.getElementById("av-genero").value;
   const etnia = document.getElementById("av-etnia")?.value || "";
-  const corpo = [ ...document.querySelectorAll("#av-corpo .form-chip.selected") ].map(c => c.textContent).join(", ");
-  const rosto = [ ...document.querySelectorAll("#av-rosto .form-chip.selected") ].map(c => c.textContent).join(", ");
+  const corpo = document.getElementById("av-corpo")?.value || "";
+  const altura = document.getElementById("av-altura")?.value || "";
+  const rosto = document.getElementById("av-rosto")?.value || "";
+  const olhos = document.getElementById("av-olhos")?.value || "";
   const corCabelo = [ ...document.querySelectorAll("#av-cor-cabelo .form-chip.selected") ].map(c => c.textContent).join(", ");
   const estiloCabelo = [ ...document.querySelectorAll("#av-estilo-cabelo .form-chip.selected") ].map(c => c.textContent).join(", ");
   const estilos = [ ...document.querySelectorAll("#av-estilo .form-chip.selected") ].map(c => c.textContent).join(", ") || "—";
@@ -1374,7 +1376,7 @@ function generateAvatarPromptAI() {
   const desc = document.getElementById("av-desc").value.trim();
   const loading = document.getElementById("avatar-ai-loading");
   loading.classList.add("visible");
-  const physicalBits = [ etnia, corpo, rosto, corCabelo && `${corCabelo} hair`, estiloCabelo && `${estiloCabelo} hair style` ].filter(Boolean).join(", ");
+  const physicalBits = [ etnia, corpo, altura && `${altura} height`, rosto && `${rosto} face`, olhos && `${olhos} eyes`, corCabelo && `${corCabelo} hair`, estiloCabelo && `${estiloCabelo} hair style` ].filter(Boolean).join(", ");
   const physicalLine = physicalBits ? `\nPhysical traits: ${physicalBits}.` : "";
   const extraLine = desc ? `\nExtra details: ${desc}` : "";
   const result = `${idade}-year-old ${genero.toLowerCase()} digital influencer named ${nome}.\nStyle: ${estilos}. Niche: ${nichos}. Personality: ${personalidades}. Content: ${conteudos}.${physicalLine}${extraLine}\nWearing trendy outfit matching ${estilos} aesthetic, confident engaging expression, looking at camera.\nProfessional portrait, soft studio lighting, sharp focus, 8K, vertical 9:16.\n\nHandles sugeridos:\n@${nome.toLowerCase().replace(/\s/g, "")}.oficial\n@sou.${nome.toLowerCase().replace(/\s/g, "")}\n@${nome.toLowerCase().replace(/\s/g, "")}creates`;
@@ -1395,8 +1397,10 @@ function saveGeneratedAvatar() {
   const generoRaw = document.getElementById("av-genero").value;
   const etnia = document.getElementById("av-etnia")?.value || "";
   const gender = generoRaw === "Feminino" ? "f" : generoRaw === "Masculino" ? "m" : "nb";
-  const corpo = [ ...document.querySelectorAll("#av-corpo .form-chip.selected") ].map(c => c.textContent).join(", ");
-  const rosto = [ ...document.querySelectorAll("#av-rosto .form-chip.selected") ].map(c => c.textContent).join(", ");
+  const corpo = document.getElementById("av-corpo")?.value || "";
+  const altura = document.getElementById("av-altura")?.value || "";
+  const rosto = document.getElementById("av-rosto")?.value || "";
+  const olhos = document.getElementById("av-olhos")?.value || "";
   const corCabelo = [ ...document.querySelectorAll("#av-cor-cabelo .form-chip.selected") ].map(c => c.textContent).join(", ");
   const estiloCabelo = [ ...document.querySelectorAll("#av-estilo-cabelo .form-chip.selected") ].map(c => c.textContent).join(", ");
   const estilos = [ ...document.querySelectorAll("#av-estilo .form-chip.selected") ].map(c => c.textContent).join(", ");
@@ -1413,7 +1417,9 @@ function saveGeneratedAvatar() {
     genero: generoRaw,
     etnia: etnia,
     corpo: corpo || "—",
+    altura: altura || "—",
     rosto: rosto || "—",
+    olhos: olhos || "—",
     corCabelo: corCabelo || "—",
     estiloCabelo: estiloCabelo || "—",
     nicho: nichos || "—",
@@ -1465,25 +1471,51 @@ function infPrevStep() {
   if (currentInfStep > 1) goInfStep(currentInfStep - 1);
 }
 
-const ETNIA_IMG_CODES = {
-  latina:   { "Feminino": "LAF", "Masculino": "LAM" },
-  branca:   { "Feminino": "BRF", "Masculino": "BRM" },
-  negra:    { "Feminino": "NEF", "Masculino": "NEM" },
-  asiatica: { "Feminino": "ASF", "Masculino": "ASM" },
-  indigena: { "Feminino": "INF", "Masculino": "INM" },
-  oriente:  { "Feminino": "ORF", "Masculino": "ORM" }
+const GENDER_AWARE_IMG_CODES = {
+  etnia: {
+    latina:   { "Feminino": "LAF", "Masculino": "LAM" },
+    branca:   { "Feminino": "BRF", "Masculino": "BRM" },
+    negra:    { "Feminino": "NEF", "Masculino": "NEM" },
+    asiatica: { "Feminino": "ASF", "Masculino": "ASM" },
+    indigena: { "Feminino": "INF", "Masculino": "INM" },
+    oriente:  { "Feminino": "ORF", "Masculino": "ORM" }
+  },
+  corpo: {
+    magro:       { "Feminino": "MAF", "Masculino": "MAM" },
+    atletico:    { "Feminino": "ATF", "Masculino": "ATM" },
+    curvilineo:  { "Feminino": "CUF", "Masculino": "CUM" },
+    plussize:    { "Feminino": "PSF", "Masculino": "PSM" },
+    musculoso:   { "Feminino": "MUF", "Masculino": "MUM" }
+  },
+  altura: {
+    baixa: { "Feminino": "BAF", "Masculino": "BAM" },
+    media: { "Feminino": "MEF", "Masculino": "MEM" },
+    alta:  { "Feminino": "ALF", "Masculino": "ALM" }
+  },
+  rosto: {
+    oval:       { "Feminino": "OVF", "Masculino": "OVM" },
+    redondo:    { "Feminino": "RDF", "Masculino": "RDM" },
+    quadrado:   { "Feminino": "QDF", "Masculino": "QDM" },
+    triangular: { "Feminino": "TRF", "Masculino": "TRM" },
+    coracao:    { "Feminino": "CRF", "Masculino": "CRM" }
+  }
 };
 
-function updateEtniaImages(genero) {
-  const codes = ETNIA_IMG_CODES;
-  const grid = document.getElementById("etnia-option-grid");
-  if (!grid) return;
-  grid.querySelectorAll(".inf-photo-card[data-etnia]").forEach(card => {
-    const key = card.dataset.etnia;
-    const code = (codes[key] || {})[genero];
-    if (!code) return;
-    const img = card.querySelector("img");
-    if (img) img.src = `assets/influencers/${code}.PNG`;
+function updateGenderAwareImages(genero) {
+  Object.keys(GENDER_AWARE_IMG_CODES).forEach(cat => {
+    const grid = document.getElementById(`${cat}-option-grid`);
+    if (!grid) return;
+    const codes = GENDER_AWARE_IMG_CODES[cat];
+    grid.querySelectorAll(".inf-photo-card[data-key]").forEach(card => {
+      const key = card.dataset.key;
+      const code = (codes[key] || {})[genero];
+      if (!code) return;
+      const img = card.querySelector("img");
+      if (!img) return;
+      img.classList.remove("loaded");
+      card.classList.add("loading");
+      img.src = `assets/influencers/${code}.PNG`;
+    });
   });
 }
 
@@ -1491,7 +1523,7 @@ function selectInfOption(el, hiddenInputId, value) {
   document.getElementById(hiddenInputId).value = value;
   el.parentElement.querySelectorAll(".inf-photo-card").forEach(c => c.classList.remove("selected"));
   el.classList.add("selected");
-  if (hiddenInputId === "av-genero") updateEtniaImages(value);
+  if (hiddenInputId === "av-genero") updateGenderAwareImages(value);
   updateInfSummary();
 }
 
