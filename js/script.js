@@ -1814,7 +1814,7 @@ function renderSearchResults(q) {
     icon: ICONS.image,
     tab: "freestudio"
   }, {
-    label: "Viralize Aí",
+    label: "Viralize A.I",
     cat: "Seção",
     icon: ICONS.film,
     tab: "viralize"
