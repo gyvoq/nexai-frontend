@@ -8,11 +8,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/greeting.css">
 <link rel="stylesheet" href="css/activation.css">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/design-system.css">
+<link rel="stylesheet" href="css/glass.css">
 </head>
 <body>
 
@@ -60,17 +60,7 @@
     <button class="settings-trigger" onclick="switchTab('settings',this)" id="settings-btn"
             aria-label="Configurações" data-tip="Configurações" title="Configurações">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-      <span id="settings-label" style="display:none">Config</span>
     </button>
-    <button class="history-trigger" onclick="openHistory()" aria-label="Histórico de prompts" id="hist-btn">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 0 .5-4.5"/><polyline points="3 4 3 11 10 11"/></svg>
-      <span id="hist-label" style="display:none">Histórico</span>
-      <div class="history-notif-dot" id="hist-notif-dot"></div>
-    </button>
-    <div style="text-align:right;display:none" id="header-plan">
-      <div style="font-size:11.5px;color:var(--text3)">Plano</div>
-      <div style="font-size:13px;font-weight:700;color:var(--accent3)">Pro ●</div>
-    </div>
   </div>
 </header>
 
@@ -80,25 +70,24 @@
     <div class="sidebar-section">Principal</div>
     <div class="sidebar-item active" onclick="switchTab('mining',this)" tabindex="0" role="menuitem" aria-current="page" onkeydown="if(event.key==='Enter')switchTab('mining',this)">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      Mineração Viral
-      <span class="sidebar-badge">NOVO</span>
-    </div>
-    <div class="sidebar-item" onclick="switchTab('library',this)" tabindex="0" role="menuitem" onkeydown="if(event.key==='Enter')switchTab('library',this)">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
-      Biblioteca Viral
+      Inventário
     </div>
     <div class="sidebar-section">Criação</div>
-    <div class="sidebar-item" onclick="switchTab('studio',this)" tabindex="0" role="menuitem" onkeydown="if(event.key==='Enter')switchTab('studio',this)">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-      Estúdio IA — Imagem
+    <div class="sidebar-item" onclick="switchTab('freestudio',this)" tabindex="0" role="menuitem" onkeydown="if(event.key==='Enter')switchTab('freestudio',this)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      Estúdio Livre
     </div>
-    <div class="sidebar-item" onclick="switchTab('video',this)" tabindex="0" role="menuitem" onkeydown="if(event.key==='Enter')switchTab('video',this)">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-      Estúdio IA — Vídeo
+    <div class="sidebar-item" onclick="switchTab('viralize',this)" tabindex="0" role="menuitem" onkeydown="if(event.key==='Enter')switchTab('viralize',this)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Viralize Aí
     </div>
     <div class="sidebar-item" onclick="switchTab('influencer',this)" tabindex="0" role="menuitem" onkeydown="if(event.key==='Enter')switchTab('influencer',this)">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       Avatar
+    </div>
+    <div class="sidebar-item" onclick="switchTab('imglibrary',this)" tabindex="0" role="menuitem" onkeydown="if(event.key==='Enter')switchTab('imglibrary',this)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+      Biblioteca de Imagens
     </div>
     <div class="sidebar-section">Sistema</div>
     <div class="sidebar-item" onclick="switchTab('settings',this)" tabindex="0" role="menuitem" onkeydown="if(event.key==='Enter')switchTab('settings',this)">
@@ -121,373 +110,126 @@
         <div class="tab-content active" id="tab-mining">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Produtos Virais</h1>
-          <p class="page-sub">Tendências em tempo real · Atualizado agora</p>
+          <h1 class="page-title">Inventário</h1>
+          <p class="page-sub">Todos os produtos virais que estamos monitorando pra você, prontos pra usar nas suas criações.</p>
         </div>
       </div>
 
-            <div class="quick-actions">
-        <button class="quick-action-btn primary" onclick="switchTab('studio',document.querySelector('.sidebar-item:nth-child(4)'))">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-          Criar imagem viral
-        </button>
-        <button class="quick-action-btn" onclick="switchTab('video',document.querySelector('.sidebar-item:nth-child(5)'))">
-          <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-          Criar vídeo viral
-        </button>
-        <button class="quick-action-btn" onclick="switchTab('library',document.querySelector('.sidebar-item:nth-child(3)'))">
-          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
-          Ver biblioteca
-        </button>
-      </div>
+      <div class="stats-bar" id="stats-bar"></div>
 
-      <div class="filters" id="mining-filters" role="group" aria-label="Filtrar por categoria">
-        <button class="filter-chip active" data-cat="all">Todos</button>
-        <button class="filter-chip" data-cat="beleza"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c4 5 7 8.5 7 12a7 7 0 01-14 0c0-3.5 3-7 7-12z"/></svg> Beleza</button>
-        <button class="filter-chip" data-cat="saude"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="6" transform="rotate(45 12 12)"/><line x1="9.5" y1="9.5" x2="14.5" y2="14.5"/></svg> Saúde</button>
-        <button class="filter-chip" data-cat="moda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4a2 2 0 10-2 2"/><path d="M12 6l9 6.5a1.2 1.2 0 01-.7 2.2H3.7A1.2 1.2 0 013 12.5L12 6z"/><line x1="5" y1="18" x2="19" y2="18"/></svg> Moda</button>
-        <button class="filter-chip" data-cat="casa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5L12 4l8 7.5"/><path d="M6 10v9a1 1 0 001 1h10a1 1 0 001-1v-9"/><path d="M10 20v-5h4v5"/></svg> Casa</button>
-        <button class="filter-chip" data-cat="tech"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><line x1="10" y1="18" x2="14" y2="18"/></svg> Tech</button>
-        <button class="filter-chip" data-cat="fitness"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><line x1="6" y1="12" x2="18" y2="12"/><rect x="6" y="7" width="3" height="10" rx="1"/><rect x="15" y="7" width="3" height="10" rx="1"/></svg> Fitness</button>
+      <div class="niche-filter-wrap" id="niche-filter-wrap">
+        <button type="button" class="niche-filter-btn" onclick="toggleNicheFilter()" aria-haspopup="true" aria-expanded="false">
+          <svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+          <span id="niche-filter-label">Todos os nichos</span>
+          <svg class="niche-caret" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="niche-filter-panel" id="mining-filters" role="group" aria-label="Filtrar por categoria">
+          <button class="filter-chip active" data-cat="all">Todos</button>
+          <button class="filter-chip" data-cat="beleza"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c4 5 7 8.5 7 12a7 7 0 01-14 0c0-3.5 3-7 7-12z"/></svg> Beleza</button>
+          <button class="filter-chip" data-cat="saude"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="6" transform="rotate(45 12 12)"/><line x1="9.5" y1="9.5" x2="14.5" y2="14.5"/></svg> Saúde</button>
+          <button class="filter-chip" data-cat="moda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4a2 2 0 10-2 2"/><path d="M12 6l9 6.5a1.2 1.2 0 01-.7 2.2H3.7A1.2 1.2 0 013 12.5L12 6z"/><line x1="5" y1="18" x2="19" y2="18"/></svg> Moda</button>
+          <button class="filter-chip" data-cat="casa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5L12 4l8 7.5"/><path d="M6 10v9a1 1 0 001 1h10a1 1 0 001-1v-9"/><path d="M10 20v-5h4v5"/></svg> Casa</button>
+          <button class="filter-chip" data-cat="tech"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><line x1="10" y1="18" x2="14" y2="18"/></svg> Tech</button>
+          <button class="filter-chip" data-cat="fitness"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><line x1="6" y1="12" x2="18" y2="12"/><rect x="6" y="7" width="3" height="10" rx="1"/><rect x="15" y="7" width="3" height="10" rx="1"/></svg> Fitness</button>
+        </div>
       </div>
       <p class="section-label">Campeões de Venda</p>
       <div class="product-grid" id="product-grid" role="list"></div>
     </div>
 
-        <div class="tab-content" id="tab-library">
+        <div class="tab-content" id="tab-freestudio">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Biblioteca Viral</h1>
-          <p class="page-sub">Formatos que convertem · Analise e replique</p>
-        </div>
-      </div>
-      <div class="filters" id="library-filters" role="group" aria-label="Filtrar por formato">
-        <button class="filter-chip active" data-fmt="all"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="1.5"/><line x1="8" y1="4" x2="8" y2="20"/><line x1="16" y1="4" x2="16" y2="20"/><line x1="3" y1="9" x2="8" y2="9"/><line x1="3" y1="15" x2="8" y2="15"/><line x1="16" y1="9" x2="21" y2="9"/><line x1="16" y1="15" x2="21" y2="15"/></svg> Todos</button>
-        <button class="filter-chip" data-fmt="unboxing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><line x1="12" y1="13" x2="12" y2="21"/></svg> Unboxing</button>
-        <button class="filter-chip" data-fmt="antes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><polyline points="12 9 12 13 15 15"/><line x1="9" y1="2" x2="15" y2="2"/></svg> Antes &amp; Depois</button>
-        <button class="filter-chip" data-fmt="review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L12 16.9 6.4 20.1l1.4-6.3-4.8-4.3 6.4-.6z"/></svg> Review</button>
-        <button class="filter-chip" data-fmt="tutorial"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8l10-4 10 4-10 4L2 8z"/><path d="M6 10.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-5.5"/><path d="M22 8v6"/></svg> Tutorial</button>
-        <button class="filter-chip" data-fmt="ugc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 012-2h1.2l1-1.6A1.5 1.5 0 019.5 3.6h5a1.5 1.5 0 011.3.8L17 6h1a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V8z"/><circle cx="12" cy="13" r="3.5"/></svg> UGC</button>
-        <button class="filter-chip" data-fmt="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="14" height="10" rx="2"/><line x1="12" y1="9" x2="12" y2="5"/><circle cx="12" cy="3.5" r="1.2"/><line x1="9" y1="14" x2="9" y2="14"/><line x1="15" y1="14" x2="15" y2="14"/><line x1="2" y1="13" x2="5" y2="13"/><line x1="19" y1="13" x2="22" y2="13"/></svg> IA</button>
-      </div>
-      <div class="product-grid" id="video-grid" role="list"></div>
-    </div>
-
-        <div class="tab-content" id="tab-studio">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title">Estúdio IA — Imagem</h1>
-          <p class="page-sub">Gere prompts profissionais para Midjourney, DALL-E e Stable Diffusion</p>
+          <h1 class="page-title">Estúdio Livre</h1>
+          <p class="page-sub">Crie imagens e prompts de vídeo em um chat só, do seu jeito.</p>
         </div>
       </div>
 
-      <div class="stepper" id="img-stepper" role="tablist" aria-label="Etapas de criação de imagem">
-        <div class="step-item active" data-step="1" onclick="goStep(1)" role="tab" aria-selected="true"><div class="step-num">1</div> Produto</div>
-        <div class="step-item locked" data-step="2" onclick="goStep(2)" role="tab" aria-selected="false"><div class="step-num">2</div> Avatar</div>
-        <div class="step-item locked" data-step="3" onclick="goStep(3)" role="tab" aria-selected="false"><div class="step-num">3</div> Câmera &amp; Estilo</div>
-        <div class="step-item locked" data-step="4" onclick="goStep(4)" role="tab" aria-selected="false"><div class="step-num">4</div> Background</div>
-        <div class="step-item locked" data-step="5" onclick="goStep(5)" role="tab" aria-selected="false"><div class="step-num">5</div> Gerar IA</div>
-      </div>
-
-      <div class="step-panel active" id="step-1" role="tabpanel">
-        <p class="section-label">Selecionar Produto</p>
-        <div class="search-wrap">
-          <span class="search-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-          <input type="search" class="studio-search" placeholder="Buscar produto..." id="studio-search" oninput="filterStudioProducts()" aria-label="Buscar produto">
-        </div>
-        <div class="product-grid" id="studio-product-grid" style="margin-bottom:16px" role="list"></div>
-        <div id="studio-empty" class="empty-state" style="display:none" role="status">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <p>Nenhum produto encontrado</p>
-        </div>
-        <div class="show-more-row" id="studio-more-row" style="display:none">
-          <button type="button" class="show-more-btn" id="studio-more-btn" style="display:none" onclick="showMoreProducts('studio')">
-            <span class="show-more-text">Mostrar mais produtos</span>
-            <span class="show-more-count" id="studio-more-count"></span>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <button type="button" class="show-less-btn" id="studio-less-btn" style="display:none" onclick="showLessProducts('studio')">
-            <span class="show-less-text">Mostrar menos</span>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>
+      <div id="fs-projects-view">
+        <div class="fs-projects-header">
+          <p class="section-label" style="margin:0">Seus projetos</p>
+          <button type="button" class="fs-new-project-btn" onclick="fsCreateProject()">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Novo projeto
           </button>
         </div>
-        <div class="add-product-btn" onclick="openAddModal()" role="button" tabindex="0" onkeydown="if(event.key==='Enter')openAddModal()" aria-label="Adicionar produto personalizado">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Adicionar meu produto com prompt personalizado
-        </div>
-        <div class="step-nav">
-          <button class="step-next-btn" id="img-step1-next" onclick="goStep(2)" style="flex:1" disabled>Próximo →</button>
-        </div>
+        <div class="fs-project-grid" id="fs-project-grid"></div>
       </div>
 
-      <div class="step-panel" id="step-2" role="tabpanel">
-        <p class="section-label">Selecionar Avatar</p>
-        <div class="avatar-select-grid" id="studio-avatar-grid" role="list"></div>
-        <div class="step-nav">
-          <button class="step-back-btn" onclick="goStep(1)">← Voltar</button>
-          <button class="step-next-btn" id="img-step2-next" onclick="goStep(3)" disabled>Próximo →</button>
+      <div id="fs-chat-view" class="fs-chat-shell" style="display:none">
+        <div class="fs-chat-topbar">
+          <button type="button" class="fs-back-btn" onclick="fsBackToProjects()">
+            <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.4"><polyline points="15 18 9 12 15 6"/></svg>
+            Projetos
+          </button>
+          <span class="fs-chat-title" id="fs-chat-title">Projeto</span>
         </div>
-      </div>
-
-      <div class="step-panel" id="step-3" role="tabpanel">
-        <p class="section-label">Tipo de Câmera</p>
-        <div class="camera-grid" id="camera-opts"></div>
-        <p class="section-label">Estilo de Conteúdo</p>
-        <div class="style-grid" id="style-opts"></div>
-        <p class="section-label">Modo do Avatar</p>
-        <div class="mode-grid" id="mode-opts"></div>
-        <p class="section-label">Energia</p>
-        <div class="energy-row">
-          <div class="energy-labels">
-            <span>Discreto</span>
-            <span id="energy-val">5</span>
-            <span>Expressivo</span>
-          </div>
-          <input type="range" min="1" max="10" value="5" id="energy-range" oninput="document.getElementById('energy-val').textContent=this.value" aria-label="Nível de energia">
+        <div class="fs-mode-tabs">
+          <button type="button" class="fs-mode-tab active" data-mode="imagem">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            Gerar Imagem
+          </button>
+          <button type="button" class="fs-mode-tab" data-mode="video">
+            <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            Prompt de Vídeo
+          </button>
+          <button type="button" class="fs-mode-tab" data-mode="extrair">
+            <svg viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+            Extrair Movimento
+          </button>
         </div>
-        <p class="section-label">Melhorias</p>
-        <div class="improve-grid" id="improve-opts"></div>
-        <div class="step-nav">
-          <button class="step-back-btn" onclick="goStep(2)">← Voltar</button>
-          <button class="step-next-btn" onclick="goStep(4)">Próximo →</button>
+        <div class="fs-chat-body" id="fs-chat-body"></div>
+        <div class="fs-quick-replies" id="fs-quick-replies"></div>
+        <div class="fs-upload-zone" id="fs-upload-zone" style="display:none" role="button" tabindex="0"></div>
+        <input type="file" id="fs-video-file-input" accept="video/*" style="display:none">
+        <input type="text" id="fs-style-input" class="fs-textinput" placeholder="Descreva o estilo do vídeo (ex: mirror selfie, unboxing, GRWM...)" style="display:none">
+        <div style="display:flex;justify-content:flex-end;margin:0 16px 12px" id="fs-extract-btn-wrap">
+          <button type="button" class="quick-action-btn primary" onclick="fsRunExtract()" style="display:none" id="fs-extract-btn">Extrair Movimento</button>
         </div>
-      </div>
-
-      <div class="step-panel" id="step-4" role="tabpanel">
-        <p class="section-label">Escolher Background</p>
-        <div class="bg-grid" id="bg-opts" role="group" aria-label="Escolher background"></div>
-        <div style="margin-bottom:16px">
-          <label class="form-label" for="bg-custom-input">Background personalizado <span style="font-size:9px;color:var(--text3);letter-spacing:0;text-transform:none;font-weight:400">(descreva em inglês)</span></label>
-          <input type="text" class="form-input" id="bg-custom-input" placeholder="Ex: minimalist white marble kitchen counter, soft morning light, fresh flowers..." style="margin-top:5px">
-        </div>
-        <div class="step-nav">
-          <button class="step-back-btn" onclick="goStep(3)">← Voltar</button>
-          <button class="step-next-btn" onclick="goStep(5)">Próximo →</button>
-        </div>
-      </div>
-
-      <div class="step-panel" id="step-5" role="tabpanel">
-        <div id="img-config-summary" style="margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:7px"></div>
-        <div class="ai-loading" id="ai-loading" role="status" aria-live="polite">
-          <div class="ai-loading-dot"></div>
-          <div class="ai-loading-dot"></div>
-          <div class="ai-loading-dot"></div>
-          <span>Claude está otimizando seu prompt...</span>
-        </div>
-        <button class="gen-btn" id="gen-img-btn" onclick="generateImagePrompt()" aria-label="Gerar prompt de imagem com IA">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-          Gerar Prompt de Imagem com IA
-        </button>
-        <button class="copy-btn" onclick="copyOutput('prompt-output')" aria-label="Copiar prompt">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          Copiar Prompt
-        </button>
-        <textarea class="prompt-box" id="prompt-output" readonly placeholder="Configure as opções e clique em Gerar para criar um prompt otimizado pela IA..." aria-label="Prompt gerado" aria-readonly="true"></textarea>
-        <div class="prompt-stats" id="prompt-output-stats" style="display:none"><span>Prompt gerado</span><span class="prompt-stats-words">0 palavras</span></div>
-        <div class="step-nav">
-          <button class="step-back-btn" onclick="goStep(4)">← Voltar</button>
+        <div class="fs-chat-inputrow" id="fs-chat-inputrow">
+          <input type="text" class="fs-chat-input" id="fs-chat-input" placeholder="Escreva sua mensagem...">
+          <button type="button" class="fs-send-btn" id="fs-send-btn" aria-label="Enviar">
+            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
         </div>
       </div>
     </div>
 
-        <div class="tab-content" id="tab-video">
+        <div class="tab-content" id="tab-viralize">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Estúdio IA — Vídeo</h1>
-          <p class="page-sub">Prompts para Runway, Kling AI, Pika Labs e Sora</p>
+          <h1 class="page-title">Viralize Aí</h1>
+          <p class="page-sub">Escolha um avatar e receba na hora um prompt de vídeo viral pronto pra usar.</p>
         </div>
       </div>
-
-      <div class="vid-stepper" id="vid-stepper" role="tablist" aria-label="Etapas de criação de vídeo">
-        <div class="vid-step-item active" data-step="1" onclick="goVidStep(1)" role="tab"><div class="vid-step-num">1</div> Produto</div>
-        <div class="vid-step-item locked" data-step="2" onclick="goVidStep(2)" role="tab"><div class="vid-step-num">2</div> Avatar</div>
-        <div class="vid-step-item locked" data-step="3" onclick="goVidStep(3)" role="tab"><div class="vid-step-num">3</div> Configurar</div>
-        <div class="vid-step-item locked" data-step="4" onclick="goVidStep(4)" role="tab"><div class="vid-step-num">4</div> Roteiro</div>
-        <div class="vid-step-item locked" data-step="5" onclick="goVidStep(5)" role="tab"><div class="vid-step-num">5</div> Gerar IA</div>
-      </div>
-
-      <div class="vid-step-panel active" id="vid-step-1" role="tabpanel">
-        <p class="section-label">Selecionar Produto</p>
-        <div class="search-wrap">
-          <span class="search-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-          <input type="search" class="studio-search" placeholder="Buscar produto..." id="vid-studio-search" oninput="filterVidProducts()" aria-label="Buscar produto para vídeo">
-        </div>
-        <div class="product-grid" id="vid-product-grid" style="margin-bottom:16px" role="list"></div>
-        <div id="vid-studio-empty" class="empty-state" style="display:none" role="status">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <p>Nenhum produto encontrado</p>
-        </div>
-        <div class="show-more-row" id="vid-more-row" style="display:none">
-          <button type="button" class="show-more-btn" id="vid-more-btn" style="display:none" onclick="showMoreProducts('vid')">
-            <span class="show-more-text">Mostrar mais produtos</span>
-            <span class="show-more-count" id="vid-more-count"></span>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <button type="button" class="show-less-btn" id="vid-less-btn" style="display:none" onclick="showLessProducts('vid')">
-            <span class="show-less-text">Mostrar menos</span>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>
-          </button>
-        </div>
-        <div class="add-product-btn" onclick="openAddModal()" role="button" tabindex="0" onkeydown="if(event.key==='Enter')openAddModal()">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Adicionar meu produto
-        </div>
-        <div class="step-nav">
-          <button class="step-next-btn" id="vid-step1-next" onclick="goVidStep(2)" style="flex:1" disabled>Próximo →</button>
-        </div>
-      </div>
-
-      <div class="vid-step-panel" id="vid-step-2" role="tabpanel">
-        <p class="section-label">Selecionar Avatar</p>
-        <div class="avatar-select-grid" id="vid-avatar-grid" role="list"></div>
-        <div class="step-nav">
-          <button class="step-back-btn" onclick="goVidStep(1)">← Voltar</button>
-          <button class="step-next-btn" id="vid-step2-next" onclick="goVidStep(3)" disabled>Próximo →</button>
-        </div>
-      </div>
-
-      <div class="vid-step-panel" id="vid-step-3" role="tabpanel">
-        <div class="video-config">
-          <div class="video-config-title">Configurações do Vídeo</div>
-          <div class="video-opts-grid">
-            <div class="video-opt-group">
-              <label for="vid-format">Formato</label>
-              <select id="vid-format">
-                <option value="tiktok">TikTok (9:16)</option>
-                <option value="reels">Reels (9:16)</option>
-                <option value="shorts">YouTube Shorts</option>
-                <option value="feed">Feed Quadrado (1:1)</option>
-                <option value="story">Story (9:16)</option>
-              </select>
-            </div>
-            <div class="video-opt-group">
-              <label for="vid-style">Estilo</label>
-              <select id="vid-style">
-                <option value="ugc">UGC Autêntico</option>
-                <option value="unboxing">Unboxing</option>
-                <option value="antes">Antes &amp; Depois</option>
-                <option value="review">Review Honesta</option>
-                <option value="tutorial">Tutorial Rápido</option>
-                <option value="grwm">Get Ready With Me</option>
-              </select>
-            </div>
-            <div class="video-opt-group">
-              <label for="vid-quality">Qualidade</label>
-              <select id="vid-quality">
-                <option value="hd">HD 1080p</option>
-                <option value="4k" selected>4K Ultra HD</option>
-                <option value="cinematic">4K Cinemático</option>
-              </select>
-            </div>
-            <div class="video-opt-group">
-              <label for="vid-lighting">Iluminação</label>
-              <select id="vid-lighting">
-                <option value="natural">Luz Natural</option>
-                <option value="studio">Estúdio Profissional</option>
-                <option value="golden">Golden Hour</option>
-                <option value="ring">Ring Light</option>
-                <option value="neon">Neon Aesthetic</option>
-              </select>
-            </div>
-          </div>
-          <div class="video-opt-group" style="margin-bottom:11px">
-            <label>Duração</label>
-            <div class="duration-chips" style="margin-top:6px">
-              <span class="dur-chip" onclick="selectDur(this)">7s</span>
-              <span class="dur-chip active" onclick="selectDur(this)">15s</span>
-              <span class="dur-chip" onclick="selectDur(this)">30s</span>
-              <span class="dur-chip" onclick="selectDur(this)">60s</span>
-              <span class="dur-chip" onclick="selectDur(this)">90s</span>
-            </div>
-          </div>
-          <div class="video-opt-group">
-            <label for="vid-audio">Música / Áudio</label>
-            <select id="vid-audio">
-              <option value="trending">Som Trending TikTok</option>
-              <option value="upbeat">Upbeat Energético</option>
-              <option value="chill">Lo-fi Chill</option>
-              <option value="dramatic">Dramático Cinematográfico</option>
-              <option value="none">Sem Música (voz only)</option>
-            </select>
-          </div>
-        </div>
-        <p class="section-label">Melhorias de Vídeo</p>
-        <div class="improve-grid" id="vid-improve-opts"></div>
-        <div class="step-nav">
-          <button class="step-back-btn" onclick="goVidStep(2)">← Voltar</button>
-          <button class="step-next-btn" onclick="goVidStep(4)">Próximo →</button>
-        </div>
-      </div>
-
-      <div class="vid-step-panel" id="vid-step-4" role="tabpanel">
-        <p class="section-label">Tipo de Roteiro</p>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:7px;margin-bottom:16px" id="roteiro-type-grid"></div>
-        <div class="roteiro-builder">
-          <div class="roteiro-title">
-            Estrutura do Roteiro
-            <button onclick="autoFillRoteiro()" style="background:rgba(124,107,255,0.12);border:1px solid rgba(124,107,255,0.28);color:var(--accent1);font-size:10px;font-weight:700;padding:4px 10px;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s" aria-label="Preencher roteiro com IA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></svg> Preencher com IA</button>
-          </div>
-          <div class="roteiro-steps">
-            <div class="roteiro-step">
-              <div class="roteiro-step-header">
-                <span class="roteiro-step-badge badge-hook">HOOK</span>
-                <span class="roteiro-step-label">Gancho inicial</span>
-                <span class="roteiro-step-time">0 – 3s</span>
-              </div>
-              <div class="roteiro-presets" id="hook-presets"></div>
-              <textarea class="roteiro-textarea" id="rot-hook" placeholder="Ex: Minha pele estava horrível antes disso..." aria-label="Texto do hook"></textarea>
-            </div>
-            <div class="roteiro-step">
-              <div class="roteiro-step-header">
-                <span class="roteiro-step-badge badge-reveal">REVEAL</span>
-                <span class="roteiro-step-label">Apresentação &amp; Demonstração</span>
-                <span class="roteiro-step-time">3 – 20s</span>
-              </div>
-              <div class="roteiro-presets" id="reveal-presets"></div>
-              <textarea class="roteiro-textarea" id="rot-reveal" placeholder="Ex: Apliquei o sérum todos os dias por 30 dias e olha o resultado..." aria-label="Texto do reveal"></textarea>
-            </div>
-            <div class="roteiro-step">
-              <div class="roteiro-step-header">
-                <span class="roteiro-step-badge badge-cta">CTA</span>
-                <span class="roteiro-step-label">Chamada para ação</span>
-                <span class="roteiro-step-time">Final</span>
-              </div>
-              <div class="roteiro-presets" id="cta-presets"></div>
-              <textarea class="roteiro-textarea" id="rot-cta" placeholder="Ex: Link na bio com 30% off só hoje!" aria-label="Texto do CTA"></textarea>
-            </div>
-          </div>
-        </div>
-        <div style="margin-bottom:16px">
-          <label class="form-label">Tom do Roteiro</label>
-          <div class="duration-chips" style="margin-top:7px" id="roteiro-tom-chips"></div>
-        </div>
-        <div class="step-nav">
-          <button class="step-back-btn" onclick="goVidStep(3)">← Voltar</button>
-          <button class="step-next-btn" onclick="goVidStep(5)">Próximo →</button>
-        </div>
-      </div>
-
-      <div class="vid-step-panel" id="vid-step-5" role="tabpanel">
-        <div id="vid-config-summary" style="margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:7px"></div>
-        <div class="ai-loading" id="vid-ai-loading" role="status" aria-live="polite">
-          <div class="ai-loading-dot"></div>
-          <div class="ai-loading-dot"></div>
-          <div class="ai-loading-dot"></div>
-          <span>Claude está criando seu prompt de vídeo...</span>
-        </div>
-        <button class="gen-btn vid-btn" id="gen-vid-btn" onclick="generateVideoPrompt()">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-          Gerar Prompt de Vídeo com IA
-        </button>
-        <button class="copy-btn" onclick="copyOutput('vid-prompt-output')">
+      <p class="section-label">Escolha um avatar</p>
+      <div class="viralize-avatar-grid" id="viralize-avatar-grid"></div>
+      <div class="viralize-output" id="viralize-output">
+        <div class="viralize-output-label">Prompt pronto para <span id="viralize-output-avatar"></span></div>
+        <div class="viralize-output-text" id="viralize-output-text"></div>
+        <button type="button" class="copy-btn" onclick="copyViralizeOutput()">
           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
           Copiar Prompt
         </button>
-        <textarea class="prompt-box" id="vid-prompt-output" readonly style="min-height:130px" placeholder="Configure as opções e clique em Gerar para criar um prompt de vídeo..." aria-readonly="true" aria-label="Prompt de vídeo gerado"></textarea>
-        <div class="prompt-stats" id="vid-prompt-output-stats" style="display:none"><span>Prompt gerado</span><span class="prompt-stats-words">0 palavras</span></div>
-        <div class="step-nav">
-          <button class="step-back-btn" onclick="goVidStep(4)">← Voltar</button>
+      </div>
+    </div>
+
+        <div class="tab-content" id="tab-imglibrary">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Biblioteca de Imagens</h1>
+          <p class="page-sub">Tudo o que você criar no Estúdio Livre vai ficar guardado aqui, num só lugar.</p>
         </div>
+      </div>
+      <div class="imglib-stats">
+        <div><div class="imglib-stat-num">0</div><div class="imglib-stat-label">Imagens</div></div>
+        <div><div class="imglib-stat-num">0</div><div class="imglib-stat-label">Pastas</div></div>
+        <div><div class="imglib-stat-num">—</div><div class="imglib-stat-label">Última atualização</div></div>
+      </div>
+      <div class="imglib-empty">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <p>Você ainda não gerou nenhuma imagem.<br>Crie no Estúdio Livre e ela aparece aqui.</p>
+        <button type="button" class="quick-action-btn primary" onclick="switchTab('freestudio', null)">Ir para o Estúdio Livre</button>
       </div>
     </div>
 
@@ -562,24 +304,6 @@
           <input type="file" id="backup-file-input" accept="application/json,.json" style="display:none" onchange="importBackup(event)">
           <div class="settings-row-desc" id="backup-status" style="margin-top:8px;min-height:14px"></div>
         </div>
-        <div class="settings-card full">
-          <div class="settings-title"><div class="settings-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>Conta &amp; Plano</div>
-          <div class="plan-card">
-            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
-              <div><span class="plan-name">Pro</span><span class="plan-tag">ATIVO</span></div>
-            </div>
-          </div>
-          <div style="margin-top:12px;padding:13px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);font-size:12.5px;color:var(--text2);line-height:1.75"><strong style="color:var(--text)">Plano Pro inclui:</strong> Avatares ilimitados · Prompts 4K · Biblioteca completa · Roteiro personalizado · Background customizado</div>
-        </div>
-        <div class="settings-card danger full">
-          <div class="settings-title"><div class="settings-icon"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 012-2h2a2 2 0 012 2v2"/></svg></div>Zona de perigo</div>
-          <div class="settings-row"><div><div class="settings-row-label">Excluir tudo</div><div class="settings-row-desc">Apaga permanentemente seus favoritos, produtos, avatares e histórico de prompts deste dispositivo</div></div></div>
-          <button type="button" class="danger-btn" onclick="openDeleteAllModal()">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
-            Excluir tudo
-          </button>
-          <div class="settings-row-desc" style="margin-top:9px;color:var(--text3)">Recomendamos gerar um backup antes. Esta ação não pode ser desfeita.</div>
-        </div>
       </div>
     </div>
 
@@ -597,25 +321,25 @@
 </div>
 
 <nav class="bottom-nav" role="navigation" aria-label="Navegação principal">
-  <div class="nav-item active" onclick="switchTab('mining',this)" role="menuitem" tabindex="0" aria-label="Mineração">
+  <div class="nav-item active" onclick="switchTab('mining',this)" role="menuitem" tabindex="0" aria-label="Inventário">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    <span class="nav-label">Mineração</span>
+    <span class="nav-label">Inventário</span>
   </div>
-  <div class="nav-item" onclick="switchTab('library',this)" role="menuitem" tabindex="0" aria-label="Biblioteca">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
-    <span class="nav-label">Biblioteca</span>
+  <div class="nav-item" onclick="switchTab('freestudio',this)" role="menuitem" tabindex="0" aria-label="Estúdio Livre">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    <span class="nav-label">Estúdio</span>
   </div>
-  <div class="nav-item" onclick="switchTab('studio',this)" role="menuitem" tabindex="0" aria-label="Estúdio Imagem">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-    <span class="nav-label">Imagem</span>
-  </div>
-  <div class="nav-item" onclick="switchTab('video',this)" role="menuitem" tabindex="0" aria-label="Estúdio Vídeo">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-    <span class="nav-label">Vídeo</span>
+  <div class="nav-item" onclick="switchTab('viralize',this)" role="menuitem" tabindex="0" aria-label="Viralize Aí">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    <span class="nav-label">Viralize</span>
   </div>
   <div class="nav-item" onclick="switchTab('influencer',this)" role="menuitem" tabindex="0" aria-label="Avatar">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     <span class="nav-label">Avatar</span>
+  </div>
+  <div class="nav-item" onclick="switchTab('imglibrary',this)" role="menuitem" tabindex="0" aria-label="Biblioteca de Imagens">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+    <span class="nav-label">Galeria</span>
   </div>
 </nav>
 
@@ -693,38 +417,12 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="delete-all-modal" role="dialog" aria-modal="true" aria-labelledby="delete-all-title">
-  <div class="modal" style="max-width:400px;text-align:center">
-    <button class="modal-close" onclick="closeDeleteAllModal()" aria-label="Fechar">
-      <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-    <div class="danger-modal-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-    </div>
-    <div class="modal-title" id="delete-all-title" style="font-size:17px;margin-bottom:6px">Excluir tudo?</div>
-    <div style="font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:15px">Isso vai apagar permanentemente deste dispositivo:</div>
-    <ul class="danger-list">
-      <li>Todos os produtos favoritados</li>
-      <li>Seus produtos personalizados</li>
-      <li>Seus avatares salvos</li>
-      <li>Todo o histórico de prompts</li>
-    </ul>
-    <div style="font-size:12.5px;color:var(--text2);line-height:1.65;margin-bottom:11px">Para confirmar, digite <strong style="color:var(--accent1)">excluir</strong> no campo abaixo:</div>
-    <input type="text" class="danger-input" id="delete-all-input" placeholder="digite: excluir" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="Digite a palavra excluir para confirmar" oninput="validateDeleteAll()" onkeydown="if(event.key==='Enter')confirmDeleteAll()">
-    <div class="danger-hint" id="delete-all-hint"></div>
-    <div style="display:flex;gap:9px">
-      <button class="step-back-btn" style="flex:1;padding:12px" onclick="closeDeleteAllModal()">Cancelar</button>
-      <button class="danger-confirm-btn" id="delete-all-confirm" onclick="confirmDeleteAll()" disabled>Excluir tudo</button>
-    </div>
-  </div>
-</div>
-
 <div id="voice-orb-root"></div>
 
 <script src="js/sanitize.js"></script>
 <script src="js/session.js"></script>
-<script src="js/greeting.js"></script>
 <script src="js/script.js"></script>
+<script src="js/freestudio.js"></script>
 
 </body>
 </html>
