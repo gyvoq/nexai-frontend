@@ -1367,8 +1367,8 @@ function generateAvatarPromptAI() {
   const altura = document.getElementById("av-altura")?.value || "";
   const rosto = document.getElementById("av-rosto")?.value || "";
   const olhos = document.getElementById("av-olhos")?.value || "";
-  const corCabelo = [ ...document.querySelectorAll("#av-cor-cabelo .form-chip.selected") ].map(c => c.textContent).join(", ");
-  const estiloCabelo = [ ...document.querySelectorAll("#av-estilo-cabelo .form-chip.selected") ].map(c => c.textContent).join(", ");
+  const corCabelo = document.getElementById("av-cor-cabelo")?.value || "";
+  const estiloCabelo = document.getElementById("av-estilo-cabelo")?.value || "";
   const estilos = [ ...document.querySelectorAll("#av-estilo .form-chip.selected") ].map(c => c.textContent).join(", ") || "—";
   const nichos = [ ...document.querySelectorAll("#av-nicho .form-chip.selected") ].map(c => c.textContent).join(", ") || "—";
   const personalidades = [ ...document.querySelectorAll("#av-personalidade .form-chip.selected") ].map(c => c.textContent).join(", ") || "—";
@@ -1401,8 +1401,8 @@ function saveGeneratedAvatar() {
   const altura = document.getElementById("av-altura")?.value || "";
   const rosto = document.getElementById("av-rosto")?.value || "";
   const olhos = document.getElementById("av-olhos")?.value || "";
-  const corCabelo = [ ...document.querySelectorAll("#av-cor-cabelo .form-chip.selected") ].map(c => c.textContent).join(", ");
-  const estiloCabelo = [ ...document.querySelectorAll("#av-estilo-cabelo .form-chip.selected") ].map(c => c.textContent).join(", ");
+  const corCabelo = document.getElementById("av-cor-cabelo")?.value || "";
+  const estiloCabelo = document.getElementById("av-estilo-cabelo")?.value || "";
   const estilos = [ ...document.querySelectorAll("#av-estilo .form-chip.selected") ].map(c => c.textContent).join(", ");
   const nichos = [ ...document.querySelectorAll("#av-nicho .form-chip.selected") ].map(c => c.textContent).join(", ");
   const personalidades = [ ...document.querySelectorAll("#av-personalidade .form-chip.selected") ].map(c => c.textContent).join(", ");
@@ -1498,6 +1498,13 @@ const GENDER_AWARE_IMG_CODES = {
     quadrado:   { "Feminino": "QDF", "Masculino": "QDM" },
     triangular: { "Feminino": "TRF", "Masculino": "TRM" },
     coracao:    { "Feminino": "CRF", "Masculino": "CRM" }
+  },
+  estilocabelo: {
+    liso:     { "Feminino": "LIF", "Masculino": "LIM" },
+    ondulado: { "Feminino": "ONF", "Masculino": "ONM" },
+    cacheado: { "Feminino": "CCF", "Masculino": "CCM" },
+    crespo:   { "Feminino": "CEF", "Masculino": "CEM" },
+    careca:   { "Feminino": "CVF", "Masculino": "CVM" }
   }
 };
 
