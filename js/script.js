@@ -98,7 +98,7 @@ const avatars = [ {
   nicho: "Beleza & Skincare",
   style: "Minimalista",
   gender: "f",
-  img: "assets/influencers/KJH.AVIF",
+  img: "assets/KJH.AVIF",
   grad: "grad-beleza"
 }, {
   id: 2,
@@ -107,7 +107,7 @@ const avatars = [ {
   nicho: "Fitness & Nutrição",
   style: "Athletic",
   gender: "m",
-  img: "assets/influencers/IUG.AVIF",
+  img: "assets/IUG.AVIF",
   grad: "grad-fitness"
 }, {
   id: 3,
@@ -116,7 +116,7 @@ const avatars = [ {
   nicho: "Moda & Lifestyle",
   style: "Streetwear",
   gender: "f",
-  img: "assets/influencers/JKH.AVIF",
+  img: "assets/JKH.AVIF",
   grad: "grad-moda"
 }, {
   id: 4,
@@ -125,7 +125,7 @@ const avatars = [ {
   nicho: "Tech & Gadgets",
   style: "Minimalista",
   gender: "m",
-  img: "assets/influencers/IOG.AVIF",
+  img: "assets/IOG.AVIF",
   grad: "grad-tech"
 }, {
   id: 5,
@@ -134,7 +134,7 @@ const avatars = [ {
   nicho: "Lifestyle & Casa",
   style: "Boho",
   gender: "m",
-  img: "assets/influencers/KJHH.AVIF",
+  img: "assets/KJHH.AVIF",
   grad: "grad-casa"
 }, {
   id: 6,
@@ -143,7 +143,7 @@ const avatars = [ {
   nicho: "Saúde & Wellness",
   style: "Natural",
   gender: "f",
-  img: "assets/influencers/HRT.AVIF",
+  img: "assets/HRT.AVIF",
   grad: "grad-saude"
 } ];
 
@@ -1521,7 +1521,7 @@ function updateGenderAwareImages(genero) {
       if (!img) return;
       img.classList.remove("loaded");
       card.classList.add("loading");
-      img.src = `assets/influencers/${code}.AVIF`;
+      img.src = `assets/${code}.AVIF`;
     });
   });
 }
