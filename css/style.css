@@ -1213,6 +1213,20 @@ input[type=range] { width: 100%; accent-color: var(--accent1); cursor: pointer; 
 .stat-label { font-size: 13px; color: var(--text); font-weight: 500; margin-top: 4px; }
 .stat-delta { font-size: 11.5px; color: var(--accent3); margin-top: 2px; }
 
+.stats-bar-compact {
+  flex: 0 0 auto;
+  grid-template-columns: repeat(3, minmax(84px, auto));
+  gap: 8px;
+  margin-bottom: 0;
+}
+.stats-bar-compact .stat-card { padding: 8px 12px; }
+.stats-bar-compact .stat-value { font-size: 18px; }
+.stats-bar-compact .stat-label { font-size: 10.5px; margin-top: 2px; }
+.stats-bar-compact .stat-delta { font-size: 9px; margin-top: 1px; white-space: nowrap; }
+@media (max-width: 640px) {
+  .stats-bar-compact { grid-template-columns: repeat(3, minmax(70px, auto)); width: 100%; }
+}
+
 
 .trending-badge {
   position: absolute; bottom: 7px; left: 7px;
