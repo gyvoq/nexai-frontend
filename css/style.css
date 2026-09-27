@@ -914,6 +914,8 @@ input[type=range] { width: 100%; accent-color: var(--accent1); cursor: pointer; 
   overflow: hidden; cursor: pointer; transition: all var(--transition); aspect-ratio: 3/3.6; background: var(--surface2);
 }
 .inf-photo-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.inf-photo-neutral { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: var(--surface3); }
+.inf-photo-neutral svg { width: 34px; height: 34px; stroke: var(--text); stroke-width: 1.6; fill: none; }
 .inf-photo-card:hover { border-color: rgba(139,92,246,0.5); transform: translateY(-1px); }
 .inf-photo-card.selected { border-color: var(--accent1); box-shadow: 0 0 0 2px rgba(139,92,246,0.3); }
 .inf-photo-check {
