@@ -908,12 +908,16 @@ input[type=range] { width: 100%; accent-color: var(--accent1); cursor: pointer; 
 @media (min-width: 900px) { .inf-wizard-layout { grid-template-columns: 1.7fr 1fr; align-items: start; } }
 .inf-wizard-main { min-width: 0; }
 
-.inf-option-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px,1fr)); gap: 10px; margin-bottom: 4px; }
+.inf-option-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px,1fr)); gap: 12px; margin-bottom: 4px; }
 .inf-photo-card {
   position: relative; border: 2px solid var(--border); border-radius: var(--radius);
-  overflow: hidden; cursor: pointer; transition: all var(--transition); aspect-ratio: 3/3.6; background: var(--surface2);
+  overflow: hidden; cursor: pointer; transition: all var(--transition); aspect-ratio: 3/3.4; background: var(--surface2);
 }
-.inf-photo-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.inf-photo-card img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity 0.35s ease; }
+.inf-photo-card img.loaded { opacity: 1; }
+.inf-photo-card.loading { background: linear-gradient(100deg, var(--surface2) 30%, var(--surface3) 50%, var(--surface2) 70%); background-size: 200% 100%; animation: infPhotoShimmer 1.1s ease-in-out infinite; }
+@keyframes infPhotoShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .inf-photo-card.loading { animation: none; } }
 .inf-photo-neutral { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: var(--surface3); }
 .inf-photo-neutral svg { width: 34px; height: 34px; stroke: var(--text); stroke-width: 1.6; fill: none; }
 .inf-photo-card:hover { border-color: rgba(139,92,246,0.5); transform: translateY(-1px); }
