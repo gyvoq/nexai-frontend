@@ -831,8 +831,11 @@ input[type=range] { width: 100%; accent-color: var(--accent1); cursor: pointer; 
   overflow: hidden; transition: all var(--transition); cursor: pointer;
 }
 .avatar-card:hover { transform: translateY(-3px); border-color: rgba(168,85,247,0.4); box-shadow: 0 10px 30px rgba(168,85,247,0.09); }
-.avatar-img { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 42px; position: relative; color: var(--accent1); }
+.avatar-img { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 42px; position: relative; color: var(--accent1); overflow: hidden; }
+.avatar-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .avatar-img svg, .avatar-select-emoji svg, .avatar-preview-emoji svg { width: 34px; height: 34px; stroke: var(--accent1); }
+.avatar-select-emoji img { width: 40px; height: 40px; object-fit: cover; border-radius: 50%; }
+.avatar-preview-emoji img { width: 26px; height: 26px; object-fit: cover; border-radius: 50%; }
 .avatar-select-emoji, .avatar-preview-emoji { display: flex; align-items: center; justify-content: center; }
 .avatar-body { padding: 10px 11px 13px; }
 .avatar-name { font-size: 13px; font-weight: 600; }
