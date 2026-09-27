@@ -530,9 +530,6 @@ function importBackup(event) {
           safeSet(PROMPTS_KEY, promptHistory);
         }
         if (typeof renderProducts === "function") renderProducts();
-        if (typeof renderVideos === "function") renderVideos();
-        if (typeof renderStudioProducts === "function") renderStudioProducts();
-        if (typeof renderVidProducts === "function") renderVidProducts();
         if (typeof renderAvatars === "function") renderAvatars("all");
         if (typeof updateHistNotif === "function") updateHistNotif();
         showToast("Backup importado com sucesso!");
@@ -591,8 +588,6 @@ function saveNewProduct() {
   closeAddModal();
   renderProducts();
   reapplyMiningFilter();
-  renderStudioProducts();
-  renderVidProducts();
   scrollToFirstProduct();
   showToast(`"${nome}" adicionado com sucesso!`);
 }
@@ -624,15 +619,13 @@ function scrollToFirstProduct() {
 }
 
 function productCard(p, selectable, i = 0, clickFn = "selectStudioProduct") {
-  const rankClass = p.rank === 1 ? "rank-1" : p.rank === 2 ? "rank-2" : p.rank === 3 ? "rank-3" : "rank-other";
   const fav = isFav("prod", p.id);
   const imgContent = p.img ? `<img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.55"><path d="M21 8L12 3 3 8l9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>`;
   const customBadge = p.custom ? `<span style="position:absolute;bottom:7px;right:7px;background:rgba(124,107,255,0.85);color:white;font-size:8px;padding:2px 6px;border-radius:7px;font-weight:700;backdrop-filter:blur(4px)">MEU</span>` : "";
-  const promptBadge = p.prompt ? `<span style="position:absolute;bottom:7px;left:7px;background:rgba(168,85,247,0.18);color:#c4b5fd;font-size:8px;padding:2px 6px;border-radius:7px;border:1px solid rgba(168,85,247,0.3);font-weight:700;backdrop-filter:blur(4px)">PROMPT</span>` : "";
-  const trendBadge = p.rank <= 5 ? `<div class="trending-badge" style="bottom:${p.prompt ? "28px" : "7px"}">TOP ${p.rank}</div>` : "";
+  const trendBadge = p.rank <= 5 ? `<div class="trending-badge">TOP ${p.rank}</div>` : "";
   const newBadge = p.isNew ? `<span class="badge-new">NOVO</span>` : "";
   const safeName = Sanitize.escapeHTML(p.name);
-  return `<div class="product-card" data-cat="${p.cat}" data-id="${p.id}" ${selectable ? `onclick="${clickFn}('${p.id}',this)" role="option" tabindex="0" aria-label="${safeName}"` : ""} role="listitem">\n    <div class="card-img ${p.grad}">${imgContent}<span class="rank-badge ${rankClass}" aria-label="Ranking ${p.rank}">#${p.rank}</span>${customBadge}${promptBadge}${trendBadge}${newBadge}\n      <button class="fav-btn ${fav ? "active" : ""}" onclick="event.stopPropagation();this.innerHTML=heartSVG(!this.classList.contains('active'));toggleFav('prod',${p.id},this)" aria-label="${fav ? "Remover dos favoritos" : "Adicionar aos favoritos"}">${heartSVG(fav)}</button>\n    </div>\n    <div class="card-body">\n      <div class="card-name">${safeName}</div>\n      <div class="card-meta"><span class="card-tag">${p.tag}</span></div>\n      ${!selectable ? `<button class="card-btn" onclick="event.stopPropagation();window.open('https://www.google.com/search?q=${encodeURIComponent(p.name)}','_blank')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Pesquisar</button>` : ""}\n    </div>\n  </div>`;
+  return `<div class="product-card" data-cat="${p.cat}" data-id="${p.id}" ${selectable ? `onclick="${clickFn}('${p.id}',this)" role="option" tabindex="0" aria-label="${safeName}"` : ""} role="listitem">\n    <div class="card-img ${p.grad}">${imgContent}${customBadge}${trendBadge}${newBadge}\n      <button class="fav-btn ${fav ? "active" : ""}" onclick="event.stopPropagation();this.innerHTML=heartSVG(!this.classList.contains('active'));toggleFav('prod',${p.id},this)" aria-label="${fav ? "Remover dos favoritos" : "Adicionar aos favoritos"}">${heartSVG(fav)}</button>\n    </div>\n    <div class="card-body">\n      <div class="card-name">${safeName}</div>\n      ${!selectable ? `<button class="card-btn" onclick="event.stopPropagation();addToInventory(${p.id},'${safeName.replace(/'/g, "\\'")}')"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar</button>` : ""}\n    </div>\n  </div>`;
 }
 
 function renderProducts() {
@@ -878,7 +871,7 @@ function renderRoteiroUI() {
   document.getElementById("roteiro-tom-chips").innerHTML = tomOptions.map(t => `<span class="dur-chip ${t === selectedTom ? "active" : ""}" onclick="selectTom('${t}',this)" role="radio" tabindex="0" aria-checked="${t === selectedTom}">${t}</span>`).join("");
 }
 
-const TABS = [ "mining", "library", "studio", "video", "influencer", "settings" ];
+const TABS = [ "mining", "freestudio", "viralize", "influencer", "imglibrary", "settings" ];
 
 function switchTab(tab, el) {
   document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
@@ -1543,9 +1536,6 @@ function wipeAllData() {
   resetProductPagination("vid");
   renderProducts();
   reapplyMiningFilter();
-  renderVideos();
-  renderStudioProducts();
-  renderVidProducts();
   renderAvatars("all");
   if (typeof renderHistoryPanel === "function") renderHistoryPanel();
   if (typeof updateHistNotif === "function") updateHistNotif();
@@ -1685,30 +1675,30 @@ function renderSearchResults(q) {
   const ql = q.toLowerCase();
   let results = [];
   const navItems = [ {
-    label: "Mineração Viral",
+    label: "Inventário",
     cat: "Seção",
     icon: ICONS.home,
     tab: "mining"
   }, {
-    label: "Biblioteca Viral",
-    cat: "Seção",
-    icon: ICONS.book,
-    tab: "library"
-  }, {
-    label: "Estúdio IA — Imagem",
+    label: "Estúdio Livre",
     cat: "Seção",
     icon: ICONS.image,
-    tab: "studio"
+    tab: "freestudio"
   }, {
-    label: "Estúdio IA — Vídeo",
+    label: "Viralize Aí",
     cat: "Seção",
     icon: ICONS.film,
-    tab: "video"
+    tab: "viralize"
   }, {
     label: "Avatar",
     cat: "Seção",
     icon: ICONS.user,
     tab: "influencer"
+  }, {
+    label: "Biblioteca de Imagens",
+    cat: "Seção",
+    icon: ICONS.book,
+    tab: "imglibrary"
   }, {
     label: "Configurações",
     cat: "Seção",
@@ -1730,7 +1720,7 @@ function renderSearchResults(q) {
       label: p.name,
       sub: p.cat,
       icon: ICONS.box,
-      action: `switchTab('studio',null);closeSearch();setTimeout(()=>{selectStudioProduct(${p.id},document.querySelector('[data-id="${p.id}"]'))},300)`
+      action: `switchTab('mining',null);closeSearch()`
     });
   });
   avatars.filter(a => !ql || a.name.toLowerCase().includes(ql) || a.nicho.toLowerCase().includes(ql)).slice(0, 4).forEach(a => {
@@ -1851,32 +1841,18 @@ window.addEventListener("resize", () => {
 
 (function init() {
   showSkeletons("product-grid", 8);
-  showSkeletons("video-grid", 6);
-  showSkeletons("studio-product-grid", 8);
-  showSkeletons("vid-product-grid", 8);
   renderMiningStats();
   setTimeout(() => {
     renderProducts();
-    renderVideos();
-    renderStudioProducts();
-    renderVidProducts();
   }, 420);
   renderAvatars("all");
-  renderStudioOptions();
-  renderBgOptions();
-  renderRoteiroUI();
   setupFilters("mining-filters", "cat", "#product-grid", ".product-card");
-  setupFilters("library-filters", "fmt", "#video-grid", ".video-card");
   updateImgStepGate();
   updateVidStepGate();
   updateHistNotif();
   if (window.innerWidth >= 900) {
-    document.getElementById("header-plan").style.display = "block";
     document.getElementById("search-label-desk").style.display = "inline";
     document.getElementById("search-kbd").style.display = "inline";
-    document.getElementById("hist-label").style.display = "inline";
-    const cfgLabel = document.getElementById("settings-label");
-    if (cfgLabel) cfgLabel.style.display = "inline";
   }
   const imgStepper = document.getElementById("img-stepper");
   const vidStepper = document.getElementById("vid-stepper");
