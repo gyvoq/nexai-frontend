@@ -282,11 +282,70 @@ function renderViralizeAvatars() {
       <div class="viralize-avatar-name">${fsEscape(a.name)}</div>
       <div class="viralize-avatar-nicho">${fsEscape(a.nicho)}</div>
     </div>`).join('');
+  viralizeRenderLimitUI();
 }
+
+const VIRALIZE_DAILY_LIMIT = 4;
+const VIRALIZE_USAGE_KEY = 'viralyze-viralize-usage';
+
+function viralizeTodayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
+
+function viralizeGetUsage() {
+  let usage;
+  try { usage = JSON.parse(localStorage.getItem(VIRALIZE_USAGE_KEY) || 'null'); } catch (e) { usage = null; }
+  const today = viralizeTodayStr();
+  if (!usage || usage.date !== today) {
+    usage = { date: today, count: 0, lastId: null };
+    localStorage.setItem(VIRALIZE_USAGE_KEY, JSON.stringify(usage));
+  }
+  return usage;
+}
+
+function viralizeSaveUsage(usage) {
+  localStorage.setItem(VIRALIZE_USAGE_KEY, JSON.stringify(usage));
+}
+
+function viralizeRenderLimitUI() {
+  const usage = viralizeGetUsage();
+  const grid = document.getElementById('viralize-avatar-grid');
+  const limitReached = usage.count >= VIRALIZE_DAILY_LIMIT;
+  if (grid) grid.classList.toggle('viralize-limit-reached', limitReached);
+  let notice = document.getElementById('viralize-limit-notice');
+  if (limitReached) {
+    if (!notice) {
+      notice = document.createElement('div');
+      notice.id = 'viralize-limit-notice';
+      notice.className = 'viralize-limit-notice';
+      grid.insertAdjacentElement('beforebegin', notice);
+    }
+    notice.innerHTML = `Você usou suas <strong>${VIRALIZE_DAILY_LIMIT} prévias grátis</strong> de hoje. Volte amanhã pra gerar mais combinações.`;
+  } else if (notice) {
+    notice.remove();
+  }
+}
+
 function selectViralizeAvatar(id) {
   if (typeof avatars === 'undefined') return;
   const avatar = avatars.find(a => a.id === id);
   if (!avatar) return;
+
+  const usage = viralizeGetUsage();
+  const alreadyCurrent = usage.lastId === id;
+  if (!alreadyCurrent && usage.count >= VIRALIZE_DAILY_LIMIT) {
+    viralizeRenderLimitUI();
+    showToast('Limite diário de prévias atingido. Volte amanhã!');
+    return;
+  }
+  if (!alreadyCurrent) {
+    usage.count += 1;
+    usage.lastId = id;
+    viralizeSaveUsage(usage);
+    viralizeRenderLimitUI();
+  }
+
   document.querySelectorAll('.viralize-avatar-card').forEach(c => c.classList.toggle('selected', Number(c.dataset.id) === id));
   const key = fsNicheKeyFromAvatar(avatar);
   const prompt = VIRALIZE_PROMPTS[key];
