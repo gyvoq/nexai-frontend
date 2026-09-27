@@ -592,12 +592,10 @@ function saveNewProduct() {
   showToast(`"${nome}" adicionado com sucesso!`);
 }
 
-/* Produtos personalizados aparecem primeiro, do mais novo para o mais antigo */
 function allProducts() {
   return [ ...customProducts, ...products ];
 }
 
-/* Reaplica o filtro de categoria ativo depois de redesenhar a grade de mineracao */
 function reapplyMiningFilter() {
   const chip = document.querySelector("#mining-filters .filter-chip.active");
   if (!chip) return;
@@ -607,7 +605,6 @@ function reapplyMiningFilter() {
   });
 }
 
-/* Leva o usuario ate o produto recem-adicionado, que agora fica no topo da grade */
 function scrollToFirstProduct() {
   const grid = document.getElementById("studio-product-grid") || document.getElementById("vid-product-grid");
   const first = grid && grid.querySelector(".product-card");
@@ -693,10 +690,8 @@ function renderVideos() {
   }).join("");
 }
 
-/* Quantos produtos estao visiveis agora em cada aba */
 const productPageState = { studio: 0, vid: 0 };
 
-/* Lote inicial e passo de cada clique: 20 no celular, 30 no PC */
 const PRODUCTS_LIMIT_MOBILE = 20;
 const PRODUCTS_LIMIT_DESKTOP = 30;
 const PRODUCTS_MOBILE_BREAKPOINT = 768;
@@ -770,7 +765,6 @@ function showLessProducts(which) {
   }
 }
 
-/* Reajusta o lote ao girar o celular ou redimensionar a janela */
 let _productPageBreakpoint = null;
 function refreshProductPagination() {
   const bp = getProductPageLimit();
@@ -1359,9 +1353,14 @@ function generateVideoPrompt() {
 }
 
 function generateAvatarPromptAI() {
-  const nome = document.getElementById("av-nome").value.trim() || "Avatar";
-  const idade = document.getElementById("av-idade").value || "25";
+  const nome = document.getElementById("av-nome").value.trim() || "Influencer";
+  const idade = document.getElementById("av-idade").value || "28";
   const genero = document.getElementById("av-genero").value;
+  const etnia = document.getElementById("av-etnia")?.value || "";
+  const corpo = [ ...document.querySelectorAll("#av-corpo .form-chip.selected") ].map(c => c.textContent).join(", ");
+  const rosto = [ ...document.querySelectorAll("#av-rosto .form-chip.selected") ].map(c => c.textContent).join(", ");
+  const corCabelo = [ ...document.querySelectorAll("#av-cor-cabelo .form-chip.selected") ].map(c => c.textContent).join(", ");
+  const estiloCabelo = [ ...document.querySelectorAll("#av-estilo-cabelo .form-chip.selected") ].map(c => c.textContent).join(", ");
   const estilos = [ ...document.querySelectorAll("#av-estilo .form-chip.selected") ].map(c => c.textContent).join(", ") || "—";
   const nichos = [ ...document.querySelectorAll("#av-nicho .form-chip.selected") ].map(c => c.textContent).join(", ") || "—";
   const personalidades = [ ...document.querySelectorAll("#av-personalidade .form-chip.selected") ].map(c => c.textContent).join(", ") || "—";
@@ -1369,23 +1368,31 @@ function generateAvatarPromptAI() {
   const desc = document.getElementById("av-desc").value.trim();
   const loading = document.getElementById("avatar-ai-loading");
   loading.classList.add("visible");
+  const physicalBits = [ etnia, corpo, rosto, corCabelo && `${corCabelo} hair`, estiloCabelo && `${estiloCabelo} hair style` ].filter(Boolean).join(", ");
+  const physicalLine = physicalBits ? `\nPhysical traits: ${physicalBits}.` : "";
   const extraLine = desc ? `\nExtra details: ${desc}` : "";
-  const result = `${idade}-year-old ${genero.toLowerCase()} digital influencer named ${nome}.\nStyle: ${estilos}. Niche: ${nichos}. Personality: ${personalidades}. Content: ${conteudos}.${extraLine}\nWearing trendy outfit matching ${estilos} aesthetic, confident engaging expression, looking at camera.\nProfessional portrait, soft studio lighting, sharp focus, 8K, vertical 9:16.\n\nHandles sugeridos:\n@${nome.toLowerCase().replace(/\s/g, "")}.oficial\n@sou.${nome.toLowerCase().replace(/\s/g, "")}\n@${nome.toLowerCase().replace(/\s/g, "")}creates`;
+  const result = `${idade}-year-old ${genero.toLowerCase()} digital influencer named ${nome}.\nStyle: ${estilos}. Niche: ${nichos}. Personality: ${personalidades}. Content: ${conteudos}.${physicalLine}${extraLine}\nWearing trendy outfit matching ${estilos} aesthetic, confident engaging expression, looking at camera.\nProfessional portrait, soft studio lighting, sharp focus, 8K, vertical 9:16.\n\nHandles sugeridos:\n@${nome.toLowerCase().replace(/\s/g, "")}.oficial\n@sou.${nome.toLowerCase().replace(/\s/g, "")}\n@${nome.toLowerCase().replace(/\s/g, "")}creates`;
   document.getElementById("avatar-prompt-output").value = result;
-  showToast("Prompt de avatar gerado!");
+  showToast("Prompt de influencer gerado!");
   loading.classList.remove("visible");
 }
 
 function saveGeneratedAvatar() {
   const nome = document.getElementById("av-nome").value.trim();
   if (!nome) {
-    showToast("Informe o nome do avatar!");
+    showToast("Informe o nome do influencer!");
     document.getElementById("av-nome").focus();
+    goInfStep(1);
     return;
   }
-  const idade = document.getElementById("av-idade").value || "25";
+  const idade = document.getElementById("av-idade").value || "28";
   const generoRaw = document.getElementById("av-genero").value;
+  const etnia = document.getElementById("av-etnia")?.value || "";
   const gender = generoRaw === "Feminino" ? "f" : generoRaw === "Masculino" ? "m" : "nb";
+  const corpo = [ ...document.querySelectorAll("#av-corpo .form-chip.selected") ].map(c => c.textContent).join(", ");
+  const rosto = [ ...document.querySelectorAll("#av-rosto .form-chip.selected") ].map(c => c.textContent).join(", ");
+  const corCabelo = [ ...document.querySelectorAll("#av-cor-cabelo .form-chip.selected") ].map(c => c.textContent).join(", ");
+  const estiloCabelo = [ ...document.querySelectorAll("#av-estilo-cabelo .form-chip.selected") ].map(c => c.textContent).join(", ");
   const estilos = [ ...document.querySelectorAll("#av-estilo .form-chip.selected") ].map(c => c.textContent).join(", ");
   const nichos = [ ...document.querySelectorAll("#av-nicho .form-chip.selected") ].map(c => c.textContent).join(", ");
   const personalidades = [ ...document.querySelectorAll("#av-personalidade .form-chip.selected") ].map(c => c.textContent).join(", ");
@@ -1398,6 +1405,11 @@ function saveGeneratedAvatar() {
     age: idade,
     gender: gender,
     genero: generoRaw,
+    etnia: etnia,
+    corpo: corpo || "—",
+    rosto: rosto || "—",
+    corCabelo: corCabelo || "—",
+    estiloCabelo: estiloCabelo || "—",
     nicho: nichos || "—",
     style: estilos || "Personalizado",
     personalidade: personalidades || "—",
@@ -1408,12 +1420,60 @@ function saveGeneratedAvatar() {
   };
   customAvatars.push(newAvatar);
   safeSet(AVATARS_KEY, customAvatars);
-  showToast(`Avatar "${nome}" salvo com sucesso!`);
+  showToast(`Influencer "${nome}" salvo com sucesso!`);
   renderAvatars("all");
 }
 
 function toggleChip(el) {
   el.classList.toggle("selected");
+}
+
+let currentInfStep = 1;
+const INF_STEP_COUNT = 6;
+
+function goInfStep(n) {
+  currentInfStep = n;
+  document.querySelectorAll(".inf-step-panel").forEach(p => p.classList.toggle("active", Number(p.dataset.infStep) === n));
+  document.querySelectorAll("#inf-stepper .inf-step-item").forEach(s => {
+    const active = Number(s.dataset.step) === n;
+    s.classList.toggle("active", active);
+    s.setAttribute("aria-selected", active);
+  });
+  const backBtn = document.getElementById("inf-nav-back");
+  const nextBtn = document.getElementById("inf-nav-next");
+  if (backBtn) backBtn.style.visibility = n === 1 ? "hidden" : "visible";
+  if (nextBtn) nextBtn.style.display = n === INF_STEP_COUNT ? "none" : "inline-flex";
+  const card = document.querySelector(".create-avatar-card");
+  if (card) card.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+
+function infNextStep() {
+  if (currentInfStep < INF_STEP_COUNT) goInfStep(currentInfStep + 1);
+}
+
+function infPrevStep() {
+  if (currentInfStep > 1) goInfStep(currentInfStep - 1);
+}
+
+function selectInfOption(el, hiddenInputId, value) {
+  document.getElementById(hiddenInputId).value = value;
+  el.parentElement.querySelectorAll(".inf-photo-card").forEach(c => c.classList.remove("selected"));
+  el.classList.add("selected");
+  updateInfSummary();
+}
+
+function updateInfSummary() {
+  const nome = document.getElementById("av-nome")?.value.trim();
+  const genero = document.getElementById("av-genero")?.value || "Feminino";
+  const idade = document.getElementById("av-idade")?.value || "28";
+  const etnia = document.getElementById("av-etnia")?.value || "Latina/Latino";
+  const nameEl = document.getElementById("inf-summary-name");
+  const metaEl = document.getElementById("inf-summary-meta");
+  if (nameEl) nameEl.textContent = nome || "Sem nome";
+  if (metaEl) metaEl.textContent = `${genero} · ${idade} anos · ${etnia}`;
 }
 
 function toggleSwitch(el) {
@@ -1450,7 +1510,6 @@ function showConfirm(msg, onConfirm) {
   });
 }
 
-/* ====== CARD EXPLICATIVO DO BACKUP ====== */
 function openBackupInfo() {
   const m = document.getElementById("backup-info-modal");
   if (m) m.classList.add("open");
@@ -1461,7 +1520,6 @@ function closeBackupInfo() {
   if (m) m.classList.remove("open");
 }
 
-/* ====== EXCLUIR TUDO (confirmacao digitando a palavra) ====== */
 const DELETE_ALL_WORD = "excluir";
 
 function openDeleteAllModal() {
@@ -1516,7 +1574,6 @@ function confirmDeleteAll() {
   showToast("Tudo foi excluído.");
 }
 
-/* Apaga os dados do app. Nao mexe na sessao nem no aceite dos termos. */
 function wipeAllData() {
   try {
     localStorage.removeItem(FAV_KEY);
@@ -1690,7 +1747,7 @@ function renderSearchResults(q) {
     icon: ICONS.film,
     tab: "viralize"
   }, {
-    label: "Avatar",
+    label: "Influencers",
     cat: "Seção",
     icon: ICONS.user,
     tab: "influencer"
@@ -1820,7 +1877,6 @@ document.addEventListener("keydown", e => {
   }
 });
 
-/* Clicar fora do card fecha os modais de ajuda e de exclusao */
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("backup-info-modal")?.addEventListener("click", e => {
     if (e.target === e.currentTarget) closeBackupInfo();
