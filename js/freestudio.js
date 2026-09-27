@@ -278,7 +278,7 @@ function renderViralizeAvatars() {
   const grid = document.getElementById('viralize-avatar-grid');
   if (!grid || typeof avatars === 'undefined') return;
   grid.innerHTML = avatars.map(a => `<div class="viralize-avatar-card" data-id="${a.id}" onclick="selectViralizeAvatar(${a.id})" role="button" tabindex="0">
-      <div class="viralize-avatar-emoji ${a.grad}">${a.emoji}</div>
+      <div class="viralize-avatar-photo"><img src="${a.img}" alt="${fsEscape(a.name)}" loading="lazy"></div>
       <div class="viralize-avatar-name">${fsEscape(a.name)}</div>
       <div class="viralize-avatar-nicho">${fsEscape(a.nicho)}</div>
     </div>`).join('');
