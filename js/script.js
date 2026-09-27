@@ -98,7 +98,7 @@ const avatars = [ {
   nicho: "Beleza & Skincare",
   style: "Minimalista",
   gender: "f",
-  emoji: ICONS.beleza,
+  img: "assets/influencers/KJH.PNG",
   grad: "grad-beleza"
 }, {
   id: 2,
@@ -107,7 +107,7 @@ const avatars = [ {
   nicho: "Fitness & Nutrição",
   style: "Athletic",
   gender: "m",
-  emoji: ICONS.fitness,
+  img: "assets/influencers/IUG.PNG",
   grad: "grad-fitness"
 }, {
   id: 3,
@@ -116,7 +116,7 @@ const avatars = [ {
   nicho: "Moda & Lifestyle",
   style: "Streetwear",
   gender: "f",
-  emoji: ICONS.moda,
+  img: "assets/influencers/JKH.PNG",
   grad: "grad-moda"
 }, {
   id: 4,
@@ -125,7 +125,7 @@ const avatars = [ {
   nicho: "Tech & Gadgets",
   style: "Minimalista",
   gender: "m",
-  emoji: ICONS.tech,
+  img: "assets/influencers/IOG.PNG",
   grad: "grad-tech"
 }, {
   id: 5,
@@ -134,7 +134,7 @@ const avatars = [ {
   nicho: "Lifestyle & Casa",
   style: "Boho",
   gender: "m",
-  emoji: ICONS.casa,
+  img: "assets/influencers/KJHH.PNG",
   grad: "grad-casa"
 }, {
   id: 6,
@@ -143,7 +143,7 @@ const avatars = [ {
   nicho: "Saúde & Wellness",
   style: "Natural",
   gender: "f",
-  emoji: ICONS.saude,
+  img: "assets/influencers/HRT.PNG",
   grad: "grad-saude"
 } ];
 
@@ -817,7 +817,7 @@ function renderAvatarSelectGrid(containerId, clickFn, selectedAvatar) {
     emoji: ICONS.star,
     grad: gradients[i % gradients.length]
   })) ];
-  document.getElementById(containerId).innerHTML = all.map(a => `<div class="avatar-select-card ${selectedAvatar && selectedAvatar.id === a.id ? "selected" : ""}" onclick="${clickFn}('${a.id}',this,'${a.custom ? "custom" : "builtin"}')" role="option" tabindex="0" aria-label="${a.name}, ${a.nicho}" aria-selected="${selectedAvatar && selectedAvatar.id === a.id}">\n    <div class="avatar-select-emoji" aria-hidden="true">${a.emoji || ICONS.star}</div>\n    <div class="avatar-select-name">${a.name}</div>\n    <div class="avatar-select-nicho">${a.nicho || a.niche || "—"}</div>\n  </div>`).join("");
+  document.getElementById(containerId).innerHTML = all.map(a => `<div class="avatar-select-card ${selectedAvatar && selectedAvatar.id === a.id ? "selected" : ""}" onclick="${clickFn}('${a.id}',this,'${a.custom ? "custom" : "builtin"}')" role="option" tabindex="0" aria-label="${a.name}, ${a.nicho}" aria-selected="${selectedAvatar && selectedAvatar.id === a.id}">\n    <div class="avatar-select-emoji" aria-hidden="true">${a.img ? `<img src="${a.img}" alt="">` : a.emoji || ICONS.star}</div>\n    <div class="avatar-select-name">${a.name}</div>\n    <div class="avatar-select-nicho">${a.nicho || a.niche || "—"}</div>\n  </div>`).join("");
 }
 
 function renderStudioAvatars() {
@@ -831,7 +831,7 @@ function renderVidAvatars() {
 function renderAvatars(filter = "all") {
   let list = avatars;
   if (filter === "custom") list = []; else if (filter !== "all") list = avatars.filter(a => a.gender === filter);
-  document.getElementById("avatar-grid").innerHTML = list.map((a, i) => `<div class="avatar-card" data-gender="${a.gender}" role="listitem">\n    <div class="avatar-img ${a.grad}" aria-hidden="true">${a.emoji}</div>\n    <div class="avatar-body">\n      <div class="avatar-name">${a.name}</div>\n      <div class="avatar-meta">${a.age} anos · ${a.nicho}</div>\n      <span class="avatar-badge">${a.style}</span>\n      <button class="use-btn" onclick="useAvatar(${a.id})"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Usar Avatar</button>\n    </div>\n  </div>`).join("");
+  document.getElementById("avatar-grid").innerHTML = list.map((a, i) => `<div class="avatar-card" data-gender="${a.gender}" role="listitem">\n    <div class="avatar-img" aria-hidden="true"><img src="${a.img}" alt="${a.name}" loading="lazy"></div>\n    <div class="avatar-body">\n      <div class="avatar-name">${a.name}</div>\n      <div class="avatar-meta">${a.age} anos · ${a.nicho}</div>\n      <span class="avatar-badge">${a.style}</span>\n      <button class="use-btn" onclick="useAvatar(${a.id})"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Usar Avatar</button>\n    </div>\n  </div>`).join("");
   const sect = document.getElementById("custom-avatars-section");
   const grid = document.getElementById("custom-avatar-grid");
   if (customAvatars.length > 0 && (filter === "all" || filter === "custom")) {
@@ -1823,7 +1823,7 @@ function showAvatarPreview(avatar, containerId) {
   const chip = document.createElement("div");
   chip.className = "avatar-preview-chip";
   chip.id = containerId + "-preview";
-  chip.innerHTML = `<span class="avatar-preview-emoji">${avatar.emoji || ICONS.star}</span>\n    <div><div class="avatar-preview-name">${avatar.name}</div><div class="avatar-preview-nicho">${avatar.nicho || "—"}</div></div>\n    <button class="avatar-preview-clear" onclick="clearAvatarSelection('${containerId}')" aria-label="Remover avatar selecionado">${ICONS.close}</button>`;
+  chip.innerHTML = `<span class="avatar-preview-emoji">${avatar.img ? `<img src="${avatar.img}" alt="">` : avatar.emoji || ICONS.star}</span>\n    <div><div class="avatar-preview-name">${avatar.name}</div><div class="avatar-preview-nicho">${avatar.nicho || "—"}</div></div>\n    <button class="avatar-preview-clear" onclick="clearAvatarSelection('${containerId}')" aria-label="Remover avatar selecionado">${ICONS.close}</button>`;
   const target = document.getElementById(containerId);
   if (target) target.parentNode.insertBefore(chip, target);
 }
