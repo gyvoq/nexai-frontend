@@ -83,7 +83,7 @@
     </div>
     <div class="sidebar-item" onclick="switchTab('influencer',this)" tabindex="0" role="menuitem" onkeydown="if(event.key==='Enter')switchTab('influencer',this)">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      Avatar
+      Influencers
     </div>
     <div class="sidebar-item" onclick="switchTab('imglibrary',this)" tabindex="0" role="menuitem" onkeydown="if(event.key==='Enter')switchTab('imglibrary',this)">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
@@ -236,47 +236,156 @@
         <div class="tab-content" id="tab-influencer">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Avatar</h1>
-          <p class="page-sub">Crie e gerencie avatares IA para sua marca</p>
+          <h1 class="page-title">Influencers</h1>
+          <p class="page-sub">Crie e gerencie influencers IA para sua marca</p>
         </div>
       </div>
-      <div class="filters" id="avatar-filters" role="group" aria-label="Filtrar avatares">
+      <div class="filters" id="avatar-filters" role="group" aria-label="Filtrar influencers">
         <button class="filter-chip active" data-gender="all">Todos</button>
         <button class="filter-chip" data-gender="f"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M12 11c-4.5 0-7 3-7 7v2h14v-2c0-4-2.5-7-7-7z"/></svg> Feminino</button>
         <button class="filter-chip" data-gender="m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M5 20l1-3a6 6 0 0112 0l1 3"/></svg> Masculino</button>
-        <button class="filter-chip" data-gender="custom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L12 16.9 6.4 20.1l1.4-6.3-4.8-4.3 6.4-.6z"/></svg> Meus Avatares</button>
+        <button class="filter-chip" data-gender="custom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L12 16.9 6.4 20.1l1.4-6.3-4.8-4.3 6.4-.6z"/></svg> Meus Influencers</button>
       </div>
-      <p class="section-label">Avatares Prontos</p>
+      <p class="section-label">Influencers Prontos</p>
       <div class="product-grid" id="avatar-grid" style="margin-bottom:28px" role="list"></div>
       <div id="custom-avatars-section" style="margin-bottom:28px;display:none">
-        <p class="section-label">Meus Avatares Salvos</p>
+        <p class="section-label">Meus Influencers Salvos</p>
         <div class="product-grid" id="custom-avatar-grid" role="list"></div>
       </div>
       <div class="create-avatar-card">
         <h2 style="font-size:16px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px">
           <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--accent1);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-          Criar Novo Avatar
+          Criar Novo Influencer
         </h2>
-        <div class="av-form-grid">
-          <div class="form-group" style="margin:0"><label class="form-label" for="av-nome">Nome</label><input type="text" class="form-input" placeholder="Ex: Luna" id="av-nome" maxlength="30"></div>
-          <div class="form-group" style="margin:0"><label class="form-label" for="av-idade">Idade</label><input type="number" class="form-input" placeholder="25" id="av-idade" min="18" max="60"></div>
-          <div class="form-group" style="margin:0"><label class="form-label" for="av-genero">Gênero</label><select class="form-input form-select" id="av-genero"><option>Feminino</option><option>Masculino</option><option>Não-binário</option></select></div>
+
+        <div class="inf-mode-banner">
+          <div class="inf-mode-card active" role="note">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 4.5 4.9.4-3.7 3.3 1.1 4.8L12 13.6l-4.2 2.4 1.1-4.8-3.7-3.3 4.9-.4z"/></svg>
+            <div>
+              <div class="inf-mode-title">Personalização completa</div>
+              <div class="inf-mode-desc">Defina cada característica em etapas</div>
+            </div>
+          </div>
         </div>
-        <div class="form-group"><label class="form-label">Estilo Visual</label><div class="chip-group" id="av-estilo"><span class="form-chip" onclick="toggleChip(this)">Minimalista</span><span class="form-chip" onclick="toggleChip(this)">Streetwear</span><span class="form-chip" onclick="toggleChip(this)">Luxo</span><span class="form-chip" onclick="toggleChip(this)">Fitness</span><span class="form-chip" onclick="toggleChip(this)">Grunge</span><span class="form-chip" onclick="toggleChip(this)">Boho</span></div></div>
-        <div class="form-group"><label class="form-label">Nicho</label><div class="chip-group" id="av-nicho"><span class="form-chip" onclick="toggleChip(this)">Beleza</span><span class="form-chip" onclick="toggleChip(this)">Tech</span><span class="form-chip" onclick="toggleChip(this)">Moda</span><span class="form-chip" onclick="toggleChip(this)">Lifestyle</span><span class="form-chip" onclick="toggleChip(this)">Fitness</span><span class="form-chip" onclick="toggleChip(this)">Culinária</span></div></div>
-        <div class="form-group"><label class="form-label">Personalidade</label><div class="chip-group" id="av-personalidade"><span class="form-chip" onclick="toggleChip(this)">Enérgica</span><span class="form-chip" onclick="toggleChip(this)">Sofisticada</span><span class="form-chip" onclick="toggleChip(this)">Divertida</span><span class="form-chip" onclick="toggleChip(this)">Educativa</span><span class="form-chip" onclick="toggleChip(this)">Empática</span><span class="form-chip" onclick="toggleChip(this)">Audaciosa</span></div></div>
-        <div class="form-group"><label class="form-label">Tipo de Conteúdo</label><div class="chip-group" id="av-conteudo"><span class="form-chip" onclick="toggleChip(this)">Reviews</span><span class="form-chip" onclick="toggleChip(this)">Tutoriais</span><span class="form-chip" onclick="toggleChip(this)">Unboxing</span><span class="form-chip" onclick="toggleChip(this)">Vlogs</span><span class="form-chip" onclick="toggleChip(this)">GRWM</span><span class="form-chip" onclick="toggleChip(this)">TikTok Ads</span></div></div>
-        <div class="form-group"><label class="form-label" for="av-desc">Descrição adicional <span style="color:var(--text3);font-size:9px;letter-spacing:0;text-transform:none;font-weight:400">(opcional · máx. 400)</span></label><textarea class="form-textarea" id="av-desc" maxlength="400" placeholder="Características físicas específicas, sotaque, linguagem, tom de voz..." oninput="updateCharCounter('av-desc','av-desc-counter',400)"></textarea><div class="char-counter" id="av-desc-counter">0 / 400</div></div>
-        <button class="gen-btn" style="margin-top:4px" onclick="generateAvatarPromptAI()">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-          Gerar Prompt com IA
-        </button>
-        <div class="ai-loading" id="avatar-ai-loading" style="margin-top:10px" role="status" aria-live="polite"><div class="ai-loading-dot"></div><div class="ai-loading-dot"></div><div class="ai-loading-dot"></div><span>Claude está criando seu avatar...</span></div>
-        <textarea class="prompt-box" id="avatar-prompt-output" style="margin-top:10px;min-height:130px" readonly placeholder="Preencha as informações e clique em Gerar Prompt..." aria-readonly="true" aria-label="Prompt do avatar"></textarea>
-        <button class="modal-cta" style="margin-top:10px" onclick="saveGeneratedAvatar()">
-          <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:inline;margin-right:5px" aria-hidden="true"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-          Salvar Avatar
-        </button>
+
+        <div class="inf-stepper" id="inf-stepper" role="tablist" aria-label="Etapas de criação do influencer">
+          <div class="inf-step-item active" data-step="1" onclick="goInfStep(1)" role="tab" aria-selected="true"><span class="inf-step-num">1</span> Identidade</div>
+          <div class="inf-step-item" data-step="2" onclick="goInfStep(2)" role="tab" aria-selected="false"><span class="inf-step-num">2</span> Corpo</div>
+          <div class="inf-step-item" data-step="3" onclick="goInfStep(3)" role="tab" aria-selected="false"><span class="inf-step-num">3</span> Rosto</div>
+          <div class="inf-step-item" data-step="4" onclick="goInfStep(4)" role="tab" aria-selected="false"><span class="inf-step-num">4</span> Cabelo</div>
+          <div class="inf-step-item" data-step="5" onclick="goInfStep(5)" role="tab" aria-selected="false"><span class="inf-step-num">5</span> Estilo</div>
+          <div class="inf-step-item" data-step="6" onclick="goInfStep(6)" role="tab" aria-selected="false"><span class="inf-step-num">6</span> Renderização</div>
+        </div>
+
+        <div class="inf-wizard-layout">
+          <div class="inf-wizard-main">
+
+            <!-- STEP 1 — IDENTIDADE -->
+            <div class="inf-step-panel active" data-inf-step="1">
+              <div class="form-group"><label class="form-label" for="av-nome">Nome do Influencer</label><input type="text" class="form-input" placeholder="Ex: Aurora, Marcus, Luna..." id="av-nome" maxlength="30" autocomplete="off" oninput="updateInfSummary()"></div>
+
+              <div class="form-group">
+                <label class="form-label">Gênero</label>
+                <input type="hidden" id="av-genero" value="Feminino">
+                <div class="inf-option-grid">
+                  <div class="inf-photo-card selected" onclick="selectInfOption(this,'av-genero','Feminino')"><img src="assets/influencers/genero-feminino.png" alt="Feminino"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Feminino</div></div>
+                  <div class="inf-photo-card" onclick="selectInfOption(this,'av-genero','Masculino')"><img src="assets/influencers/genero-masculino.png" alt="Masculino"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Masculino</div></div>
+                  <div class="inf-photo-card" onclick="selectInfOption(this,'av-genero','Andrógino')"><img src="assets/influencers/genero-androgino.png" alt="Andrógino"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Andrógino</div></div>
+                  <div class="inf-photo-card" onclick="selectInfOption(this,'av-genero','Não-binário')"><img src="assets/influencers/genero-nao-binario.png" alt="Não-binário"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Não-binário</div></div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Idade — <span id="av-idade-display">28</span> anos</label>
+                <input type="range" id="av-idade" min="18" max="60" value="28" oninput="document.getElementById('av-idade-display').textContent=this.value;updateInfSummary()">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Etnia / Origem</label>
+                <input type="hidden" id="av-etnia" value="Latina/Latino">
+                <div class="inf-option-grid">
+                  <div class="inf-photo-card selected" onclick="selectInfOption(this,'av-etnia','Latina/Latino')"><img src="assets/influencers/etnia-latina.png" alt="Latina/Latino"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Latina/Latino</div></div>
+                  <div class="inf-photo-card" onclick="selectInfOption(this,'av-etnia','Branca')"><img src="assets/influencers/etnia-branca.png" alt="Branca"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Branca</div></div>
+                  <div class="inf-photo-card" onclick="selectInfOption(this,'av-etnia','Negra')"><img src="assets/influencers/etnia-negra.png" alt="Negra"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Negra</div></div>
+                  <div class="inf-photo-card" onclick="selectInfOption(this,'av-etnia','Asiática')"><img src="assets/influencers/etnia-asiatica.png" alt="Asiática"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Asiática</div></div>
+                  <div class="inf-photo-card" onclick="selectInfOption(this,'av-etnia','Indígena')"><img src="assets/influencers/etnia-indigena.png" alt="Indígena"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Indígena</div></div>
+                  <div class="inf-photo-card" onclick="selectInfOption(this,'av-etnia','Oriente Médio')"><img src="assets/influencers/etnia-oriente-medio.png" alt="Oriente Médio"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Oriente Médio</div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 2 — CORPO -->
+            <div class="inf-step-panel" data-inf-step="2">
+              <div class="form-group"><label class="form-label">Tipo de Corpo</label><div class="chip-group" id="av-corpo"><span class="form-chip" onclick="toggleChip(this)">Magro</span><span class="form-chip" onclick="toggleChip(this)">Atlético</span><span class="form-chip" onclick="toggleChip(this)">Curvilíneo</span><span class="form-chip" onclick="toggleChip(this)">Plus Size</span><span class="form-chip" onclick="toggleChip(this)">Musculoso</span></div></div>
+              <div class="form-group"><label class="form-label">Altura</label><div class="chip-group" id="av-altura"><span class="form-chip" onclick="toggleChip(this)">Baixa</span><span class="form-chip" onclick="toggleChip(this)">Média</span><span class="form-chip" onclick="toggleChip(this)">Alta</span></div></div>
+            </div>
+
+            <!-- STEP 3 — ROSTO -->
+            <div class="inf-step-panel" data-inf-step="3">
+              <div class="form-group"><label class="form-label">Formato do Rosto</label><div class="chip-group" id="av-rosto"><span class="form-chip" onclick="toggleChip(this)">Oval</span><span class="form-chip" onclick="toggleChip(this)">Redondo</span><span class="form-chip" onclick="toggleChip(this)">Quadrado</span><span class="form-chip" onclick="toggleChip(this)">Triangular</span><span class="form-chip" onclick="toggleChip(this)">Coração</span></div></div>
+              <div class="form-group"><label class="form-label">Cor dos Olhos</label><div class="chip-group" id="av-olhos"><span class="form-chip" onclick="toggleChip(this)">Castanhos</span><span class="form-chip" onclick="toggleChip(this)">Pretos</span><span class="form-chip" onclick="toggleChip(this)">Verdes</span><span class="form-chip" onclick="toggleChip(this)">Azuis</span><span class="form-chip" onclick="toggleChip(this)">Mel</span></div></div>
+            </div>
+
+            <!-- STEP 4 — CABELO -->
+            <div class="inf-step-panel" data-inf-step="4">
+              <div class="form-group"><label class="form-label">Cor do Cabelo</label><div class="chip-group" id="av-cor-cabelo"><span class="form-chip" onclick="toggleChip(this)">Preto</span><span class="form-chip" onclick="toggleChip(this)">Castanho</span><span class="form-chip" onclick="toggleChip(this)">Loiro</span><span class="form-chip" onclick="toggleChip(this)">Ruivo</span><span class="form-chip" onclick="toggleChip(this)">Grisalho</span><span class="form-chip" onclick="toggleChip(this)">Colorido</span></div></div>
+              <div class="form-group"><label class="form-label">Estilo do Cabelo</label><div class="chip-group" id="av-estilo-cabelo"><span class="form-chip" onclick="toggleChip(this)">Liso</span><span class="form-chip" onclick="toggleChip(this)">Ondulado</span><span class="form-chip" onclick="toggleChip(this)">Cacheado</span><span class="form-chip" onclick="toggleChip(this)">Crespo</span><span class="form-chip" onclick="toggleChip(this)">Careca</span></div></div>
+            </div>
+
+            <!-- STEP 5 — ESTILO -->
+            <div class="inf-step-panel" data-inf-step="5">
+              <div class="form-group"><label class="form-label">Estilo Visual</label><div class="chip-group" id="av-estilo"><span class="form-chip" onclick="toggleChip(this)">Minimalista</span><span class="form-chip" onclick="toggleChip(this)">Streetwear</span><span class="form-chip" onclick="toggleChip(this)">Luxo</span><span class="form-chip" onclick="toggleChip(this)">Fitness</span><span class="form-chip" onclick="toggleChip(this)">Grunge</span><span class="form-chip" onclick="toggleChip(this)">Boho</span></div></div>
+              <div class="form-group"><label class="form-label">Nicho</label><div class="chip-group" id="av-nicho"><span class="form-chip" onclick="toggleChip(this)">Beleza</span><span class="form-chip" onclick="toggleChip(this)">Tech</span><span class="form-chip" onclick="toggleChip(this)">Moda</span><span class="form-chip" onclick="toggleChip(this)">Lifestyle</span><span class="form-chip" onclick="toggleChip(this)">Fitness</span><span class="form-chip" onclick="toggleChip(this)">Culinária</span></div></div>
+              <div class="form-group"><label class="form-label">Personalidade</label><div class="chip-group" id="av-personalidade"><span class="form-chip" onclick="toggleChip(this)">Enérgica</span><span class="form-chip" onclick="toggleChip(this)">Sofisticada</span><span class="form-chip" onclick="toggleChip(this)">Divertida</span><span class="form-chip" onclick="toggleChip(this)">Educativa</span><span class="form-chip" onclick="toggleChip(this)">Empática</span><span class="form-chip" onclick="toggleChip(this)">Audaciosa</span></div></div>
+              <div class="form-group"><label class="form-label">Tipo de Conteúdo</label><div class="chip-group" id="av-conteudo"><span class="form-chip" onclick="toggleChip(this)">Reviews</span><span class="form-chip" onclick="toggleChip(this)">Tutoriais</span><span class="form-chip" onclick="toggleChip(this)">Unboxing</span><span class="form-chip" onclick="toggleChip(this)">Vlogs</span><span class="form-chip" onclick="toggleChip(this)">GRWM</span><span class="form-chip" onclick="toggleChip(this)">TikTok Ads</span></div></div>
+            </div>
+
+            <!-- STEP 6 — RENDERIZAÇÃO -->
+            <div class="inf-step-panel" data-inf-step="6">
+              <div class="form-group">
+                <label class="form-label" for="av-desc">
+                  Descrição adicional
+                  <span style="color:var(--text3);font-size:9px;letter-spacing:0;text-transform:none;font-weight:400">(opcional · máx. 400)</span>
+                </label>
+                <textarea class="form-textarea" id="av-desc" maxlength="400"
+                          placeholder="Características físicas específicas, sotaque, linguagem, tom de voz..."
+                          oninput="updateCharCounter('av-desc','av-desc-counter',400)"></textarea>
+                <div class="char-counter" id="av-desc-counter">0 / 400</div>
+              </div>
+              <button class="gen-btn" style="margin-top:4px" onclick="generateAvatarPromptAI()">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                Gerar Prompt com IA
+              </button>
+              <div class="ai-loading" id="avatar-ai-loading" style="margin-top:10px" role="status" aria-live="polite">
+                <div class="ai-loading-dot"></div><div class="ai-loading-dot"></div><div class="ai-loading-dot"></div>
+                <span>Claude está criando seu influencer...</span>
+              </div>
+              <textarea class="prompt-box" id="avatar-prompt-output" style="margin-top:10px;min-height:130px"
+                        readonly placeholder="Preencha as informações e clique em Gerar Prompt..."
+                        aria-readonly="true" aria-label="Prompt do influencer"></textarea>
+              <button class="modal-cta" style="margin-top:10px" onclick="saveGeneratedAvatar()">
+                <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:inline;margin-right:5px" aria-hidden="true"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Salvar Influencer
+              </button>
+            </div>
+
+            <div class="inf-wizard-nav">
+              <button type="button" class="inf-nav-btn" id="inf-nav-back" onclick="infPrevStep()" style="visibility:hidden">Voltar</button>
+              <button type="button" class="inf-nav-btn primary" id="inf-nav-next" onclick="infNextStep()">Avançar</button>
+            </div>
+          </div>
+
+          <div class="inf-preview-panel">
+            <div class="inf-preview-box">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 4.5 4.9.4-3.7 3.3 1.1 4.8L12 13.6l-4.2 2.4 1.1-4.8-3.7-3.3 4.9-.4z"/></svg>
+              <span>Pré-visualização aparecerá aqui após gerar com IA</span>
+            </div>
+            <div class="inf-preview-summary">
+              <div class="inf-summary-name" id="inf-summary-name">Sem nome</div>
+              <div class="inf-summary-meta" id="inf-summary-meta">Feminino · 28 anos · Latina/Latino</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -333,9 +442,9 @@
     <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
     <span class="nav-label">Viralize</span>
   </div>
-  <div class="nav-item" onclick="switchTab('influencer',this)" role="menuitem" tabindex="0" aria-label="Avatar">
+  <div class="nav-item" onclick="switchTab('influencer',this)" role="menuitem" tabindex="0" aria-label="Influencers">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    <span class="nav-label">Avatar</span>
+    <span class="nav-label">Influencers</span>
   </div>
   <div class="nav-item" onclick="switchTab('imglibrary',this)" role="menuitem" tabindex="0" aria-label="Biblioteca de Imagens">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
@@ -359,7 +468,7 @@
   <div class="search-box">
     <div class="search-input-wrap">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="search" class="search-main-input" id="search-main-input" placeholder="Buscar produtos, avatares, seções..." autocomplete="off" spellcheck="false" aria-label="Campo de busca">
+      <input type="search" class="search-main-input" id="search-main-input" placeholder="Buscar produtos, influencers, seções..." autocomplete="off" spellcheck="false" aria-label="Campo de busca">
       <span class="search-shortcut">ESC</span>
     </div>
     <div class="search-results" id="search-results"></div>
