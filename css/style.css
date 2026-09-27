@@ -831,19 +831,19 @@ input[type=range] { width: 100%; accent-color: var(--accent1); cursor: pointer; 
   overflow: hidden; transition: all var(--transition); cursor: pointer;
 }
 .avatar-card:hover { transform: translateY(-3px); border-color: rgba(168,85,247,0.4); box-shadow: 0 10px 30px rgba(168,85,247,0.09); }
-.avatar-img { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 42px; position: relative; color: var(--accent1); overflow: hidden; }
+.avatar-img { aspect-ratio: 1.25; display: flex; align-items: center; justify-content: center; font-size: 42px; position: relative; color: var(--accent1); overflow: hidden; }
 .avatar-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .avatar-img svg, .avatar-select-emoji svg, .avatar-preview-emoji svg { width: 34px; height: 34px; stroke: var(--accent1); }
 .avatar-select-emoji img { width: 40px; height: 40px; object-fit: cover; border-radius: 50%; }
 .avatar-preview-emoji img { width: 26px; height: 26px; object-fit: cover; border-radius: 50%; }
 .avatar-select-emoji, .avatar-preview-emoji { display: flex; align-items: center; justify-content: center; }
-.avatar-body { padding: 10px 11px 13px; }
+.avatar-body { padding: 8px 11px 10px; }
 .avatar-name { font-size: 13px; font-weight: 600; }
 .avatar-meta { font-size: 11px; color: var(--text); margin-top: 2px; }
 .avatar-badge { display: inline-block; margin-top: 5px; font-size: 10px; padding: 3px 8px; border-radius: 8px; background: rgba(139,92,246,0.12); color: var(--accent1); border: 1px solid rgba(139,92,246,0.22); }
 
 .use-btn {
-  width: 100%; margin-top: 9px; padding: 7px;
+  width: 100%; margin-top: 7px; padding: 6px;
   background: var(--surface3); border: 1px solid var(--border2); color: var(--text);
   border-radius: var(--radius-sm); font-size: 11.5px; font-weight: 600; cursor: pointer;
   font-family: 'Inter', sans-serif; transition: all var(--transition);
@@ -853,7 +853,7 @@ input[type=range] { width: 100%; accent-color: var(--accent1); cursor: pointer; 
 .use-btn:hover { background: linear-gradient(135deg, var(--accent1), var(--accent2)); border-color: transparent; }
 
 .delete-btn {
-  width: 100%; margin-top: 5px; padding: 6px;
+  width: 100%; margin-top: 4px; padding: 5px;
   background: rgba(168,85,247,0.05); border: 1px solid rgba(168,85,247,0.18);
   color: var(--accent2); border-radius: var(--radius-sm);
   font-size: 10.5px; font-weight: 600; cursor: pointer;
