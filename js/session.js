@@ -216,19 +216,29 @@ const Session = (() => {
     try { localStorage.setItem(TERMS_KEY, TERMS_VERSION); } catch {  }
   }
 
+  function getBrandName() {
+    const el = document.querySelector('.logo:not(.act-logo) .logo-text');
+    return (el && el.textContent.trim()) || 'Nex AI';
+  }
+
   function buildBrandLogo() {
     const logo = document.createElement('div');
     logo.className = 'logo act-logo';
-    logo.innerHTML = `
-      <div class="logo-icon" aria-hidden="true">
+
+    const headerIcon = document.querySelector('.logo:not(.act-logo) .logo-icon');
+    const iconWrap = document.createElement('div');
+    iconWrap.className = 'logo-icon';
+    iconWrap.setAttribute('aria-hidden', 'true');
+    iconWrap.innerHTML = headerIcon ? headerIcon.innerHTML : `
         <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:white;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round">
           <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-        </svg>
-      </div>`;
+        </svg>`;
+
     const logoText = document.createElement('span');
     logoText.className = 'logo-text';
-    logoText.textContent = 'Nex AI';
-    logo.appendChild(logoText);
+    logoText.textContent = getBrandName();
+
+    logo.append(iconWrap, logoText);
     return logo;
   }
 
@@ -596,7 +606,7 @@ const Session = (() => {
       const t = document.getElementById('act-title');
       const s = document.getElementById('act-sub');
       if (t) t.textContent = 'Licença ativada';
-      if (s) s.textContent = 'Tudo pronto. Bem-vindo à Nex AI.';
+      if (s) s.textContent = 'Tudo pronto. Seu acesso foi liberado.';
     }
 
     function deny(text) {
