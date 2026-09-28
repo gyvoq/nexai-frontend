@@ -637,7 +637,6 @@
         <div class="inf-wizard-layout">
           <div class="inf-wizard-main">
 
-            <!-- STEP 1 — IDENTIDADE -->
             <div class="inf-step-panel active" data-inf-step="1">
               <div class="form-group"><label class="form-label" for="av-nome">Nome do Influencer</label><input type="text" class="form-input" placeholder="Ex: Aurora, Marcus, Luna..." id="av-nome" maxlength="30" autocomplete="off" oninput="updateInfSummary()"></div>
 
@@ -671,7 +670,6 @@
               </div>
             </div>
 
-            <!-- STEP 2 — CORPO -->
             <div class="inf-step-panel" data-inf-step="2">
               <div class="form-group">
                 <label class="form-label">Tipo de Corpo</label>
@@ -695,7 +693,6 @@
               </div>
             </div>
 
-            <!-- STEP 3 — ROSTO -->
             <div class="inf-step-panel" data-inf-step="3">
               <div class="form-group">
                 <label class="form-label">Formato do Rosto</label>
@@ -721,7 +718,6 @@
               </div>
             </div>
 
-            <!-- STEP 4 — CABELO -->
             <div class="inf-step-panel" data-inf-step="4">
               <div class="form-group">
                 <label class="form-label">Cor do Cabelo</label>
@@ -748,7 +744,6 @@
               </div>
             </div>
 
-            <!-- STEP 5 — ESTILO -->
             <div class="inf-step-panel" data-inf-step="5">
               <div class="form-group"><label class="form-label">Estilo Visual</label><div class="chip-group" id="av-estilo"><span class="form-chip" onclick="toggleChip(this)">Minimalista</span><span class="form-chip" onclick="toggleChip(this)">Streetwear</span><span class="form-chip" onclick="toggleChip(this)">Luxo</span><span class="form-chip" onclick="toggleChip(this)">Fitness</span><span class="form-chip" onclick="toggleChip(this)">Grunge</span><span class="form-chip" onclick="toggleChip(this)">Boho</span></div></div>
               <div class="form-group"><label class="form-label">Nicho</label><div class="chip-group" id="av-nicho"><span class="form-chip" onclick="toggleChip(this)">Beleza</span><span class="form-chip" onclick="toggleChip(this)">Tech</span><span class="form-chip" onclick="toggleChip(this)">Moda</span><span class="form-chip" onclick="toggleChip(this)">Lifestyle</span><span class="form-chip" onclick="toggleChip(this)">Fitness</span><span class="form-chip" onclick="toggleChip(this)">Culinária</span></div></div>
@@ -756,7 +751,6 @@
               <div class="form-group"><label class="form-label">Tipo de Conteúdo</label><div class="chip-group" id="av-conteudo"><span class="form-chip" onclick="toggleChip(this)">Reviews</span><span class="form-chip" onclick="toggleChip(this)">Tutoriais</span><span class="form-chip" onclick="toggleChip(this)">Unboxing</span><span class="form-chip" onclick="toggleChip(this)">Vlogs</span><span class="form-chip" onclick="toggleChip(this)">GRWM</span><span class="form-chip" onclick="toggleChip(this)">TikTok Ads</span></div></div>
             </div>
 
-            <!-- STEP 6 — RENDERIZAÇÃO -->
             <div class="inf-step-panel" data-inf-step="6">
               <div class="form-group">
                 <label class="form-label" for="av-desc">
@@ -822,6 +816,19 @@
           </div>
           <input type="file" id="backup-file-input" accept="application/json,.json" style="display:none" onchange="importBackup(event)">
           <div class="settings-row-desc" id="backup-status" style="margin-top:8px;min-height:14px"></div>
+        </div>
+        <div class="settings-card" id="device-card">
+          <div class="settings-title"><div class="settings-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>Dispositivo</div>
+          <div class="device-status"><span class="device-status-dot" aria-hidden="true"></span>Licença vinculada a este dispositivo</div>
+          <div class="settings-row"><div class="settings-row-label">Navegador e sistema</div><div class="device-value" id="device-name">—</div></div>
+          <div class="settings-row"><div class="settings-row-label">Tipo</div><div class="device-value" id="device-kind">—</div></div>
+          <div class="settings-row"><div class="settings-row-label">Tela</div><div class="device-value" id="device-screen">—</div></div>
+          <div class="settings-row" id="device-since-row" hidden><div class="settings-row-label">Ativado em</div><div class="device-value" id="device-since">—</div></div>
+          <div class="settings-row"><div class="settings-row-label">ID do dispositivo</div><div class="device-value device-id" id="device-id">—</div></div>
+          <div class="export-row">
+            <button class="export-btn" id="device-copy-btn" type="button"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg><span>Copiar ID</span></button>
+          </div>
+          <div class="device-note">Sua licença fica vinculada ao aparelho onde foi ativada. Para usar em outro dispositivo, fale com o suporte e envie o ID acima.</div>
         </div>
         <div class="settings-card full">
           <div class="settings-title"><div class="settings-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>Conta &amp; Licença</div>
