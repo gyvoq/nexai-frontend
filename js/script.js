@@ -512,18 +512,20 @@ function exportData(fmt) {
   });
   const a = Object.assign(document.createElement("a"), {
     href: URL.createObjectURL(blob),
-    download: `nex-ai-export.${ext}`
+    download: `viralyze-export.${ext}`
   });
   a.click();
   URL.revokeObjectURL(a.href);
   showToast(`Exportado como ${fmt.toUpperCase()}`);
 }
 
-const BACKUP_VERSION = 1;
+const BACKUP_VERSION = 2;
+const BACKUP_APP_ID = "viralyze-backup";
+const BACKUP_LEGACY_APP_IDS = [ "nex-ai-backup" ];
 
 function generateBackup() {
   const backup = {
-    app: "nex-ai-backup",
+    app: BACKUP_APP_ID,
     version: BACKUP_VERSION,
     createdAt: (new Date).toISOString(),
     data: {
@@ -531,6 +533,8 @@ function generateBackup() {
       customAvatars: customAvatars,
       customProducts: customProducts,
       promptHistory: promptHistory,
+      freeStudioProjects: typeof fsExportProjects === "function" ? fsExportProjects() : [],
+      selectedInventory: typeof getSelectedInventory === "function" ? getSelectedInventory() : [],
       theme: "dark"
     }
   };
@@ -541,7 +545,7 @@ function generateBackup() {
   const stamp = (new Date).toISOString().slice(0, 10);
   const a = Object.assign(document.createElement("a"), {
     href: URL.createObjectURL(blob),
-    download: `nex-ai-backup-${stamp}.json`
+    download: `viralyze-backup-${stamp}.json`
   });
   a.click();
   URL.revokeObjectURL(a.href);
@@ -571,14 +575,15 @@ function importBackup(event) {
       input.value = "";
       return;
     }
-    const payload = parsed && parsed.app === "nex-ai-backup" && parsed.data ? parsed.data : parsed;
+    const isKnownBackup = parsed && (parsed.app === BACKUP_APP_ID || BACKUP_LEGACY_APP_IDS.indexOf(parsed.app) !== -1) && parsed.data;
+    const payload = isKnownBackup ? parsed.data : parsed;
     if (!payload || typeof payload !== "object") {
       showToast("Arquivo de backup inválido.");
       if (status) status.textContent = "Falha ao importar: formato não reconhecido.";
       input.value = "";
       return;
     }
-    showConfirm("Importar este backup vai substituir seus dados atuais (favoritos, avatares, produtos e histórico). Continuar?", () => {
+    showConfirm("Importar este backup vai substituir seus dados atuais (favoritos, influencers, produtos, histórico e conversas do Estúdio Livre). Continuar?", () => {
       try {
         if (payload.favorites && typeof payload.favorites === "object") {
           favorites = payload.favorites;
@@ -596,8 +601,15 @@ function importBackup(event) {
           promptHistory = payload.promptHistory;
           safeSet(PROMPTS_KEY, promptHistory);
         }
+        if (Array.isArray(payload.freeStudioProjects) && typeof fsImportProjects === "function") {
+          fsImportProjects(payload.freeStudioProjects);
+        }
+        if (Array.isArray(payload.selectedInventory)) {
+          try { localStorage.setItem(INVENTORY_KEY, JSON.stringify(payload.selectedInventory.filter(v => typeof v === "number" || typeof v === "string"))); } catch (e) {}
+        }
         if (typeof renderProducts === "function") renderProducts();
         if (typeof renderAvatars === "function") renderAvatars("all");
+        if (typeof renderViralizeAvatars === "function") renderViralizeAvatars();
         if (typeof updateHistNotif === "function") updateHistNotif();
         showToast("Backup importado com sucesso!");
         if (status) status.textContent = "Backup importado em " + (new Date).toLocaleString("pt-BR") + ".";
@@ -657,6 +669,188 @@ function saveNewProduct() {
   reapplyMiningFilter();
   scrollToFirstProduct();
   showToast(`"${nome}" adicionado com sucesso!`);
+}
+
+/* ====== IMPORTAR PRODUTO POR LINK ====== */
+/* Lojas aceitas: o domínio precisa terminar com um destes. */
+const LINK_STORES = [
+  { label: "Mercado Livre", hosts: [ "mercadolivre.com.br", "mercadolivre.com", "mercadolibre.com", "meli.la" ] },
+  { label: "Amazon", hosts: [ "amazon.com.br", "amazon.com", "amzn.to", "a.co" ] },
+  { label: "Shopee", hosts: [ "shopee.com.br", "shopee.com", "shope.ee" ] },
+  { label: "AliExpress", hosts: [ "aliexpress.com", "aliexpress.us", "s.click.aliexpress.com" ] },
+  { label: "Magazine Luiza", hosts: [ "magazineluiza.com.br", "magalu.com", "divulgador.magalu.com" ] },
+  { label: "Americanas", hosts: [ "americanas.com.br" ] },
+  { label: "Casas Bahia", hosts: [ "casasbahia.com.br" ] },
+  { label: "Submarino", hosts: [ "submarino.com.br" ] },
+  { label: "Shein", hosts: [ "shein.com", "shein.com.br", "shein.top" ] },
+  { label: "Temu", hosts: [ "temu.com" ] },
+  { label: "KaBuM!", hosts: [ "kabum.com.br" ] },
+  { label: "Netshoes", hosts: [ "netshoes.com.br" ] },
+  { label: "Dafiti", hosts: [ "dafiti.com.br" ] },
+  { label: "Carrefour", hosts: [ "carrefour.com.br" ] },
+  { label: "Ponto", hosts: [ "pontofrio.com.br", "extra.com.br" ] },
+  { label: "TikTok Shop", hosts: [ "shop.tiktok.com", "vt.tiktok.com" ] },
+  { label: "Natura", hosts: [ "natura.com.br" ] },
+  { label: "O Boticário", hosts: [ "boticario.com.br" ] }
+];
+
+const LINK_NAME_SMALL_WORDS = [ "de", "da", "do", "das", "dos", "e", "com", "para", "em", "a", "o", "para" ];
+const LINK_NAME_NOISE = [ "dp", "gp", "product", "produto", "produtos", "p", "item", "i", "ip", "jm", "html", "htm", "mlb", "s", "pt", "br", "ref", "detalhe" ];
+
+function findLinkStore(hostname) {
+  const host = hostname.replace(/^www\./, "").toLowerCase();
+  return LINK_STORES.find(st => st.hosts.some(h => host === h || host.endsWith("." + h))) || null;
+}
+
+function removeAccents(str) {
+  return String(str).normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function slugToProductName(slug) {
+  let text = slug;
+  try { text = decodeURIComponent(slug); } catch (e) {}
+  text = text.replace(/\.(html?|php|aspx?)$/i, "").replace(/-i\.\d+\.\d+$/i, "").replace(/^MLB-?\d+-/i, "").replace(/-_JM$/i, "");
+  const tokens = text.split(/[-_+\s]+/).filter(t => {
+    if (!t) return false;
+    if (/^\d+$/.test(t)) return false;
+    if (LINK_NAME_NOISE.indexOf(t.toLowerCase()) !== -1) return false;
+    if (/^(?=.*\d)(?=.*[a-z])[a-z0-9]{9,}$/i.test(t)) return false;
+    return true;
+  });
+  if (!tokens.length) return "";
+  return tokens.map((t, i) => {
+    const low = t.toLowerCase();
+    if (i > 0 && LINK_NAME_SMALL_WORDS.indexOf(low) !== -1) return low;
+    return low.charAt(0).toUpperCase() + low.slice(1);
+  }).join(" ");
+}
+
+function extractNameFromUrl(u) {
+  const segs = u.pathname.split("/").filter(Boolean);
+  let best = "", bestWords = 0;
+  segs.forEach(seg => {
+    const name = slugToProductName(seg);
+    const words = name ? name.split(" ").filter(w => /[a-zA-ZÀ-ÿ]{2,}/.test(w)).length : 0;
+    if (words > bestWords || (words === bestWords && words > 0 && name.length > best.length)) {
+      best = name;
+      bestWords = words;
+    }
+  });
+  return bestWords >= 2 || (bestWords === 1 && best.length >= 6) ? best.slice(0, 60) : "";
+}
+
+/* Categoria estimada pelo nome; se nada bater, fica "custom" */
+const LINK_CAT_KEYWORDS = {
+  beleza: [ "serum", "perfume", "creme", "batom", "maquiagem", "shampoo", "skincare", "hidratante", "esmalte", "protetor solar", "cilios", "base facial" ],
+  saude: [ "vitamina", "suplemento", "colageno", "massageador", "termometro", "oximetro", "probiotico" ],
+  moda: [ "camiseta", "vestido", "tenis", "bolsa", "relogio", "oculos", "calca", "jaqueta", "blusa", "sandalia", "bermuda", "mochila" ],
+  casa: [ "cozinha", "panela", "organizador", "luminaria", "cama", "mesa", "cortina", "tapete", "aspirador", "air fryer", "fritadeira", "garrafa" ],
+  tech: [ "fone", "projetor", "smartwatch", "carregador", "celular", "camera", "teclado", "mouse", "led", "bluetooth", "cabo", "caixa de som", "tablet" ],
+  fitness: [ "whey", "halter", "academia", "legging", "creatina", "esteira", "corda", "yoga", "elastico", "treino" ]
+};
+
+function guessProductCategory(name) {
+  const n = removeAccents(name).toLowerCase();
+  const keys = Object.keys(LINK_CAT_KEYWORDS);
+  for (let i = 0; i < keys.length; i++) {
+    if (LINK_CAT_KEYWORDS[keys[i]].some(k => n.includes(k))) return keys[i];
+  }
+  return "custom";
+}
+
+/* Lê a URL e devolve { ok, store, name, url } ou { ok:false, error } */
+function parseProductLink(raw) {
+  let text = String(raw || "").trim();
+  if (!text) return { ok: false, error: "Cole o link do produto." };
+  if (!/^https?:\/\//i.test(text)) text = "https://" + text;
+  let u;
+  try { u = new URL(text); } catch (e) { return { ok: false, error: "Esse link não parece válido." }; }
+  if (u.protocol !== "https:" && u.protocol !== "http:") return { ok: false, error: "Use um link http ou https." };
+  const store = findLinkStore(u.hostname);
+  if (!store) return { ok: false, error: "Ainda não reconhecemos essa loja. Use um link de Mercado Livre, Amazon, Shopee, AliExpress, Magalu, Americanas, Shein, Temu e outras lojas conhecidas." };
+  return { ok: true, store: store.label, name: extractNameFromUrl(u), url: u.href };
+}
+
+let linkImportPending = null;
+
+function openLinkImport() {
+  const m = document.getElementById("link-import-modal");
+  if (!m) return;
+  linkImportPending = null;
+  document.getElementById("link-import-url").value = "";
+  document.getElementById("link-import-name").value = "";
+  document.getElementById("link-preview").classList.remove("open");
+  setLinkImportStatus("");
+  m.classList.add("open");
+  setTimeout(() => document.getElementById("link-import-url").focus(), 60);
+}
+
+function closeLinkImport() {
+  const m = document.getElementById("link-import-modal");
+  if (m) m.classList.remove("open");
+}
+
+function setLinkImportStatus(msg, isError) {
+  const el = document.getElementById("link-import-status");
+  if (!el) return;
+  el.textContent = msg || "";
+  el.classList.toggle("error", !!isError);
+}
+
+function fetchProductFromLink() {
+  const result = parseProductLink(document.getElementById("link-import-url").value);
+  const preview = document.getElementById("link-preview");
+  if (!result.ok) {
+    linkImportPending = null;
+    preview.classList.remove("open");
+    setLinkImportStatus(result.error, true);
+    return;
+  }
+  linkImportPending = result;
+  document.getElementById("link-preview-store").textContent = result.store;
+  const nameInput = document.getElementById("link-import-name");
+  nameInput.value = result.name;
+  preview.classList.add("open");
+  if (result.name) {
+    setLinkImportStatus("Encontramos o nome do produto. Confira e ajuste se precisar.");
+  } else {
+    setLinkImportStatus("Não conseguimos ler o nome por esse link. Digite o nome abaixo.", true);
+  }
+  nameInput.focus();
+}
+
+function confirmLinkImport() {
+  if (!linkImportPending) { fetchProductFromLink(); return; }
+  const nome = Sanitize.sanitizeInput(document.getElementById("link-import-name").value, 60);
+  if (!nome) {
+    showToast("Informe o nome do produto!");
+    document.getElementById("link-import-name").focus();
+    return;
+  }
+  const cat = guessProductCategory(nome);
+  const gradId = "grad-" + cat;
+  const newProd = {
+    id: Date.now(),
+    name: nome,
+    price: "",
+    cat: cat,
+    img: "",
+    rank: products.length + customProducts.length + 1,
+    grad: gradients.indexOf(gradId) !== -1 ? gradId : gradients[customProducts.length % gradients.length],
+    tag: "#meu",
+    prompt: nome,
+    custom: true,
+    source: linkImportPending.store,
+    url: linkImportPending.url
+  };
+  customProducts.unshift(newProd);
+  safeSet(PRODUCTS_KEY, customProducts);
+  linkImportPending = null;
+  closeLinkImport();
+  renderProducts();
+  reapplyMiningFilter();
+  scrollToFirstProduct();
+  showToast(`"${nome}" adicionado ao inventário!`);
 }
 
 /* Produtos personalizados aparecem primeiro, do mais novo para o mais antigo */
@@ -916,6 +1110,7 @@ function renderAvatars(filter = "all") {
   } else {
     sect.style.display = "none";
   }
+  updateInfLimitNote();
 }
 
 function renderStudioOptions() {
@@ -938,7 +1133,7 @@ function renderRoteiroUI() {
   document.getElementById("roteiro-tom-chips").innerHTML = tomOptions.map(t => `<span class="dur-chip ${t === selectedTom ? "active" : ""}" onclick="selectTom('${t}',this)" role="radio" tabindex="0" aria-checked="${t === selectedTom}">${t}</span>`).join("");
 }
 
-const TABS = [ "mining", "freestudio", "viralize", "influencer", "imglibrary", "settings" ];
+const TABS = [ "mining", "freestudio", "viralize", "influencer", "viralvideos", "imglibrary", "settings" ];
 
 function switchTab(tab, el) {
   document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
@@ -950,6 +1145,8 @@ function switchTab(tab, el) {
     top: 0,
     behavior: "smooth"
   });
+  if (tab === "viralvideos" && typeof startViralMining === "function") startViralMining();
+  if (tab === "viralize" && typeof renderViralizeAvatars === "function") renderViralizeAvatars();
 }
 
 function toggleAccordion(btn) {
@@ -1428,7 +1625,7 @@ function generateVideoPrompt() {
 function generateAvatarPromptAI() {
   const nome = document.getElementById("av-nome").value.trim() || "Influencer";
   const idade = document.getElementById("av-idade").value || "28";
-  const genero = document.getElementById("av-genero").value;
+  const genero = document.getElementById("av-genero").value || "neutral";
   const etnia = document.getElementById("av-etnia")?.value || "";
   const corpo = document.getElementById("av-corpo")?.value || "";
   const altura = document.getElementById("av-altura")?.value || "";
@@ -1452,7 +1649,80 @@ function generateAvatarPromptAI() {
   loading.classList.remove("visible");
 }
 
+/* Limite de influencers salvos por conta (dá pra criar vários, até este número) */
+const MAX_CUSTOM_AVATARS = 10;
+
+function updateInfLimitNote() {
+  const el = document.getElementById("inf-limit-note");
+  if (!el) return;
+  const n = customAvatars.length;
+  const reached = n >= MAX_CUSTOM_AVATARS;
+  el.classList.toggle("reached", reached);
+  el.innerHTML = reached
+    ? `<span>Você chegou ao limite de <strong>${MAX_CUSTOM_AVATARS}</strong> influencers. Exclua um para criar outro.</span>`
+    : `<span>Influencers criados: <strong>${n}/${MAX_CUSTOM_AVATARS}</strong>. Você pode criar vários, até o limite.</span>`;
+}
+
+/* Valores padrão de fábrica (não usar hidden.defaultValue: em <input type="hidden">
+   o próprio atributo "value" é o que a IDL "value" grava, então defaultValue
+   acompanha qualquer alteração feita via JS e não serve como "original"). */
+const INF_FIELD_DEFAULTS = {
+  "av-genero": "Feminino",
+  "av-etnia": "Latina/Latino",
+  "av-corpo": "Magro",
+  "av-altura": "Baixa",
+  "av-rosto": "Oval",
+  "av-olhos": "Castanhos",
+  "av-cor-cabelo": "Preto",
+  "av-estilo-cabelo": "Liso"
+};
+
+function resetInfluencerForm() {
+  ["av-nome", "av-desc", "avatar-prompt-output"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
+  updateCharCounter("av-desc", "av-desc-counter", 400);
+  const age = document.getElementById("av-idade");
+  if (age) {
+    age.value = "28";
+    const disp = document.getElementById("av-idade-display");
+    if (disp) disp.textContent = "28";
+  }
+  document.querySelectorAll(".inf-option-grid").forEach(grid => {
+    const hidden = grid.previousElementSibling;
+    grid.querySelectorAll(".inf-photo-card").forEach(c => c.classList.remove("selected"));
+    const first = grid.querySelector(".inf-photo-card");
+    if (first) first.classList.add("selected");
+    if (hidden && hidden.tagName === "INPUT" && INF_FIELD_DEFAULTS[hidden.id] !== undefined) {
+      hidden.value = INF_FIELD_DEFAULTS[hidden.id];
+    }
+    const wrap = grid.nextElementSibling;
+    if (wrap && wrap.classList.contains("inf-other-wrap")) {
+      wrap.classList.remove("open");
+      const inp = wrap.querySelector("input");
+      if (inp) inp.value = "";
+    }
+  });
+  updateGenderAwareImages("Feminino");
+  document.querySelectorAll("#av-estilo .form-chip, #av-nicho .form-chip, #av-personalidade .form-chip, #av-conteudo .form-chip").forEach(c => {
+    if (c.dataset.custom) c.remove(); else c.classList.remove("selected");
+  });
+  document.querySelectorAll(".chip-other-wrap").forEach(w => {
+    w.classList.remove("open");
+    const inp = w.querySelector("input");
+    if (inp) inp.value = "";
+  });
+  updateInfSummary();
+  goInfStep(1);
+}
+
 function saveGeneratedAvatar() {
+  if (customAvatars.length >= MAX_CUSTOM_AVATARS) {
+    showToast(`Limite de ${MAX_CUSTOM_AVATARS} influencers atingido. Exclua um para criar outro.`);
+    updateInfLimitNote();
+    return;
+  }
   const nome = document.getElementById("av-nome").value.trim();
   if (!nome) {
     showToast("Informe o nome do influencer!");
@@ -1501,6 +1771,7 @@ function saveGeneratedAvatar() {
   safeSet(AVATARS_KEY, customAvatars);
   showToast(`Influencer "${nome}" salvo com sucesso!`);
   renderAvatars("all");
+  resetInfluencerForm();
 }
 
 function toggleChip(el) {
@@ -1597,15 +1868,103 @@ function selectInfOption(el, hiddenInputId, value) {
   document.getElementById(hiddenInputId).value = value;
   el.parentElement.querySelectorAll(".inf-photo-card").forEach(c => c.classList.remove("selected"));
   el.classList.add("selected");
+  const otherWrap = el.parentElement.nextElementSibling;
+  if (otherWrap && otherWrap.classList.contains("inf-other-wrap") && !el.classList.contains("inf-other-card")) {
+    otherWrap.classList.remove("open");
+  }
   if (hiddenInputId === "av-genero") updateGenderAwareImages(value);
   updateInfSummary();
 }
 
+/* ---- Botão "Outro" em todos os campos da criação de influencer ---- */
+const INF_OTHER_MAX = 30;
+const INF_CHIP_OTHER_MAX = 24;
+const INF_CHIP_OTHER_LIMIT = 3;
+const INF_OTHER_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>';
+
+function initInfOtherOptions() {
+  document.querySelectorAll(".inf-option-grid").forEach(grid => {
+    const hidden = grid.previousElementSibling;
+    if (!hidden || hidden.tagName !== "INPUT" || grid.querySelector(".inf-other-card")) return;
+    const label = (grid.closest(".form-group")?.querySelector(".form-label")?.textContent || "campo").replace(/\s+/g, " ").trim();
+    const card = document.createElement("div");
+    card.className = "inf-photo-card inf-other-card";
+    card.setAttribute("role", "button");
+    card.tabIndex = 0;
+    card.innerHTML = `<div class="inf-photo-neutral">${INF_OTHER_ICON}</div><span class="inf-photo-check">✓</span><div class="inf-photo-label">Outro</div>`;
+    grid.appendChild(card);
+
+    const wrap = document.createElement("div");
+    wrap.className = "inf-other-wrap";
+    wrap.innerHTML = `<input type="text" class="form-input" maxlength="${INF_OTHER_MAX}" placeholder="Digite o que você quer (até ${INF_OTHER_MAX} caracteres)" autocomplete="off" aria-label="Outro: ${label.replace(/"/g, "")}">`;
+    grid.insertAdjacentElement("afterend", wrap);
+    const input = wrap.querySelector("input");
+
+    const pick = () => {
+      selectInfOption(card, hidden.id, Sanitize.sanitizeInput(input.value, INF_OTHER_MAX));
+      wrap.classList.add("open");
+      input.focus();
+    };
+    card.addEventListener("click", pick);
+    card.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
+    input.addEventListener("input", () => {
+      hidden.value = Sanitize.sanitizeInput(input.value, INF_OTHER_MAX);
+      updateInfSummary();
+    });
+  });
+
+  [ "av-estilo", "av-nicho", "av-personalidade", "av-conteudo" ].forEach(id => {
+    const group = document.getElementById(id);
+    if (!group || group.querySelector(".chip-other")) return;
+    const chip = document.createElement("span");
+    chip.className = "form-chip chip-other";
+    chip.setAttribute("role", "button");
+    chip.tabIndex = 0;
+    chip.textContent = "Outro";
+    group.appendChild(chip);
+
+    const wrap = document.createElement("div");
+    wrap.className = "chip-other-wrap";
+    wrap.innerHTML = `<input type="text" class="form-input" maxlength="${INF_CHIP_OTHER_MAX}" placeholder="Digite e pressione Enter" autocomplete="off" aria-label="Outro"><button type="button">Adicionar</button>`;
+    group.insertAdjacentElement("afterend", wrap);
+    const input = wrap.querySelector("input");
+
+    const add = () => {
+      const text = Sanitize.sanitizeInput(input.value, INF_CHIP_OTHER_MAX);
+      if (!text) return;
+      const existing = [ ...group.querySelectorAll(".form-chip:not(.chip-other)") ].find(c => c.textContent.trim().toLowerCase() === text.toLowerCase());
+      if (existing) {
+        existing.classList.add("selected");
+      } else {
+        if (group.querySelectorAll(".form-chip[data-custom]").length >= INF_CHIP_OTHER_LIMIT) {
+          showToast(`Você pode adicionar até ${INF_CHIP_OTHER_LIMIT} opções em "Outro".`);
+          return;
+        }
+        const c = document.createElement("span");
+        c.className = "form-chip selected";
+        c.dataset.custom = "1";
+        c.textContent = text;
+        c.addEventListener("click", () => toggleChip(c));
+        group.insertBefore(c, chip);
+      }
+      input.value = "";
+      wrap.classList.remove("open");
+    };
+    chip.addEventListener("click", () => {
+      wrap.classList.toggle("open");
+      if (wrap.classList.contains("open")) input.focus();
+    });
+    chip.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); chip.click(); } });
+    wrap.querySelector("button").addEventListener("click", add);
+    input.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); add(); } });
+  });
+}
+
 function updateInfSummary() {
   const nome = document.getElementById("av-nome")?.value.trim();
-  const genero = document.getElementById("av-genero")?.value || "Feminino";
+  const genero = document.getElementById("av-genero")?.value || "Outro";
   const idade = document.getElementById("av-idade")?.value || "28";
-  const etnia = document.getElementById("av-etnia")?.value || "Latina/Latino";
+  const etnia = document.getElementById("av-etnia")?.value || "Outro";
   const nameEl = document.getElementById("inf-summary-name");
   const metaEl = document.getElementById("inf-summary-meta");
   if (nameEl) nameEl.textContent = nome || "Sem nome";
@@ -1719,7 +2078,9 @@ function wipeAllData() {
     localStorage.removeItem(AVATARS_KEY);
     localStorage.removeItem(PRODUCTS_KEY);
     localStorage.removeItem(PROMPTS_KEY);
+    localStorage.removeItem(INVENTORY_KEY);
   } catch (e) {}
+  if (typeof fsResetProjects === "function") fsResetProjects();
   favorites = {};
   customAvatars = [];
   customProducts = [];
@@ -1891,6 +2252,11 @@ function renderSearchResults(q) {
     icon: ICONS.user,
     tab: "influencer"
   }, {
+    label: "Vídeos Virais",
+    cat: "Seção",
+    icon: ICONS.film,
+    tab: "viralvideos"
+  }, {
     label: "Biblioteca de Imagens",
     cat: "Seção",
     icon: ICONS.book,
@@ -2018,6 +2384,17 @@ document.addEventListener("keydown", e => {
 
 /* Clicar fora do card fecha os modais de ajuda e de exclusao */
 document.addEventListener("DOMContentLoaded", () => {
+  initInfOtherOptions();
+  updateInfLimitNote();
+  document.getElementById("link-import-modal")?.addEventListener("click", e => {
+    if (e.target === e.currentTarget) closeLinkImport();
+  });
+  document.getElementById("link-import-url")?.addEventListener("keydown", e => {
+    if (e.key === "Enter") { e.preventDefault(); fetchProductFromLink(); }
+  });
+  document.getElementById("link-import-name")?.addEventListener("keydown", e => {
+    if (e.key === "Enter") { e.preventDefault(); confirmLinkImport(); }
+  });
   document.getElementById("backup-info-modal")?.addEventListener("click", e => {
     if (e.target === e.currentTarget) closeBackupInfo();
   });
