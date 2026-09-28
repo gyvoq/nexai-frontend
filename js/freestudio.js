@@ -175,22 +175,29 @@ function fsAddMsg(who, content, opts = {}) {
   return div;
 }
 
+let fsFlowId = 0;
+
 function fsBotSay(text, callback, opts = {}) {
+  const flow = fsFlowId;
   fsShowTyping();
   const wait = FS_TYPING_DELAY_MIN + Math.random() * (FS_TYPING_DELAY_MAX - FS_TYPING_DELAY_MIN);
   setTimeout(() => {
+    if (flow !== fsFlowId) return;
     fsHideTyping();
     fsAddMsg('bot', text, opts);
     const typeDur = (opts.skipTypewriter || opts.raw) ? 0 : fsTypeDuration(text);
-    if (callback) setTimeout(callback, typeDur + 120);
+    if (callback) setTimeout(() => { if (flow === fsFlowId) callback(); }, typeDur + 120);
   }, wait);
 }
 
-function fsQuickReplies(options) {
+function fsQuickReplies(options, onPick) {
   const quick = document.getElementById('fs-quick-replies');
   quick.innerHTML = options.map(o => `<button type="button" class="fs-quick-reply">${fsEscape(o)}</button>`).join('');
   quick.querySelectorAll('.fs-quick-reply').forEach(btn => {
-    btn.addEventListener('click', () => fsHandleAnswer(btn.textContent));
+    btn.addEventListener('click', () => {
+      if (onPick) onPick(btn.textContent);
+      else fsHandleAnswer(btn.textContent);
+    });
   });
 }
 
@@ -240,6 +247,7 @@ function fsActiveInputEl() {
 
 function fsSetMode(mode) {
   fsMode = mode;
+  fsFlowId++;
   document.querySelectorAll('.fs-mode-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
   const body = document.getElementById('fs-chat-body');
   const quick = document.getElementById('fs-quick-replies');
@@ -283,7 +291,7 @@ const FS_VIDEO_QUESTIONS = [
   { key: 'roteiro', type: 'longtext', optional: true,
     q: 'Quer me passar o roteiro do vídeo — a fala, as cenas, o texto que vai aparecer? Pode escrever com detalhes ou pular esta etapa.' },
   { key: 'tom', type: 'choice', q: 'Qual tom o vídeo deve ter?', options: ['Empolgado', 'Natural', 'Humorístico', 'Educativo'] },
-  { key: 'formato', type: 'choice', q: 'Pra qual formato é o vídeo?', options: ['TikTok (9:16)', 'Reels (9:16)', 'YouTube Shorts'] },
+  { key: 'formato', type: 'choice', q: 'Pra qual formato é o vídeo?', options: ['TikTok (9:16)', 'Reels (9:16)', 'YouTube Shorts', 'Outro'], allowOther: true, otherLabel: 'formato' },
   { key: 'duracao', type: 'choice', q: 'Quantos segundos o vídeo deve ter?', options: ['7s', '15s', '30s', '60s'] },
   { key: 'detalhes', type: 'longtext', optional: true,
     q: 'Tem algum detalhe mais específico que não pode faltar? Cenário, iluminação, ângulo de câmera, roupa, cores, expressão... Escreva ou pule.' }
@@ -294,6 +302,8 @@ function fsStartVideoFlow() {
   fsVideoStep = 0;
   fsVideoAnswers = {};
   fsSelectedVideoAvatar = null;
+  fsAwaitingAnswer = false;
+  fsResetVideoInput();
   document.getElementById('fs-chat-inputrow').style.display = 'none';
   fsBotSay('Vamos montar seu prompt de vídeo! Primeiro, escolha um avatar pra estrelar (ou pule se preferir não usar avatar).', fsAskAvatarStep);
 }
@@ -315,10 +325,7 @@ function fsAskAvatarStep() {
     '<div class="fs-avatar-step-name">' + fsEscape(a.name) + '</div></div>'
   ).join('') + '</div>';
   fsAddMsg('bot', gridHtml, { raw: true });
-  fsQuickReplies(['Continuar sem avatar']);
-  const quick = document.getElementById('fs-quick-replies');
-  const btn = quick.querySelector('.fs-quick-reply');
-  if (btn) btn.addEventListener('click', () => fsChooseVideoAvatar(null), { once: true });
+  fsQuickReplies(['Continuar sem avatar'], () => fsChooseVideoAvatar(null));
 }
 
 function fsChooseVideoAvatar(id) {
@@ -343,25 +350,37 @@ function fsChooseVideoAvatar(id) {
   setTimeout(fsAskNextVideoQuestion, 250);
 }
 
+const FS_OTHER_MAX_CHARS = 20;
+let fsAwaitingAnswer = false;
+let fsOtherMode = false;
+
+function fsResetVideoInput() {
+  fsOtherMode = false;
+  const input = document.getElementById('fs-chat-input');
+  if (input) {
+    input.removeAttribute('maxlength');
+    input.placeholder = 'Escreva sua mensagem...';
+  }
+}
+
 function fsAskNextVideoQuestion() {
   const quick = document.getElementById('fs-quick-replies');
   quick.innerHTML = '';
+  fsAwaitingAnswer = false;
+  fsResetVideoInput();
   if (fsVideoStep >= FS_VIDEO_QUESTIONS.length) {
     fsFinishVideoPrompt();
     return;
   }
   const step = FS_VIDEO_QUESTIONS[fsVideoStep];
   fsBotSay(step.q, () => {
+    fsAwaitingAnswer = true;
     if (step.type === 'choice') {
       fsSetInputMode('text');
       fsQuickReplies(step.options);
     } else if (step.type === 'longtext') {
       fsSetInputMode('textarea');
-      if (step.optional) {
-        fsQuickReplies(['Pular etapa']);
-        const btn = document.querySelector('#fs-quick-replies .fs-quick-reply');
-        if (btn) btn.addEventListener('click', () => fsHandleAnswer('', true), { once: true });
-      }
+      if (step.optional) fsQuickReplies(['Pular etapa'], () => fsHandleAnswer('', true));
     } else {
       fsSetInputMode('text');
     }
@@ -369,13 +388,29 @@ function fsAskNextVideoQuestion() {
 }
 
 function fsHandleAnswer(text, skipped) {
-  if (fsMode !== 'video' || fsVideoPhase !== 'questions') return;
+  if (fsMode !== 'video' || fsVideoPhase !== 'questions' || !fsAwaitingAnswer) return;
   if (!skipped && (!text || !text.trim())) return;
   const step = FS_VIDEO_QUESTIONS[fsVideoStep];
-  fsAddMsg('user', skipped ? 'Pular etapa' : text.trim());
-  if (step) fsVideoAnswers[step.key] = skipped ? '' : text.trim();
-  fsVideoStep++;
+  const value = skipped ? '' : text.trim();
+  fsAwaitingAnswer = false;
   document.getElementById('fs-quick-replies').innerHTML = '';
+  fsAddMsg('user', skipped ? 'Pular etapa' : value);
+
+  if (step && step.allowOther && !fsOtherMode && value === 'Outro') {
+    fsBotSay('Qual ' + step.otherLabel + ' você quer? (máximo ' + FS_OTHER_MAX_CHARS + ' caracteres)', () => {
+      fsOtherMode = true;
+      fsAwaitingAnswer = true;
+      fsSetInputMode('text');
+      const input = document.getElementById('fs-chat-input');
+      input.maxLength = FS_OTHER_MAX_CHARS;
+      input.placeholder = 'Até ' + FS_OTHER_MAX_CHARS + ' caracteres';
+      input.focus();
+    });
+    return;
+  }
+
+  if (step) fsVideoAnswers[step.key] = fsOtherMode ? value.slice(0, FS_OTHER_MAX_CHARS) : value;
+  fsVideoStep++;
   fsSetInputMode('text');
   setTimeout(fsAskNextVideoQuestion, 300);
 }
@@ -395,9 +430,7 @@ function fsFinishVideoPrompt() {
 
   fsBotSay('Prontinho! Seu prompt de vídeo está pronto.', () => {
     fsAddMsg('bot', prompt, { final: true, label: 'Prompt de vídeo', rawText: prompt, skipTypewriter: true, wide: true });
-    fsQuickReplies(['Recomeçar']);
-    const btn = document.querySelector('#fs-quick-replies .fs-quick-reply');
-    if (btn) btn.addEventListener('click', () => fsSetMode('video'), { once: true });
+    fsQuickReplies(['Recomeçar'], () => fsSetMode('video'));
   });
 }
 
@@ -422,6 +455,15 @@ function fsHandleUploadChange(e) {
   const file = e.target.files && e.target.files[0];
   const zone = document.getElementById('fs-upload-zone');
   if (!file) return;
+  const isVideo = (file.type && file.type.indexOf('video/') === 0) || /\.(mp4|mov|webm|mkv|avi|m4v|3gp|wmv)$/i.test(file.name);
+  if (!isVideo) {
+    e.target.value = '';
+    fsExtractFile = null;
+    zone.classList.remove('has-file');
+    zone.innerHTML = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><div>Clique para enviar o vídeo de referência</div>';
+    fsToast('Envie apenas arquivos de vídeo');
+    return;
+  }
   fsExtractFile = file;
   zone.classList.add('has-file');
   zone.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><div>${fsEscape(file.name)}</div>`;
