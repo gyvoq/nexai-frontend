@@ -44,25 +44,134 @@ function addToInventory(id, name) {
 }
 
 const FS_PROJECTS_KEY = 'viralyze-fs-projects';
+const FS_MAX_MESSAGES_PER_PROJECT = 1000;
+const FS_MODES = ['imagem', 'video', 'extrair'];
+const FS_DEFAULT_TITLE = 'Novo projeto';
+
+function fsCleanId(id) {
+  const c = String(id == null ? '' : id).replace(/[^\w-]/g, '').slice(0, 40);
+  return c || 'p' + Date.now() + Math.floor(Math.random() * 1000);
+}
+
+function fsNormalizeMessage(m) {
+  if (!m || typeof m !== 'object') return null;
+  if (m.who !== 'bot' && m.who !== 'user') return null;
+  if (typeof m.content !== 'string') return null;
+  const ts = Number(m.ts);
+  const out = { who: m.who, content: m.content.slice(0, 20000), ts: ts > 0 ? ts : Date.now() };
+  if (typeof m.label === 'string') out.label = m.label.slice(0, 80);
+  if (m.final) out.final = true;
+  if (m.wide) out.wide = true;
+  if (typeof m.rawText === 'string') out.rawText = m.rawText.slice(0, 20000);
+  return out;
+}
+
+function fsNormalizeProject(p) {
+  if (!p || typeof p !== 'object') return null;
+  const chats = {};
+  FS_MODES.forEach(mode => {
+    const list = p.chats && Array.isArray(p.chats[mode]) ? p.chats[mode] : [];
+    chats[mode] = list.map(fsNormalizeMessage).filter(Boolean);
+  });
+  const created = Number(p.createdAt) > 0 ? Number(p.createdAt) : 0;
+  return {
+    id: fsCleanId(p.id),
+    title: (typeof p.title === 'string' && p.title.trim() ? p.title.trim() : FS_DEFAULT_TITLE).slice(0, 80),
+    createdAt: created,
+    updatedAt: Number(p.updatedAt) > 0 ? Number(p.updatedAt) : created,
+    lastMode: FS_MODES.indexOf(p.lastMode) !== -1 ? p.lastMode : 'imagem',
+    chats
+  };
+}
+
 function fsLoadProjects() {
   try {
     const saved = JSON.parse(localStorage.getItem(FS_PROJECTS_KEY) || 'null');
-    if (saved && saved.length) return saved;
+    if (Array.isArray(saved) && saved.length) return saved.map(fsNormalizeProject).filter(Boolean);
   } catch (e) {}
   return [
     { id: 'p1', title: 'Sérum Facial — vídeo UGC' },
     { id: 'p2', title: 'Ideias para o lançamento de verão' },
     { id: 'p3', title: 'Roteiro unboxing tech' },
     { id: 'p4', title: 'Prompt para avatar novo' }
-  ];
+  ].map(fsNormalizeProject);
 }
 let fsProjects = fsLoadProjects();
+
+let fsStorageWarned = false;
 function fsSaveProjects() {
-  try { localStorage.setItem(FS_PROJECTS_KEY, JSON.stringify(fsProjects)); } catch (e) {}
+  try {
+    localStorage.setItem(FS_PROJECTS_KEY, JSON.stringify(fsProjects));
+    return true;
+  } catch (e) {
+    if (!fsStorageWarned) {
+      fsStorageWarned = true;
+      fsToast('Armazenamento do navegador cheio. Gere um backup para não perder suas conversas.');
+    }
+    return false;
+  }
 }
 
 let fsActiveProject = null;
 let fsMode = 'imagem';
+
+/* ---- hora e data ---- */
+function fsTimeStr(ts) {
+  return new Date(ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+}
+function fsDayKey(ts) {
+  const d = new Date(ts);
+  return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate();
+}
+function fsDayLabel(ts) {
+  const startOf = x => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
+  const diff = Math.round((startOf(new Date()) - startOf(new Date(ts))) / 86400000);
+  if (diff === 0) return 'Hoje';
+  if (diff === 1) return 'Ontem';
+  return new Date(ts).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+function fsMaybeDateSep(body, ts) {
+  const key = fsDayKey(ts);
+  if (body.dataset.lastDay === key) return;
+  body.dataset.lastDay = key;
+  const sep = document.createElement('div');
+  sep.className = 'fs-date-sep';
+  sep.textContent = fsDayLabel(ts);
+  body.appendChild(sep);
+}
+
+function fsChatHistory(mode) {
+  if (!fsActiveProject) return [];
+  if (!fsActiveProject.chats) fsActiveProject.chats = { imagem: [], video: [], extrair: [] };
+  if (!Array.isArray(fsActiveProject.chats[mode])) fsActiveProject.chats[mode] = [];
+  return fsActiveProject.chats[mode];
+}
+function fsProjectMessageCount(p) {
+  if (!p || !p.chats) return 0;
+  return FS_MODES.reduce((n, m) => n + (Array.isArray(p.chats[m]) ? p.chats[m].length : 0), 0);
+}
+function fsGuardLimit() {
+  if (fsProjectMessageCount(fsActiveProject) >= FS_MAX_MESSAGES_PER_PROJECT) {
+    fsToast('Este projeto chegou ao limite de ' + FS_MAX_MESSAGES_PER_PROJECT + ' mensagens. Crie um novo projeto para continuar.');
+    return true;
+  }
+  return false;
+}
+function fsRecordMessage(mode, rec) {
+  if (!fsActiveProject) return;
+  fsChatHistory(mode).push(rec);
+  fsActiveProject.updatedAt = rec.ts;
+  fsSaveProjects();
+}
+function fsMaybeNameProject(text) {
+  if (!fsActiveProject || fsActiveProject.title !== FS_DEFAULT_TITLE) return;
+  const t = String(text || '').trim().replace(/\s+/g, ' ').slice(0, 40);
+  if (!t) return;
+  fsActiveProject.title = t;
+  const el = document.getElementById('fs-chat-title');
+  if (el) el.textContent = t;
+  fsSaveProjects();
+}
 
 function renderFsProjects() {
   const grid = document.getElementById('fs-project-grid');
@@ -72,29 +181,39 @@ function renderFsProjects() {
       <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       <span>Novo projeto</span>
     </div>` +
-    fsProjects.map(p => `<div class="fs-project-card" onclick="fsOpenProject('${p.id}')" role="button" tabindex="0">
+    fsProjects.map(p => {
+      const n = fsProjectMessageCount(p);
+      const meta2 = n
+        ? `<div class="fs-project-card-meta">${n} ${n === 1 ? 'mensagem' : 'mensagens'} · ${fsEscape(fsDayLabel(p.updatedAt))}, ${fsEscape(fsTimeStr(p.updatedAt))}</div>`
+        : '';
+      return `<div class="fs-project-card" onclick="fsOpenProject('${p.id}')" role="button" tabindex="0">
       <div class="fs-project-card-title">${fsEscape(p.title)}</div>
-      <div class="fs-project-card-meta">Estúdio Livre</div>
-    </div>`).join('');
+      <div class="fs-project-card-meta">Estúdio Livre</div>${meta2}
+    </div>`;
+    }).join('');
 }
 
 function fsCreateProject() {
-  const id = 'p' + Date.now();
-  const project = { id, title: 'Novo projeto' };
+  const now = Date.now();
+  const project = fsNormalizeProject({ id: 'p' + now, title: FS_DEFAULT_TITLE, createdAt: now, updatedAt: now });
   fsProjects.unshift(project);
   fsSaveProjects();
-  fsOpenProject(id);
+  fsOpenProject(project.id);
 }
 
 function fsOpenProject(id) {
-  fsActiveProject = fsProjects.find(p => p.id === id) || { id, title: 'Novo projeto' };
+  fsActiveProject = fsProjects.find(p => p.id === id) || null;
+  if (!fsActiveProject) return;
   document.getElementById('fs-projects-view').style.display = 'none';
   document.getElementById('fs-chat-view').style.display = 'flex';
   document.getElementById('fs-chat-title').textContent = fsActiveProject.title;
-  fsSetMode('imagem');
+  fsSetMode(fsActiveProject.lastMode || 'imagem');
 }
 
 function fsBackToProjects() {
+  fsFlowId++;
+  fsHideTyping();
+  fsActiveProject = null;
   document.getElementById('fs-chat-view').style.display = 'none';
   document.getElementById('fs-projects-view').style.display = 'block';
   renderFsProjects();
@@ -148,9 +267,11 @@ function fsTypewrite(el, text) {
 function fsAddMsg(who, content, opts = {}) {
   const body = document.getElementById('fs-chat-body');
   if (!body) return null;
+  const ts = opts.ts || Date.now();
+  fsMaybeDateSep(body, ts);
   const div = document.createElement('div');
   div.className = 'fs-msg ' + who + (opts.final ? ' prompt-final' : '') + (opts.wide ? ' fs-msg-wide' : '');
-  const labelHtml = opts.label ? `<div class="fs-msg-label">${opts.label}</div>` : '';
+  const labelHtml = opts.label ? `<div class="fs-msg-label">${fsEscape(opts.label)}</div>` : '';
   div.innerHTML = labelHtml + '<div class="fs-msg-content"></div>';
   body.appendChild(div);
   body.scrollTop = body.scrollHeight;
@@ -164,6 +285,13 @@ function fsAddMsg(who, content, opts = {}) {
     contentEl.textContent = content;
   }
 
+  const timeEl = document.createElement('time');
+  timeEl.className = 'fs-msg-time';
+  timeEl.dateTime = new Date(ts).toISOString();
+  timeEl.textContent = fsTimeStr(ts);
+  timeEl.title = new Date(ts).toLocaleString('pt-BR');
+  div.appendChild(timeEl);
+
   if (opts.final) {
     const actions = document.createElement('div');
     actions.className = 'fs-msg-actions';
@@ -172,7 +300,22 @@ function fsAddMsg(who, content, opts = {}) {
     div.appendChild(actions);
   }
   body.scrollTop = body.scrollHeight;
+
+  if (!opts.raw && !opts.noSave && !opts.restore) {
+    const rec = { who, content: String(content), ts };
+    if (opts.label) rec.label = opts.label;
+    if (opts.final) { rec.final = true; rec.rawText = opts.rawText || String(content); }
+    if (opts.wide) rec.wide = true;
+    fsRecordMessage(fsMode, rec);
+  }
   return div;
+}
+
+function fsRestoreChat(history) {
+  history.forEach(m => fsAddMsg(m.who, m.content, {
+    label: m.label, final: m.final, rawText: m.rawText, wide: m.wide,
+    skipTypewriter: true, restore: true, ts: m.ts
+  }));
 }
 
 let fsFlowId = 0;
@@ -248,6 +391,7 @@ function fsActiveInputEl() {
 function fsSetMode(mode) {
   fsMode = mode;
   fsFlowId++;
+  if (fsActiveProject) { fsActiveProject.lastMode = mode; fsSaveProjects(); }
   document.querySelectorAll('.fs-mode-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
   const body = document.getElementById('fs-chat-body');
   const quick = document.getElementById('fs-quick-replies');
@@ -258,25 +402,36 @@ function fsSetMode(mode) {
   fsHideTyping();
   quick.innerHTML = '';
   body.innerHTML = '';
+  body.dataset.lastDay = '';
   upload.style.display = 'none';
   styleInput.style.display = 'none';
   extractBtn.style.display = 'none';
   fsSetInputMode('text');
   inputRow.style.display = 'flex';
 
+  const history = fsChatHistory(mode);
+  const hasHistory = history.length > 0;
+  if (hasHistory) fsRestoreChat(history);
+
   if (mode === 'imagem') {
     document.getElementById('fs-chat-input').placeholder = 'Descreva a imagem que você quer gerar...';
-    fsBotSay('Esse é o gerador de imagem — ainda é só um protótipo. Descreva a imagem que você quer e clique em enviar pra ver como vai funcionar.');
+    if (!hasHistory) fsBotSay('Esse é o gerador de imagem — ainda é só um protótipo. Descreva a imagem que você quer e clique em enviar pra ver como vai funcionar.');
   } else if (mode === 'video') {
     document.getElementById('fs-chat-input').placeholder = 'Escreva sua mensagem...';
-    fsStartVideoFlow();
+    if (hasHistory) {
+      fsVideoPhase = 'idle';
+      inputRow.style.display = 'none';
+      fsQuickReplies(['Novo prompt de vídeo'], () => { if (!fsGuardLimit()) fsStartVideoFlow(); });
+    } else {
+      fsStartVideoFlow();
+    }
   } else if (mode === 'extrair') {
     inputRow.style.display = 'none';
     upload.style.display = 'block';
     styleInput.style.display = 'block';
     extractBtn.style.display = 'inline-flex';
     fsResetUpload();
-    fsBotSay('Envie o vídeo viral que você quer usar de referência e descreva o estilo dele. A IA "extrai" o movimento e te devolve um prompt pronto.');
+    if (!hasHistory) fsBotSay('Envie o vídeo viral que você quer usar de referência e descreva o estilo dele. A IA "extrai" o movimento e te devolve um prompt pronto.');
   }
 }
 
@@ -307,9 +462,24 @@ function fsStartVideoFlow() {
   fsBotSay('Vamos montar seu prompt de vídeo! Primeiro, escolha um avatar pra estrelar (ou pule se preferir não usar avatar).', fsAskAvatarStep);
 }
 
+function fsAllAvatars() {
+  const builtin = (typeof avatars !== 'undefined' && Array.isArray(avatars)) ? avatars : [];
+  const custom = (typeof customAvatars !== 'undefined' && Array.isArray(customAvatars))
+    ? customAvatars.map((a, i) => Object.assign({}, a, { id: a.id != null ? a.id : 'c' + i, custom: true }))
+    : [];
+  return custom.concat(builtin);
+}
+
 function fsAvatarStepList() {
-  if (typeof avatars === 'undefined' || !Array.isArray(avatars)) return [];
-  return avatars.slice(0, 8);
+  const all = fsAllAvatars();
+  return all.filter(a => a.custom).concat(all.filter(a => !a.custom).slice(0, 8));
+}
+
+const FS_AVATAR_PLACEHOLDER = '<svg viewBox="0 0 24 24" aria-hidden="true" style="width:55%;height:55%;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.7"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+function fsAvatarPhotoHtml(a) {
+  return a.img
+    ? '<img src="' + fsEscape(a.img) + '" alt="' + fsEscape(a.name) + '" loading="lazy">'
+    : '<span style="display:flex;width:100%;height:100%;align-items:center;justify-content:center;color:var(--accent3)">' + FS_AVATAR_PLACEHOLDER + '</span>';
 }
 
 function fsAskAvatarStep() {
@@ -318,29 +488,37 @@ function fsAskAvatarStep() {
     fsChooseVideoAvatar(null);
     return;
   }
-  const gridHtml = '<div class="fs-avatar-step-grid">' + list.map(a =>
-    '<div class="fs-avatar-step-card" data-id="' + a.id + '" onclick="fsChooseVideoAvatar(' + a.id + ')" role="button" tabindex="0">' +
-    '<div class="fs-avatar-step-photo"><img src="' + a.img + '" alt="' + fsEscape(a.name) + '" loading="lazy"></div>' +
+  const gridHtml = '<div class="fs-avatar-step-grid">' + list.map((a, i) =>
+    '<div class="fs-avatar-step-card" data-idx="' + i + '" role="button" tabindex="0">' +
+    '<div class="fs-avatar-step-photo">' + fsAvatarPhotoHtml(a) + '</div>' +
     '<div class="fs-avatar-step-name">' + fsEscape(a.name) + '</div></div>'
   ).join('') + '</div>';
-  fsAddMsg('bot', gridHtml, { raw: true });
+  const msg = fsAddMsg('bot', gridHtml, { raw: true, noSave: true });
+  if (msg) {
+    msg.querySelectorAll('.fs-avatar-step-card').forEach(card => {
+      const pick = () => fsChooseVideoAvatar(list[Number(card.dataset.idx)]);
+      card.addEventListener('click', pick);
+      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+    });
+  }
   fsQuickReplies(['Continuar sem avatar'], () => fsChooseVideoAvatar(null));
 }
 
-function fsChooseVideoAvatar(id) {
+function fsChooseVideoAvatar(avatar) {
   if (fsMode !== 'video' || fsVideoPhase !== 'avatar') return;
   document.getElementById('fs-quick-replies').innerHTML = '';
   document.querySelectorAll('.fs-avatar-step-card').forEach(c => c.classList.remove('selected'));
 
-  if (id === null || typeof avatars === 'undefined') {
+  if (!avatar) {
     fsSelectedVideoAvatar = null;
     fsAddMsg('user', 'Continuar sem avatar');
   } else {
-    const avatar = avatars.find(a => a.id === id) || null;
     fsSelectedVideoAvatar = avatar;
-    const card = document.querySelector(`.fs-avatar-step-card[data-id="${id}"]`);
+    const list = fsAvatarStepList();
+    const idx = list.findIndex(a => String(a.id) === String(avatar.id));
+    const card = idx >= 0 ? document.querySelector('.fs-avatar-step-card[data-idx="' + idx + '"]') : null;
     if (card) card.classList.add('selected');
-    fsAddMsg('user', avatar ? avatar.name : 'Avatar selecionado');
+    fsAddMsg('user', avatar.name || 'Avatar selecionado');
   }
 
   fsVideoPhase = 'questions';
@@ -389,6 +567,7 @@ function fsAskNextVideoQuestion() {
 function fsHandleAnswer(text, skipped) {
   if (fsMode !== 'video' || fsVideoPhase !== 'questions' || !fsAwaitingAnswer) return;
   if (!skipped && (!text || !text.trim())) return;
+  if (fsGuardLimit()) return;
   const step = FS_VIDEO_QUESTIONS[fsVideoStep];
   const value = skipped ? '' : text.trim();
   fsAwaitingAnswer = false;
@@ -409,27 +588,56 @@ function fsHandleAnswer(text, skipped) {
   }
 
   if (step) fsVideoAnswers[step.key] = fsOtherMode ? value.slice(0, FS_OTHER_MAX_CHARS) : value;
+  if (step && step.key === 'produto') fsMaybeNameProject(value);
   fsVideoStep++;
   fsSetInputMode('text');
   setTimeout(fsAskNextVideoQuestion, 300);
 }
 
+function fsAvatarLine(avatar) {
+  if (!avatar) return '';
+  const ok = v => v && v !== '—';
+  const gender = avatar.gender === 'f' ? 'female' : avatar.gender === 'm' ? 'male' : 'non-binary';
+  const age = ok(avatar.age) ? avatar.age + '-year-old ' : '';
+  let line = ` Featuring ${avatar.name}, ${age}${gender} creator (${ok(avatar.nicho) ? avatar.nicho : 'lifestyle'} niche, ${ok(avatar.style) ? avatar.style : 'natural'} style).`;
+  const looks = [
+    avatar.etnia, avatar.corpo,
+    ok(avatar.altura) && avatar.altura + ' height',
+    ok(avatar.rosto) && avatar.rosto + ' face',
+    ok(avatar.olhos) && avatar.olhos + ' eyes',
+    ok(avatar.corCabelo) && avatar.corCabelo + ' hair',
+    ok(avatar.estiloCabelo) && avatar.estiloCabelo + ' hairstyle'
+  ].filter(ok);
+  if (looks.length) line += ` Appearance: ${looks.join(', ')}.`;
+  if (ok(avatar.personalidade)) line += ` Personality: ${avatar.personalidade}.`;
+  if (ok(avatar.conteudo)) line += ` Content style: ${avatar.conteudo}.`;
+  if (ok(avatar.desc)) line += ` Extra details: ${avatar.desc}.`;
+  return line;
+}
+
 function fsFinishVideoPrompt() {
   fsVideoPhase = 'done';
   const a = fsVideoAnswers;
-  const avatar = fsSelectedVideoAvatar;
-
-  const avatarLine = avatar
-    ? ` Featuring ${avatar.name}, ${avatar.age ? avatar.age + '-year-old ' : ''}${avatar.gender === 'f' ? 'female' : avatar.gender === 'm' ? 'male' : 'non-binary'} creator (${avatar.nicho || 'lifestyle'} niche, ${avatar.style || 'natural'} style).`
-    : '';
+  const avatarLine = fsAvatarLine(fsSelectedVideoAvatar);
   const detalhesLine = a.detalhes ? `\nAdditional details: ${a.detalhes}.` : '';
   const roteiroBlock = a.roteiro ? `\n\nSCRIPT:\n${a.roteiro}` : '';
 
-  const prompt = `Vertical ${a.formato || 'TikTok (9:16)'} video, ${a.duracao || '15s'} long, ${(a.tom || 'natural').toLowerCase()} tone. Product/theme: ${a.produto || 'product'}.${avatarLine} Handheld selfie-style UGC shot, natural lighting, authentic delivery, quick hook in the first 2 seconds, clear call to action at the end.${detalhesLine}${roteiroBlock}`;
+  const prompt =
+`Vertical ${a.formato || 'TikTok (9:16)'} video, ${a.duracao || '15s'} long, ${(a.tom || 'natural').toLowerCase()} tone.
+Product/theme: ${a.produto || 'product'}.${avatarLine}
+
+Camera & framing: handheld selfie-style UGC shot, chest-up framing with occasional close-ups of the product, subtle natural hand movement, no tripod feel.
+Lighting: natural window light or a soft ring light, warm and flattering, no harsh shadows.
+Pacing: strong hook in the first 2 seconds, a cut every 2-3 seconds, a clear product reveal in the middle, authentic and unscripted delivery.
+Audio: clear, close-mic voice with light trending background music and natural room tone.
+Call to action: close with a direct, friendly call to action (link in bio / tap the cart).${detalhesLine}${roteiroBlock}
+
+Avoid: blurry footage, over-polished ad look, distorted faces or hands, watermarks, on-screen text that is hard to read.`;
 
   fsBotSay('Prontinho! Seu prompt de vídeo está pronto.', () => {
     fsAddMsg('bot', prompt, { final: true, label: 'Prompt de vídeo', rawText: prompt, skipTypewriter: true, wide: true });
-    fsQuickReplies(['Recomeçar'], () => fsSetMode('video'));
+    document.getElementById('fs-chat-inputrow').style.display = 'none';
+    fsQuickReplies(['Novo prompt de vídeo'], () => { if (!fsGuardLimit()) fsStartVideoFlow(); });
   });
 }
 
@@ -459,16 +667,15 @@ function fsResetUpload() {
   if (zone) { zone.classList.remove('has-file'); zone.innerHTML = FS_UPLOAD_EMPTY_HTML; }
 }
 
-// Confere o CONTEÚDO do arquivo (primeiros bytes), não só o nome/tipo — renomear um .exe ou .pdf para .mp4 não passa.
 function fsDetectVideoSignature(b) {
   if (!b || b.length < 12) return false;
   const ascii = (from, to) => String.fromCharCode.apply(null, Array.from(b.slice(from, to)));
   const box = ascii(4, 8);
-  if (['ftyp', 'moov', 'mdat', 'wide', 'free', 'skip'].indexOf(box) !== -1) return true;         // MP4 / MOV / M4V / 3GP
-  if (b[0] === 0x1A && b[1] === 0x45 && b[2] === 0xDF && b[3] === 0xA3) return true;                // WebM / MKV
-  if (ascii(0, 4) === 'RIFF' && ascii(8, 12) === 'AVI ') return true;                               // AVI
+  if (['ftyp', 'moov', 'mdat', 'wide', 'free', 'skip'].indexOf(box) !== -1) return true;
+  if (b[0] === 0x1A && b[1] === 0x45 && b[2] === 0xDF && b[3] === 0xA3) return true;
+  if (ascii(0, 4) === 'RIFF' && ascii(8, 12) === 'AVI ') return true;
   const asf = [0x30, 0x26, 0xB2, 0x75, 0x8E, 0x66, 0xCF, 0x11];
-  if (b.length >= 8 && asf.every((v, i) => b[i] === v)) return true;                                // WMV / ASF
+  if (b.length >= 8 && asf.every((v, i) => b[i] === v)) return true; 
   return false;
 }
 
@@ -476,7 +683,6 @@ async function fsValidateVideoFile(file) {
   const ext = (file.name.split('.').pop() || '').toLowerCase();
   if (FS_VIDEO_EXTS.indexOf(ext) === -1) return false;
   const type = (file.type || '').toLowerCase();
-  // Alguns sistemas informam tipo vazio ou genérico para .mkv/.avi; a checagem dos bytes decide.
   if (type && type.indexOf('video/') !== 0 && type !== 'application/octet-stream') return false;
   try {
     const head = new Uint8Array(await file.slice(0, 16).arrayBuffer());
@@ -514,10 +720,10 @@ function fsFormatWait(sec) {
 async function fsRunExtract() {
   if (fsExtracting) return;
   if (!fsExtractFile) { fsToast('Envie um vídeo primeiro'); return; }
+  if (fsGuardLimit()) return;
   const file = fsExtractFile;
   const style = (document.getElementById('fs-style-input').value || '').trim();
 
-  // Rate limit no servidor (por licença). Só chega aqui com vídeo já validado.
   fsExtracting = true;
   const btn = document.getElementById('fs-extract-btn');
   if (btn) btn.disabled = true;
@@ -556,8 +762,10 @@ function fsSendMessage() {
   if (!el) return;
   const text = el.value.trim();
   if (!text) return;
+  if (fsGuardLimit()) return;
   el.value = '';
   if (fsMode === 'imagem') {
+    fsMaybeNameProject(text);
     fsAddMsg('user', text);
     fsBotSay('🖼️ Protótipo — a geração de imagem ainda não está ativa nesta versão. Em breve sua imagem aparecerá aqui.');
   } else if (fsMode === 'video') {
@@ -565,32 +773,100 @@ function fsSendMessage() {
   }
 }
 
-const VIRALIZE_PROMPTS = {
-  beleza: 'UGC-style vertical video, subject applying skincare product in a bright bathroom, natural morning light, close-up on texture, upbeat trending audio, hook: "minha pele nunca ficou assim tão rápido", 15s TikTok format.',
-  fitness: 'Handheld gym vertical video, subject holding product mid-workout, energetic pacing, quick cuts every 2s, hook: "o que eu uso antes de todo treino", upbeat trending audio, 15s TikTok format.',
-  moda: 'Try-on haul vertical video, subject rotating in front of mirror showing outfit/product, trendy transition cuts, hook: "isso tá bombando no TikTok", 20s Reels format.',
-  tech: 'Clean desk-setup vertical video, subject unboxing product with close-up detail shots, satisfying ASMR sounds, hook: "gadget que todo mundo devia ter", 25s TikTok format.',
-  casa: 'Cozy home vertical video, subject using product in a styled living space, soft natural light, slow pans, hook: "transformou minha casa em 1 dia", 20s Reels format.',
-  saude: 'Bright kitchen/bathroom vertical video, subject using wellness product as part of a morning routine, calm pacing, hook: "meu ritual de saúde matinal", 15s TikTok format.'
+const VIRALIZE_TEMPLATES = {
+  beleza: {
+    platform: 'TikTok', duration: '15s',
+    setting: 'a bright bathroom with soft morning window light, clean counter, a few skincare items in the background',
+    hook: 'minha pele nunca ficou assim tão rápido',
+    shots: ['Close-up of the product texture on the fingertips, shallow depth of field.', 'Slow, natural application on the cheek, skin glowing under soft light.', 'Mirror check with a genuine smile, holding the product next to the face.'],
+    audio: 'upbeat trending audio, soft satisfying tap sound when the product is opened',
+    cta: 'salva esse vídeo e testa hoje'
+  },
+  fitness: {
+    platform: 'TikTok', duration: '15s',
+    setting: 'a well-lit gym with equipment softly out of focus, energetic and clean',
+    hook: 'o que eu uso antes de todo treino',
+    shots: ['Handheld shot of the product in hand right before the first set.', 'Quick cuts every 2 seconds of the workout, product visible on the bench or in the bag.', 'Post-workout selfie, confident and out of breath, showing the product to camera.'],
+    audio: 'high-energy trending audio with a strong beat, natural gym ambience underneath',
+    cta: 'link na bio pra garantir o seu'
+  },
+  moda: {
+    platform: 'Reels', duration: '20s',
+    setting: 'a bedroom or hallway with a full-length mirror and natural light',
+    hook: 'isso tá bombando no TikTok',
+    shots: ['Mirror shot: slow turn to show the full outfit or product from every angle.', 'Trendy transition cut into a second look, same location, new styling.', 'Close-up on fabric, fit and details, then back to a full-body pose.'],
+    audio: 'trending beat-synced audio, transitions landing on the beat',
+    cta: 'me conta qual look você escolheria'
+  },
+  tech: {
+    platform: 'TikTok', duration: '25s',
+    setting: 'a clean desk setup with warm ambient light and a dark, minimal background',
+    hook: 'gadget que todo mundo devia ter',
+    shots: ['Unboxing from above, hands only, satisfying slow reveal of the packaging.', 'Close-up detail shots of ports, buttons and materials.', 'Product in real use at the desk, then a final hero shot on a neutral surface.'],
+    audio: 'satisfying ASMR unboxing sounds with a light lo-fi track under the voice',
+    cta: 'corre que o estoque acaba rápido'
+  },
+  casa: {
+    platform: 'Reels', duration: '20s',
+    setting: 'a cozy, styled living space with warm natural light and soft textures',
+    hook: 'transformou minha casa em 1 dia',
+    shots: ['Slow pan across the room before, showing the problem or empty spot.', 'The product being placed or used, with a smooth handheld move.', 'Final wide shot of the result with a relaxed, happy reaction.'],
+    audio: 'calm feel-good audio with light room tone',
+    cta: 'salva pra decorar a sua casa também'
+  },
+  saude: {
+    platform: 'TikTok', duration: '15s',
+    setting: 'a bright kitchen or bathroom during a calm morning routine',
+    hook: 'meu ritual de saúde matinal',
+    shots: ['Morning light on the counter, product placed next to a glass of water.', 'Natural use of the product as part of the routine, unhurried pacing.', 'Relaxed selfie speaking to camera about how it fits into the day.'],
+    audio: 'soft, calm trending audio with a gentle voiceover',
+    cta: 'testa por uma semana e me conta'
+  }
 };
 function fsNicheKeyFromAvatar(a) {
-  const n = (a.nicho || '').toLowerCase();
-  if (n.includes('beleza')) return 'beleza';
-  if (n.includes('fitness')) return 'fitness';
+  const n = [a.nicho, a.conteudo, a.style].filter(v => v && v !== '—').join(' ').toLowerCase();
+  if (n.includes('beleza') || n.includes('skincare')) return 'beleza';
+  if (n.includes('fitness') || n.includes('nutri')) return 'fitness';
   if (n.includes('moda')) return 'moda';
   if (n.includes('tech')) return 'tech';
   if (n.includes('casa') || n.includes('lifestyle')) return 'casa';
   if (n.includes('saúde') || n.includes('saude') || n.includes('wellness')) return 'saude';
   return 'moda';
 }
+function fsBuildViralizePrompt(avatar, key) {
+  const t = VIRALIZE_TEMPLATES[key] || VIRALIZE_TEMPLATES.moda;
+  return [
+    `Creator:${fsAvatarLine(avatar).replace(/^ Featuring /, ' ')}`,
+    `Format: ${t.duration} vertical 9:16 UGC video for ${t.platform}.`,
+    `Setting: ${t.setting}.`,
+    `Hook (0-3s): "${t.hook}".`,
+    'Shots:',
+    ...t.shots.map((x, i) => `${i + 1}. ${x}`),
+    `Audio: ${t.audio}.`,
+    `Call to action (last 3s): "${t.cta}".`,
+    'Look & feel: handheld, natural light, authentic UGC delivery, no over-polished ad look.',
+    'Avoid: blurry footage, distorted faces or hands, watermarks, hard-to-read on-screen text.'
+  ].join('\n');
+}
 function renderViralizeAvatars() {
   const grid = document.getElementById('viralize-avatar-grid');
-  if (!grid || typeof avatars === 'undefined') return;
-  grid.innerHTML = avatars.map(a => `<div class="viralize-avatar-card" data-id="${a.id}" onclick="selectViralizeAvatar(${a.id})" role="button" tabindex="0">
-      <div class="viralize-avatar-photo"><img src="${a.img}" alt="${fsEscape(a.name)}" loading="lazy"></div>
+  if (!grid) return;
+  const list = fsAllAvatars();
+  const current = grid.querySelector('.viralize-avatar-card.selected');
+  const currentId = current ? current.dataset.id : null;
+  const custom = list.filter(a => a.custom);
+  const builtin = list.filter(a => !a.custom);
+  const ordered = custom.concat(builtin);
+  grid.innerHTML = ordered.map((a, i) => `<div class="viralize-avatar-card${currentId != null && String(a.id) === currentId ? ' selected' : ''}" data-id="${fsEscape(String(a.id))}" data-idx="${i}" role="button" tabindex="0">
+      <div class="viralize-avatar-photo">${fsAvatarPhotoHtml(a)}</div>
       <div class="viralize-avatar-name">${fsEscape(a.name)}</div>
-      <div class="viralize-avatar-nicho">${fsEscape(a.nicho)}</div>
+      <div class="viralize-avatar-nicho">${fsEscape(a.nicho || '')}</div>
     </div>`).join('');
+  grid.querySelectorAll('.viralize-avatar-card').forEach(card => {
+    const pick = () => selectViralizeAvatar(ordered[Number(card.dataset.idx)]);
+    card.addEventListener('click', pick);
+    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+  });
   viralizeRenderLimitUI();
 }
 
@@ -636,10 +912,9 @@ function viralizeRenderLimitUI() {
   }
 }
 
-function selectViralizeAvatar(id) {
-  if (typeof avatars === 'undefined') return;
-  const avatar = avatars.find(a => a.id === id);
+function selectViralizeAvatar(avatar) {
   if (!avatar) return;
+  const id = String(avatar.id);
 
   const usage = viralizeGetUsage();
   const alreadyCurrent = usage.lastId === id;
@@ -655,9 +930,8 @@ function selectViralizeAvatar(id) {
     viralizeRenderLimitUI();
   }
 
-  document.querySelectorAll('.viralize-avatar-card').forEach(c => c.classList.toggle('selected', Number(c.dataset.id) === id));
-  const key = fsNicheKeyFromAvatar(avatar);
-  const prompt = VIRALIZE_PROMPTS[key];
+  document.querySelectorAll('.viralize-avatar-card').forEach(c => c.classList.toggle('selected', c.dataset.id === id));
+  const prompt = fsBuildViralizePrompt(avatar, fsNicheKeyFromAvatar(avatar));
   const out = document.getElementById('viralize-output');
   out.classList.add('visible');
   document.getElementById('viralize-output-avatar').textContent = avatar.name;
@@ -690,3 +964,39 @@ document.addEventListener('DOMContentLoaded', () => {
   const fileInput = document.getElementById('fs-video-file-input');
   if (fileInput) fileInput.addEventListener('change', fsHandleUploadChange);
 });
+
+
+function fsExportProjects() {
+  return JSON.parse(JSON.stringify(fsProjects));
+}
+
+function fsImportProjects(list) {
+  if (!Array.isArray(list)) return false;
+  const seen = new Set();
+  const clean = [];
+  list.forEach(raw => {
+    const p = fsNormalizeProject(raw);
+    if (!p) return;
+    while (seen.has(p.id)) p.id = fsCleanId(p.id + Math.floor(Math.random() * 1000));
+    seen.add(p.id);
+    clean.push(p);
+  });
+  fsFlowId++;
+  fsHideTyping();
+  fsProjects = clean;
+  fsActiveProject = null;
+  fsSaveProjects();
+  const chat = document.getElementById('fs-chat-view');
+  const projects = document.getElementById('fs-projects-view');
+  if (chat) chat.style.display = 'none';
+  if (projects) projects.style.display = 'block';
+  renderFsProjects();
+  return true;
+}
+
+function fsResetProjects() {
+  try { localStorage.removeItem(FS_PROJECTS_KEY); } catch (e) {}
+  fsProjects = fsLoadProjects();
+  fsActiveProject = null;
+  renderFsProjects();
+}
