@@ -139,6 +139,60 @@ const Session = (() => {
     try { localStorage.setItem(TERMS_KEY, TERMS_VERSION); } catch {  }
   }
 
+  // Logo idêntico ao do header do app (raio + "Nex AI"), reaproveitando .logo / .logo-icon / .logo-text.
+  function buildBrandLogo() {
+    const logo = document.createElement('div');
+    logo.className = 'logo act-logo';
+    logo.innerHTML = `
+      <div class="logo-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:white;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+      </div>`;
+    const logoText = document.createElement('span');
+    logoText.className = 'logo-text';
+    logoText.textContent = 'Nex AI';
+    logo.appendChild(logoText);
+    return logo;
+  }
+
+  // Linha "Li e concordo..." com links roxos em negrito (usada na ativação e no aceite avulso)
+  function buildTermsCheck() {
+    const returnPage = (location.pathname.split('/').pop() || 'index.html');
+
+    const row = document.createElement('label');
+    row.className = 'terms-check-row';
+    row.setAttribute('for', 'terms-checkbox');
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = 'terms-checkbox';
+    checkbox.className = 'terms-checkbox';
+
+    const text = document.createElement('span');
+
+    const termsLink = document.createElement('a');
+    termsLink.className = 'terms-link';
+    termsLink.href = `landing/terms.html?return=${encodeURIComponent(returnPage)}`;
+    termsLink.target = '_blank';
+    termsLink.rel = 'noopener noreferrer';
+    termsLink.textContent = 'Termos de Uso';
+
+    const privacyLink = document.createElement('a');
+    privacyLink.className = 'terms-link';
+    privacyLink.href = `landing/privacy.html?return=${encodeURIComponent(returnPage)}`;
+    privacyLink.target = '_blank';
+    privacyLink.rel = 'noopener noreferrer';
+    privacyLink.textContent = 'Política de Privacidade';
+
+    // Clicar no link não deve marcar/desmarcar o checkbox
+    [termsLink, privacyLink].forEach(a => a.addEventListener('click', e => e.stopPropagation()));
+
+    text.append('Li e concordo com os ', termsLink, ' e a ', privacyLink);
+    row.append(checkbox, text);
+    return { row, checkbox };
+  }
+
   function showTermsOverlay(onAccept) {
     let ov = document.getElementById('terms-overlay');
     if (ov) { ov.style.display = ''; return; }
@@ -149,18 +203,7 @@ const Session = (() => {
     const card = document.createElement('div');
     card.className = 'act-card terms-card';
 
-    const logo = document.createElement('div');
-    logo.className = 'act-logo';
-    logo.innerHTML = `
-      <div class="act-logo-icon">
-        <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:white;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round">
-          <polyline points="4 4 12 20 20 4" style="stroke-width:2.6"/>
-        </svg>
-      </div>`;
-    const logoText = document.createElement('span');
-    logoText.className = 'act-logo-text';
-    logoText.textContent = 'Viralyze';
-    logo.appendChild(logoText);
+    const logo = buildBrandLogo();
 
     const title = document.createElement('div');
     title.className = 'act-title';
@@ -168,44 +211,9 @@ const Session = (() => {
 
     const sub = document.createElement('div');
     sub.className = 'act-sub';
-    sub.textContent = 'Para usar a plataforma, você precisa ler e concordar com nossos Termos de Uso e nossa Política de Privacidade.';
+    sub.textContent = 'Para continuar usando a plataforma, confirme que você concorda com os nossos termos.';
 
-    const linksWrap = document.createElement('div');
-    linksWrap.className = 'terms-links';
-
-    const returnPage = (location.pathname.split('/').pop() || 'index.html');
-
-    const termsLink = document.createElement('a');
-    termsLink.href = `landing/terms.html?return=${encodeURIComponent(returnPage)}`;
-    termsLink.target = '_blank';
-    termsLink.rel = 'noopener noreferrer';
-    termsLink.textContent = 'Termos de Uso';
-
-    const sep = document.createElement('span');
-    sep.className = 'terms-links-sep';
-    sep.textContent = '•';
-
-    const privacyLink = document.createElement('a');
-    privacyLink.href = `landing/privacy.html?return=${encodeURIComponent(returnPage)}`;
-    privacyLink.target = '_blank';
-    privacyLink.rel = 'noopener noreferrer';
-    privacyLink.textContent = 'Política de Privacidade';
-
-    linksWrap.append(termsLink, sep, privacyLink);
-
-    const checkRow = document.createElement('label');
-    checkRow.className = 'terms-check-row';
-    checkRow.setAttribute('for', 'terms-checkbox');
-
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.id = 'terms-checkbox';
-    checkbox.className = 'terms-checkbox';
-
-    const checkText = document.createElement('span');
-    checkText.textContent = 'Li e concordo com os Termos de Uso e a Política de Privacidade';
-
-    checkRow.append(checkbox, checkText);
+    const { row: checkRow, checkbox } = buildTermsCheck();
 
     const btn = document.createElement('button');
     btn.className = 'act-btn';
@@ -233,7 +241,7 @@ const Session = (() => {
       });
     });
 
-    card.append(logo, title, sub, linksWrap, checkRow, btn);
+    card.append(logo, title, sub, checkRow, btn);
     ov.appendChild(card);
     document.body.prepend(ov);
   }
@@ -248,18 +256,7 @@ const Session = (() => {
     const card = document.createElement('div');
     card.className = 'loading-card';
 
-    const logo = document.createElement('div');
-    logo.className = 'act-logo';
-    logo.innerHTML = `
-      <div class="act-logo-icon">
-        <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:white;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round">
-          <polyline points="4 4 12 20 20 4" style="stroke-width:2.6"/>
-        </svg>
-      </div>`;
-    const logoText = document.createElement('span');
-    logoText.className = 'act-logo-text';
-    logoText.textContent = 'Viralyze';
-    logo.appendChild(logoText);
+    const logo = buildBrandLogo();
 
     const spinner = document.createElement('div');
     spinner.className = 'loading-spinner';
@@ -304,18 +301,7 @@ const Session = (() => {
     const card = document.createElement('div');
     card.className = 'act-card';
 
-    const logo = document.createElement('div');
-    logo.className = 'act-logo';
-    logo.innerHTML = `
-      <div class="act-logo-icon">
-        <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:white;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round">
-          <polyline points="4 4 12 20 20 4" style="stroke-width:2.6"/>
-        </svg>
-      </div>`;
-    const logoText = document.createElement('span');
-    logoText.className = 'act-logo-text';
-    logoText.textContent = 'Viralyze';
-    logo.appendChild(logoText);
+    const logo = buildBrandLogo();
 
     const title = document.createElement('div');
     title.className = 'act-title';
@@ -362,7 +348,7 @@ const Session = (() => {
     btn.id = 'act-submit-btn';
     btn.type = 'button';
     btn.disabled = true;
-    btn.textContent = 'Ativar Agora';
+    btn.textContent = 'Continuar';
     btn.addEventListener('click', () => window.submitActivation());
 
     const actions = document.createElement('div');
@@ -370,19 +356,23 @@ const Session = (() => {
     actions.id = 'act-actions';
     actions.append(btn);
 
-    card.append(logo, title, sub, field, msgEl, actions);
+    const { row: termsRow, checkbox: termsCheckbox } = buildTermsCheck();
+
+    card.append(logo, title, sub, field, termsRow, msgEl, actions);
     ov.appendChild(card);
 
-    _bindDigitEvents(digits);
+    _bindDigitEvents(digits, termsCheckbox);
 
     return ov;
   }
 
-  function _bindDigitEvents(digits) {
+  function _bindDigitEvents(digits, termsCheckbox) {
 
     let attempts = 0;
     const MAX_CLIENT_ATTEMPTS = 5;
     let blockedUntil = 0;
+
+    termsCheckbox.addEventListener('change', () => { clearMsg(); paintTrack(); });
 
     digits.forEach((inp, i) => {
       inp.addEventListener('input', function () {
@@ -438,6 +428,11 @@ const Session = (() => {
         return;
       }
 
+      if (!termsCheckbox.checked) {
+        showError('Aceite os Termos de Uso e a Política de Privacidade para continuar.');
+        return;
+      }
+
       const btnEl = document.getElementById('act-submit-btn');
       if (btnEl) { btnEl.disabled = true; btnEl.classList.add('busy'); btnEl.textContent = 'Verificando...'; }
       digits.forEach(d => d.blur());
@@ -446,6 +441,7 @@ const Session = (() => {
       try {
         const result = await activate(code);
         saveSession(result.token, result.expiresAt);
+        acceptTerms();
         if (btnEl) btnEl.classList.remove('busy');
 
         accept();
@@ -515,7 +511,7 @@ const Session = (() => {
     function paintTrack() {
       const n = digits.filter(d => d.value).length;
       const btnEl = document.getElementById('act-submit-btn');
-      if (btnEl) btnEl.disabled = n < 5;
+      if (btnEl) btnEl.disabled = n < 5 || !termsCheckbox.checked;
     }
 
     function accept() {
@@ -525,14 +521,14 @@ const Session = (() => {
       const t = document.getElementById('act-title');
       const s = document.getElementById('act-sub');
       if (t) t.textContent = 'Licença ativada';
-      if (s) s.textContent = 'Tudo pronto. Bem-vindo ao Viralyze.';
+      if (s) s.textContent = 'Tudo pronto. Bem-vindo à Nex AI.';
     }
 
     function deny(text) {
       const card = document.querySelector('.act-card');
       const btnEl = document.getElementById('act-submit-btn');
 
-      if (btnEl) btnEl.textContent = 'Ativar Agora';
+      if (btnEl) btnEl.textContent = 'Continuar';
       if (card) card.classList.add('denied');
       setMsg(text, true);
 
@@ -554,10 +550,6 @@ const Session = (() => {
 
     try {
 
-      if (!hasAcceptedTerms()) {
-        showTermsOverlay(proceedAfterTerms);
-        return;
-      }
       await proceedAfterTerms();
     } finally {
       clearTimeout(watchdog);
@@ -584,6 +576,11 @@ const Session = (() => {
 
       const expiryEl = document.getElementById('expiry-display');
       if (expiryEl) expiryEl.textContent = fmtDate(result.expiresAt);
+
+      if (!hasAcceptedTerms()) {
+        showTermsOverlay(async () => releaseGate());
+        return;
+      }
 
       releaseGate();
 
