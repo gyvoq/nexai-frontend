@@ -1,28 +1,95 @@
-const products = [ {
-  id: 25,
-  name: "Vitamina C Pó Efervescente",
-  cat: "saude",
-  img: "./img25.png",
-  rank: 1,
-  grad: "grad-saude",
-  tag: "#saude",
-  prompt: "effervescent vitamin C powder tube orange packaging"},
-{id: 38,
-  name: "Colágeno Hidrolisado Sabor Frutas",
-  cat: "saude",
-  img: "./img34.png",
-  rank: 2,
-  grad: "grad-saude",
-  tag: "#saude",
-  prompt: "hydrolyzed collagen supplement pouch fruit flavor pastel packaging"},
-{id: 6,
-  name: "Blush em Bastão Multiuso",
+const products = [
+{
+  id: 101,
+  name: "Perfume Árabe Lattafa Yara",
   cat: "beleza",
-  img: "./img6.png",
-  rank: 3,
+  img: "./assets/produtos/P1.avif",
+  rank: 1,
   grad: "grad-beleza",
   tag: "#beleza",
-  prompt: "cream blush stick coral shade in sleek tube packaging"} ];
+  prompt: "perfume feminino com embalagem marcante"
+},
+{
+  id: 102,
+  name: "Mini Projetor Portátil 4K",
+  cat: "tech",
+  img: "./assets/produtos/P2.avif",
+  rank: 2,
+  grad: "grad-tech",
+  tag: "#tech",
+  prompt: "mini projetor portátil 4K projetando imagem na parede"
+},
+{
+  id: 103,
+  name: "Garrafa Térmica Stanley Quencher",
+  cat: "casa",
+  img: "./assets/produtos/P3.avif",
+  rank: 3,
+  grad: "grad-casa",
+  tag: "#casa",
+  prompt: "garrafa térmica Stanley Quencher com design reconhecível"
+},
+{
+  id: 104,
+  name: "Escova Secadora 4 em 1",
+  cat: "beleza",
+  img: "./assets/produtos/P4.avif",
+  rank: 4,
+  grad: "grad-beleza",
+  tag: "#beleza",
+  prompt: "escova secadora 4 em 1 transformando o cabelo"
+},
+{
+  id: 105,
+  name: "Luminária LED Sunset",
+  cat: "casa",
+  img: "./assets/produtos/P5.avif",
+  rank: 5,
+  grad: "grad-casa",
+  tag: "#casa",
+  prompt: "luminária LED efeito pôr do sol na parede"
+},
+{
+  id: 106,
+  name: "Massageador Facial de Gelo",
+  cat: "beleza",
+  img: "./assets/produtos/P6.avif",
+  rank: 6,
+  grad: "grad-beleza",
+  tag: "#beleza",
+  prompt: "massageador facial de gelo para skincare"
+},
+{
+  id: 107,
+  name: "Fone Bluetooth com Tela Touch",
+  cat: "tech",
+  img: "./assets/produtos/P7.avif",
+  rank: 7,
+  grad: "grad-tech",
+  tag: "#tech",
+  prompt: "fone bluetooth com estojo de tela touch"
+},
+{
+  id: 108,
+  name: "Projetor de Galáxia Astronauta",
+  cat: "casa",
+  img: "./assets/produtos/P8.avif",
+  rank: 8,
+  grad: "grad-casa",
+  tag: "#casa",
+  prompt: "projetor de galáxia astronauta projetando estrelas no teto"
+},
+{
+  id: 109,
+  name: "Organizador Giratório de Maquiagem",
+  cat: "beleza",
+  img: "./assets/produtos/P9.avif",
+  rank: 9,
+  grad: "grad-beleza",
+  tag: "#beleza",
+  prompt: "organizador giratório de maquiagem antes e depois"
+}
+];
 const videos = [ {
   id: "51",
   title: "Jelly Blox ASMR",
