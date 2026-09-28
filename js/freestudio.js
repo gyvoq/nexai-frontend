@@ -100,11 +100,6 @@ function fsBackToProjects() {
   renderFsProjects();
 }
 
-/* ---------------------------------------------------------------------- */
-/* Utilitários de chat: indicador de "digitando..." + efeito de máquina   */
-/* de escrever, pra deixar a conversa com cara de chat de verdade.        */
-/* ---------------------------------------------------------------------- */
-
 const FS_TYPING_DELAY_MIN = 450;
 const FS_TYPING_DELAY_MAX = 1000;
 
@@ -150,13 +145,6 @@ function fsTypewrite(el, text) {
   })();
 }
 
-/**
- * Adiciona uma mensagem ao chat.
- * opts.raw     -> content é HTML confiável (ex: grid de avatares), inserido direto.
- * opts.final   -> estiliza como "prompt final" e adiciona botão de copiar.
- * opts.wide    -> mensagem ocupa a largura toda (útil pra grids).
- * opts.skipTypewriter -> insere o texto de uma vez, sem efeito de digitação.
- */
 function fsAddMsg(who, content, opts = {}) {
   const body = document.getElementById('fs-chat-body');
   if (!body) return null;
@@ -187,11 +175,6 @@ function fsAddMsg(who, content, opts = {}) {
   return div;
 }
 
-/**
- * "Fala" do bot: mostra o indicador de digitando por um tempo aleatório,
- * remove, escreve a mensagem com efeito de máquina de escrever e só então
- * chama o callback (ex: pra liberar as quick replies após o texto terminar).
- */
 function fsBotSay(text, callback, opts = {}) {
   fsShowTyping();
   const wait = FS_TYPING_DELAY_MIN + Math.random() * (FS_TYPING_DELAY_MAX - FS_TYPING_DELAY_MIN);
@@ -210,12 +193,6 @@ function fsQuickReplies(options) {
     btn.addEventListener('click', () => fsHandleAnswer(btn.textContent));
   });
 }
-
-/* ---------------------------------------------------------------------- */
-/* Campo de texto do chat: alterna entre input de uma linha e textarea    */
-/* (usado nas etapas de roteiro / detalhes específicos, que são mais      */
-/* longas).                                                                */
-/* ---------------------------------------------------------------------- */
 
 let fsInputMode = 'text';
 
@@ -261,10 +238,6 @@ function fsActiveInputEl() {
     : document.getElementById('fs-chat-input');
 }
 
-/* ---------------------------------------------------------------------- */
-/* Modo "imagem" / "extrair movimento" / "vídeo"                          */
-/* ---------------------------------------------------------------------- */
-
 function fsSetMode(mode) {
   fsMode = mode;
   document.querySelectorAll('.fs-mode-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
@@ -300,9 +273,7 @@ function fsSetMode(mode) {
   }
 }
 
-/* ---- Modo vídeo: avatar -> perguntas (com roteiro e detalhes) -> prompt final ---- */
-
-let fsVideoPhase = 'avatar'; // 'avatar' | 'questions' | 'done'
+let fsVideoPhase = 'avatar';
 let fsVideoStep = 0;
 let fsVideoAnswers = {};
 let fsSelectedVideoAvatar = null;
@@ -430,8 +401,6 @@ function fsFinishVideoPrompt() {
   });
 }
 
-/* ---- Modo "extrair movimento" ---- */
-
 const FS_EXTRACT_PROMPTS = [
   'Handheld mirror selfie shot, natural indoor lighting, subject holding product at chest height, slow subtle sway, casual UGC energy, 9:16 vertical.',
   'Static tripod shot, subject enters frame from the side, product reveal at center, soft window light, minimal camera movement, clean background.',
@@ -485,10 +454,6 @@ function fsSendMessage() {
     fsHandleAnswer(text);
   }
 }
-
-/* ---------------------------------------------------------------------- */
-/* Viralize A.I. (inalterado)                                             */
-/* ---------------------------------------------------------------------- */
 
 const VIRALIZE_PROMPTS = {
   beleza: 'UGC-style vertical video, subject applying skincare product in a bright bathroom, natural morning light, close-up on texture, upbeat trending audio, hook: "minha pele nunca ficou assim tão rápido", 15s TikTok format.',
