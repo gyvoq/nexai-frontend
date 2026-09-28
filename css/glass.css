@@ -302,3 +302,11 @@ body::after {
 .imglib-empty { border-radius: var(--radius-lg); padding: 48px 20px; text-align: center; color: var(--text2); }
 .imglib-empty svg { width: 40px; height: 40px; stroke: var(--text3); fill: none; stroke-width: 1.4; margin-bottom: 14px; }
 .imglib-empty p { font-size: 13.5px; margin-bottom: 16px; }
+
+#avatar-grid, #custom-avatar-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important; gap: 10px; }
+#avatar-grid .avatar-img, #custom-avatar-grid .avatar-img { aspect-ratio: 1.6; }
+#avatar-grid .avatar-body, #custom-avatar-grid .avatar-body { padding: 6px 9px 8px; }
+#avatar-grid .avatar-name, #custom-avatar-grid .avatar-name { font-size: 12px; }
+#avatar-grid .avatar-meta, #custom-avatar-grid .avatar-meta { font-size: 10.5px; }
+#avatar-grid .avatar-badge, #custom-avatar-grid .avatar-badge { margin-top: 4px; font-size: 9.5px; padding: 2px 7px; }
+#avatar-grid .use-btn, #custom-avatar-grid .use-btn { margin-top: 6px; padding: 5px; font-size: 11px; }
