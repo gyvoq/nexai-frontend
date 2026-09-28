@@ -105,3 +105,11 @@ input:focus, textarea:focus, select:focus, .form-input:focus, .text-input:focus
 section, .hero, .pricing { padding-top: clamp(48px, 8vw, 96px); padding-bottom: clamp(48px, 8vw, 96px); }
 .features, .results, .pricing, .galeria-inner, .testimonials-inner { max-width: 1200px; }
 .header, nav, .sidebar { border-color: var(--hairline); }
+
+.trending-badge {
+  background: rgba(12,10,18,.78) !important;
+  border-color: rgba(255,255,255,.16);
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+  color: #fff !important;
+}
+.trending-badge::before { color: #fff; }
