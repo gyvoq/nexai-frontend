@@ -445,3 +445,11 @@ body.landing .result-item {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
+
+@media (pointer: coarse) {
+  input:not([type=range]):not([type=checkbox]):not([type=radio]):not([type=file]):not([type=hidden]):not(.act-digit),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
