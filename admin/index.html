@@ -30,12 +30,11 @@ button,input,select{font-family:inherit;font-size:inherit;color:inherit;}
 button{cursor:pointer;}
 :focus-visible{outline:2px solid var(--purple);outline-offset:2px;}
 
-/* ---------- Login ---------- */
 #login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:20px;z-index:100;}
-.login-card{width:100%;max-width:340px;}
+.login-card{width:100%;max-width:360px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 24px;}
 .brand{font-size:18px;font-weight:600;margin-bottom:28px;}
 .login-card label{display:block;color:var(--muted);margin-bottom:8px;}
-.input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 13px;outline:none;transition:border-color .15s;}
+.input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:11px 13px;outline:none;transition:border-color .15s;}
 .input:focus{border-color:var(--purple);}
 .btn-primary{background:var(--purple);border:none;border-radius:var(--radius);color:#fff;font-weight:600;padding:11px 18px;transition:opacity .15s;}
 .btn-primary:hover{opacity:.88;}
@@ -43,7 +42,6 @@ button{cursor:pointer;}
 .login-card .btn-primary{width:100%;margin-top:12px;}
 .login-error{color:var(--red);font-size:13px;margin-top:10px;min-height:18px;}
 
-/* ---------- Layout ---------- */
 #main{display:none;}
 .header{border-bottom:1px solid var(--border);height:56px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;background:var(--bg);}
 .header .brand{margin:0;font-size:16px;}
@@ -51,21 +49,40 @@ button{cursor:pointer;}
 .link-btn:hover{color:var(--text);}
 .content{max-width:1000px;margin:0 auto;padding:28px 24px 60px;}
 
-/* ---------- Criar licença ---------- */
 .create{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:28px;}
 .create-title{font-weight:600;margin-bottom:14px;}
 .create-row{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;}
 .field{display:flex;flex-direction:column;gap:6px;}
 .field > span{color:var(--muted);font-size:12.5px;}
-.select,.date{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;outline:none;min-width:130px;}
-.select:focus,.date:focus{border-color:var(--purple);}
-.date::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.5;}
+.dd{position:relative;}
+.dd-btn{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:140px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;text-align:left;transition:border-color .15s;}
+.dd-btn:hover,.dd.open .dd-btn{border-color:var(--purple);}
+.dd-btn svg{width:14px;height:14px;flex-shrink:0;color:var(--muted);}
+.dd-btn .ph{color:var(--muted);}
+.dd-menu,.cal{display:none;position:absolute;top:calc(100% + 6px);left:0;background:var(--surface2);border:1px solid var(--border);border-radius:12px;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,.5);}
+.dd.open .dd-menu,.dd.open .cal{display:block;}
+.dd-menu{min-width:100%;padding:4px;}
+.dd-item{display:block;width:100%;text-align:left;background:none;border:none;border-radius:8px;padding:8px 10px;white-space:nowrap;}
+.dd-item:hover{background:rgba(255,255,255,.06);}
+.dd-item.active{color:var(--purple);font-weight:600;}
+.cal{width:264px;max-width:calc(100vw - 28px);padding:12px;}
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-weight:600;}
+.cal-nav{background:none;border:none;width:28px;height:28px;border-radius:8px;color:var(--muted);font-size:18px;line-height:1;}
+.cal-nav:hover{background:rgba(255,255,255,.06);color:var(--text);}
+.cal-week,.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.cal-week span{text-align:center;color:var(--muted);font-size:12px;padding:4px 0;}
+.day{aspect-ratio:1;background:none;border:1px solid transparent;border-radius:8px;font-size:13px;}
+.day:hover:not(:disabled){background:rgba(255,255,255,.08);}
+.day.today{border-color:rgba(139,92,246,.55);}
+.day.sel{background:var(--purple);color:#fff;font-weight:600;}
+.day:disabled{opacity:.25;cursor:not-allowed;}
 .qty{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:8px;}
 .qty button{background:none;border:none;width:34px;height:36px;font-size:17px;color:var(--muted);}
 .qty button:hover{color:var(--text);}
 .qty output{min-width:30px;text-align:center;font-weight:600;}
 .toggle{display:flex;align-items:center;gap:8px;color:var(--muted);cursor:pointer;user-select:none;padding-bottom:9px;}
-.toggle input{accent-color:var(--purple);width:15px;height:15px;}
+.toggle input{appearance:none;-webkit-appearance:none;width:16px;height:16px;border:1px solid var(--border);border-radius:5px;background:var(--surface2);cursor:pointer;transition:all .15s;}
+.toggle input:checked{background:var(--purple) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='5 12 10 17 19 7'/%3E%3C/svg%3E") center/12px no-repeat;border-color:var(--purple);}
 .custom-dates{display:none;gap:14px;}
 .custom-dates.visible{display:flex;flex-wrap:wrap;}
 .hidden{display:none !important;}
@@ -76,7 +93,6 @@ button{cursor:pointer;}
 .key-chip{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;font-weight:600;letter-spacing:.5px;color:var(--text);transition:border-color .15s;}
 .key-chip:hover{border-color:var(--purple);}
 
-/* ---------- Abas / busca ---------- */
 .toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px;}
 .tabs{display:flex;flex-wrap:wrap;gap:4px;}
 .tab{background:none;border:1px solid transparent;border-radius:8px;padding:7px 12px;color:var(--muted);display:flex;align-items:center;gap:7px;transition:all .15s;}
@@ -93,7 +109,6 @@ button{cursor:pointer;}
 .icon-btn{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:0 12px;color:var(--muted);transition:color .15s;}
 .icon-btn:hover{color:var(--text);}
 
-/* ---------- Tabela ---------- */
 .table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
 .table-wrap{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;}
@@ -116,7 +131,6 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
 .act-delete{color:var(--red);border-color:rgba(239,68,68,.4);}
 .act-delete:hover{background:rgba(239,68,68,.12);}
 
-/* ---------- Toast / modal ---------- */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 16px;font-weight:500;opacity:0;pointer-events:none;transition:all .2s;z-index:300;white-space:nowrap;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;}
@@ -143,7 +157,6 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
 </head>
 <body>
 
-<!-- Login -->
 <div id="login-screen">
   <div class="login-card">
     <div class="brand">Viralyze admin</div>
@@ -154,7 +167,6 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
   </div>
 </div>
 
-<!-- App -->
 <div id="main">
   <header class="header">
     <div class="brand">Viralyze admin</div>
@@ -163,23 +175,46 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
 
   <div class="content">
 
-    <!-- Criar -->
     <section class="create">
       <div class="create-title">Nova licença</div>
       <div class="create-row">
-        <label class="field" id="validity-field">
+        <div class="field" id="validity-field">
           <span>Validade</span>
-          <select class="select" id="validity-select">
-            <option value="1">1 mês</option>
-            <option value="3">3 meses</option>
-            <option value="6">6 meses</option>
-            <option value="12">12 meses</option>
-          </select>
-        </label>
+          <div class="dd" id="validity-dd">
+            <button type="button" class="dd-btn" onclick="toggleDD(event)">
+              <span id="validity-label">1 mês</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="dd-menu" onclick="event.stopPropagation()">
+              <button type="button" class="dd-item active" onclick="pickValidity(this,1)">1 mês</button>
+              <button type="button" class="dd-item" onclick="pickValidity(this,3)">3 meses</button>
+              <button type="button" class="dd-item" onclick="pickValidity(this,6)">6 meses</button>
+              <button type="button" class="dd-item" onclick="pickValidity(this,12)">12 meses</button>
+            </div>
+          </div>
+        </div>
 
         <div class="custom-dates" id="custom-dates">
-          <label class="field"><span>Início</span><input type="date" class="date" id="custom-start"></label>
-          <label class="field"><span>Fim</span><input type="date" class="date" id="custom-end"></label>
+          <div class="field">
+            <span>Início</span>
+            <div class="dd">
+              <button type="button" class="dd-btn" onclick="openCal('start',event)">
+                <span class="ph" id="label-start">Selecionar</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="16" y1="3" x2="16" y2="7"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </button>
+              <div class="cal" id="cal-start" onclick="event.stopPropagation()"></div>
+            </div>
+          </div>
+          <div class="field">
+            <span>Fim</span>
+            <div class="dd">
+              <button type="button" class="dd-btn" onclick="openCal('end',event)">
+                <span class="ph" id="label-end">Selecionar</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="16" y1="3" x2="16" y2="7"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </button>
+              <div class="cal" id="cal-end" onclick="event.stopPropagation()"></div>
+            </div>
+          </div>
         </div>
 
         <div class="field">
@@ -208,7 +243,6 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
       </div>
     </section>
 
-    <!-- Filtros -->
     <div class="toolbar">
       <div class="tabs" id="tabs">
         <button class="tab active" data-filter="all" onclick="setFilter('all',this)">Todas <span class="count" id="n-all">0</span></button>
@@ -223,7 +257,6 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
       </div>
     </div>
 
-    <!-- Tabela -->
     <div class="table-card">
       <div class="table-wrap">
         <table>
@@ -252,9 +285,8 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
 
 <script>
 const API = 'https://nexai-backend-production-5e36.up.railway.app';
-let adminSecret='', allLicenses=[], currentFilter='all', createdKeys=[], qty=1, dateMode='auto';
+let adminSecret='', allLicenses=[], currentFilter='all', createdKeys=[], qty=1, dateMode='auto', validity=1;
 
-/* ---------- Login ---------- */
 function doLogin(){
   const val=document.getElementById('secret-input').value.trim();
   if(!val){showErr('Digite a senha.');return;}
@@ -281,14 +313,12 @@ function doLogout(){
 }
 document.getElementById('secret-input').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 
-/* ---------- Modo de data ---------- */
 function setDateMode(mode){
   dateMode=mode;
   document.getElementById('custom-dates').classList.toggle('visible',mode==='custom');
   document.getElementById('validity-field').classList.toggle('hidden',mode==='custom');
 }
 
-/* ---------- Dados ---------- */
 function loadLicenses(){
   fetch(`${API}/api/admin/licenses`,{headers:{'X-Admin-Secret':adminSecret}})
     .then(r=>r.json())
@@ -309,7 +339,77 @@ function updateCounts(){
   Object.keys(c).forEach(k=>document.getElementById('n-'+k).textContent=c[k]);
 }
 
-/* ---------- Criar ---------- */
+const MONTHS=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const cal={start:{value:'',view:null},end:{value:'',view:null}};
+const pad=n=>String(n).padStart(2,'0');
+const toIso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const fromIso=v=>{const [y,m,d]=v.split('-').map(Number);return new Date(y,m-1,d);};
+
+function closePopups(){document.querySelectorAll('.dd.open').forEach(d=>d.classList.remove('open'));}
+function toggleDD(e){
+  e.stopPropagation();
+  const dd=e.currentTarget.parentElement;
+  const open=!dd.classList.contains('open');
+  closePopups();
+  dd.classList.toggle('open',open);
+}
+function pickValidity(el,v){
+  validity=v;
+  document.getElementById('validity-label').textContent=el.textContent;
+  el.parentElement.querySelectorAll('.dd-item').forEach(i=>i.classList.toggle('active',i===el));
+  closePopups();
+}
+function openCal(which,e){
+  e.stopPropagation();
+  const dd=e.currentTarget.parentElement;
+  const open=!dd.classList.contains('open');
+  closePopups();
+  if(!open)return;
+  const c=cal[which];
+  const base=c.value?fromIso(c.value):(which==='end'&&cal.start.value?fromIso(cal.start.value):new Date());
+  c.view=new Date(base.getFullYear(),base.getMonth(),1);
+  renderCal(which);
+  dd.classList.add('open');
+}
+function navCal(which,dir){
+  const v=cal[which].view;
+  cal[which].view=new Date(v.getFullYear(),v.getMonth()+dir,1);
+  renderCal(which);
+}
+function renderCal(which){
+  const c=cal[which];
+  const y=c.view.getFullYear(), m=c.view.getMonth();
+  const offset=new Date(y,m,1).getDay();
+  const days=new Date(y,m+1,0).getDate();
+  const today=toIso(new Date());
+  let cells='';
+  for(let i=0;i<offset;i++)cells+='<span></span>';
+  for(let d=1;d<=days;d++){
+    const v=toIso(new Date(y,m,d));
+    const off=which==='end'&&cal.start.value&&v<=cal.start.value;
+    const cls='day'+(v===c.value?' sel':'')+(v===today?' today':'');
+    cells+=`<button type="button" class="${cls}" ${off?'disabled':''} onclick="pickDate('${which}','${v}')">${d}</button>`;
+  }
+  document.getElementById('cal-'+which).innerHTML=
+    `<div class="cal-head"><button type="button" class="cal-nav" onclick="navCal('${which}',-1)" aria-label="Mês anterior">‹</button><span>${MONTHS[m]} ${y}</span><button type="button" class="cal-nav" onclick="navCal('${which}',1)" aria-label="Próximo mês">›</button></div>`+
+    `<div class="cal-week">${['D','S','T','Q','Q','S','S'].map(x=>`<span>${x}</span>`).join('')}</div>`+
+    `<div class="cal-grid">${cells}</div>`;
+}
+function setLabel(which){
+  const el=document.getElementById('label-'+which);
+  const v=cal[which].value;
+  el.textContent=v?v.split('-').reverse().join('/'):'Selecionar';
+  el.classList.toggle('ph',!v);
+}
+function pickDate(which,v){
+  cal[which].value=v;
+  if(which==='start'&&cal.end.value&&cal.end.value<=v){cal.end.value='';setLabel('end');}
+  setLabel(which);
+  closePopups();
+}
+document.addEventListener('click',closePopups);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePopups();});
+
 function changeQty(d){
   qty=Math.max(1,Math.min(50,qty+d));
   document.getElementById('qty-display').textContent=qty;
@@ -317,11 +417,11 @@ function changeQty(d){
 
 async function createLicenses(){
   const btn=document.getElementById('create-btn');
-  const body={validityMonths:parseInt(document.getElementById('validity-select').value)||1};
+  const body={validityMonths:validity};
 
   if(dateMode==='custom'){
-    const s=document.getElementById('custom-start').value;
-    const e=document.getElementById('custom-end').value;
+    const s=cal.start.value;
+    const e=cal.end.value;
     if(!s||!e){showToast('Preencha as datas de início e fim');return;}
     if(new Date(e)<=new Date(s)){showToast('A data de fim deve ser depois do início');return;}
     body.customStart=s; body.customEnd=e;
@@ -349,7 +449,6 @@ async function createLicenses(){
 function copyAllKeys(){navigator.clipboard.writeText(createdKeys.join('\n')).then(()=>showToast('Chaves copiadas'));}
 function copyText(t){navigator.clipboard.writeText(t).then(()=>showToast('Chave copiada'));}
 
-/* ---------- Filtro + tabela ---------- */
 function setFilter(f,el){
   currentFilter=f;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
@@ -387,7 +486,6 @@ function renderTable(){
   }).join('');
 }
 
-/* ---------- Ações ---------- */
 function confirmRevoke(key){
   showConfirm('Revogar licença',`Revogar <strong>${key}</strong>? O usuário perde o acesso.`,'Revogar','warn',()=>doRevoke(key));
 }
@@ -403,7 +501,6 @@ async function doDelete(key){
   if(r.ok){showToast('Licença apagada');loadLicenses();}else showToast('Erro ao apagar');
 }
 
-/* ---------- Modal / toast ---------- */
 function showConfirm(title,msg,okLabel,tone,onOk){
   document.getElementById('confirm-title').textContent=title;
   document.getElementById('confirm-msg').innerHTML=msg;
