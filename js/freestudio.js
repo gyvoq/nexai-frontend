@@ -309,12 +309,12 @@ function fsAskAvatarStep() {
     fsChooseVideoAvatar(null);
     return;
   }
-  const gridHtml = `<div class="fs-avatar-step-grid">` + list.map(a => `
-      <div class="fs-avatar-step-card" data-id="${a.id}" onclick="fsChooseVideoAvatar(${a.id})" role="button" tabindex="0">
-        <div class="fs-avatar-step-photo"><img src="${a.img}" alt="${fsEscape(a.name)}" loading="lazy"></div>
-        <div class="fs-avatar-step-name">${fsEscape(a.name)}</div>
-      </div>`).join('') + `</div>`;
-  fsAddMsg('bot', gridHtml, { raw: true, wide: true });
+  const gridHtml = '<div class="fs-avatar-step-grid">' + list.map(a =>
+    '<div class="fs-avatar-step-card" data-id="' + a.id + '" onclick="fsChooseVideoAvatar(' + a.id + ')" role="button" tabindex="0">' +
+    '<div class="fs-avatar-step-photo"><img src="' + a.img + '" alt="' + fsEscape(a.name) + '" loading="lazy"></div>' +
+    '<div class="fs-avatar-step-name">' + fsEscape(a.name) + '</div></div>'
+  ).join('') + '</div>';
+  fsAddMsg('bot', gridHtml, { raw: true });
   fsQuickReplies(['Continuar sem avatar']);
   const quick = document.getElementById('fs-quick-replies');
   const btn = quick.querySelector('.fs-quick-reply');
