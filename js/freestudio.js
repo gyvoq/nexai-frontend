@@ -63,8 +63,6 @@ function fsSaveProjects() {
 
 let fsActiveProject = null;
 let fsMode = 'imagem';
-let fsVideoStep = 0;
-let fsVideoAnswers = {};
 
 function renderFsProjects() {
   const grid = document.getElementById('fs-project-grid');
@@ -102,55 +100,107 @@ function fsBackToProjects() {
   renderFsProjects();
 }
 
-function fsSetMode(mode) {
-  fsMode = mode;
-  document.querySelectorAll('.fs-mode-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
-  const body = document.getElementById('fs-chat-body');
-  const quick = document.getElementById('fs-quick-replies');
-  const inputRow = document.getElementById('fs-chat-inputrow');
-  const upload = document.getElementById('fs-upload-zone');
-  const styleInput = document.getElementById('fs-style-input');
-  const extractBtn = document.getElementById('fs-extract-btn');
-  quick.innerHTML = '';
-  body.innerHTML = '';
-  upload.style.display = 'none';
-  styleInput.style.display = 'none';
-  extractBtn.style.display = 'none';
-  inputRow.style.display = 'flex';
+/* ---------------------------------------------------------------------- */
+/* Utilitários de chat: indicador de "digitando..." + efeito de máquina   */
+/* de escrever, pra deixar a conversa com cara de chat de verdade.        */
+/* ---------------------------------------------------------------------- */
 
-  if (mode === 'imagem') {
-    fsAddMsg('bot', 'Esse é o gerador de imagem — ainda é só um protótipo. Descreva a imagem que você quer e clique em enviar pra ver como vai funcionar.');
-    document.getElementById('fs-chat-input').placeholder = 'Descreva a imagem que você quer gerar...';
-  } else if (mode === 'video') {
-    fsVideoStep = 0;
-    fsVideoAnswers = {};
-    inputRow.style.display = 'flex';
-    fsAskNextVideoQuestion();
-  } else if (mode === 'extrair') {
-    inputRow.style.display = 'none';
-    upload.style.display = 'block';
-    styleInput.style.display = 'block';
-    extractBtn.style.display = 'inline-flex';
-    upload.classList.remove('has-file');
-    upload.innerHTML = `<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><div>Clique para enviar o vídeo de referência</div>`;
-    fsAddMsg('bot', 'Envie o vídeo viral que você quer usar de referência e descreva o estilo dele. A IA "extrai" o movimento e te devolve um prompt pronto.');
-  }
+const FS_TYPING_DELAY_MIN = 450;
+const FS_TYPING_DELAY_MAX = 1000;
+
+function fsShowTyping() {
+  fsHideTyping();
+  const body = document.getElementById('fs-chat-body');
+  if (!body) return;
+  const div = document.createElement('div');
+  div.className = 'fs-msg bot fs-typing-msg';
+  div.id = 'fs-typing-indicator';
+  div.innerHTML = '<div class="fs-typing-dots"><span></span><span></span><span></span></div>';
+  body.appendChild(div);
+  body.scrollTop = body.scrollHeight;
 }
 
-function fsAddMsg(who, html, opts = {}) {
+function fsHideTyping() {
+  const el = document.getElementById('fs-typing-indicator');
+  if (el) el.remove();
+}
+
+function fsTypeDuration(text) {
+  const len = (text || '').length;
+  return Math.min(1300, Math.max(260, len * 15));
+}
+
+function fsTypewrite(el, text) {
   const body = document.getElementById('fs-chat-body');
+  const len = text.length;
+  if (!len) { el.textContent = ''; return; }
+  const total = fsTypeDuration(text);
+  const stepTime = total / len;
+  el.classList.add('fs-typing-cursor');
+  let i = 0;
+  (function tick() {
+    i++;
+    el.textContent = text.slice(0, i);
+    if (body) body.scrollTop = body.scrollHeight;
+    if (i < len) {
+      setTimeout(tick, stepTime);
+    } else {
+      el.classList.remove('fs-typing-cursor');
+    }
+  })();
+}
+
+/**
+ * Adiciona uma mensagem ao chat.
+ * opts.raw     -> content é HTML confiável (ex: grid de avatares), inserido direto.
+ * opts.final   -> estiliza como "prompt final" e adiciona botão de copiar.
+ * opts.wide    -> mensagem ocupa a largura toda (útil pra grids).
+ * opts.skipTypewriter -> insere o texto de uma vez, sem efeito de digitação.
+ */
+function fsAddMsg(who, content, opts = {}) {
+  const body = document.getElementById('fs-chat-body');
+  if (!body) return null;
   const div = document.createElement('div');
-  div.className = 'fs-msg ' + who + (opts.final ? ' prompt-final' : '');
-  div.innerHTML = (opts.label ? `<div class="fs-msg-label">${opts.label}</div>` : '') + `<div>${html}</div>`;
+  div.className = 'fs-msg ' + who + (opts.final ? ' prompt-final' : '') + (opts.wide ? ' fs-msg-wide' : '');
+  const labelHtml = opts.label ? `<div class="fs-msg-label">${opts.label}</div>` : '';
+  div.innerHTML = labelHtml + '<div class="fs-msg-content"></div>';
+  body.appendChild(div);
+  body.scrollTop = body.scrollHeight;
+
+  const contentEl = div.querySelector('.fs-msg-content');
+  if (opts.raw) {
+    contentEl.innerHTML = content;
+  } else if (who === 'bot' && !opts.skipTypewriter) {
+    fsTypewrite(contentEl, content);
+  } else {
+    contentEl.textContent = content;
+  }
+
   if (opts.final) {
     const actions = document.createElement('div');
     actions.className = 'fs-msg-actions';
     actions.innerHTML = `<button class="fs-copy-btn" type="button"><svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copiar prompt</button>`;
-    actions.querySelector('button').addEventListener('click', () => fsCopy(opts.rawText || html));
+    actions.querySelector('button').addEventListener('click', () => fsCopy(opts.rawText || content));
     div.appendChild(actions);
   }
-  body.appendChild(div);
   body.scrollTop = body.scrollHeight;
+  return div;
+}
+
+/**
+ * "Fala" do bot: mostra o indicador de digitando por um tempo aleatório,
+ * remove, escreve a mensagem com efeito de máquina de escrever e só então
+ * chama o callback (ex: pra liberar as quick replies após o texto terminar).
+ */
+function fsBotSay(text, callback, opts = {}) {
+  fsShowTyping();
+  const wait = FS_TYPING_DELAY_MIN + Math.random() * (FS_TYPING_DELAY_MAX - FS_TYPING_DELAY_MIN);
+  setTimeout(() => {
+    fsHideTyping();
+    fsAddMsg('bot', text, opts);
+    const typeDur = (opts.skipTypewriter || opts.raw) ? 0 : fsTypeDuration(text);
+    if (callback) setTimeout(callback, typeDur + 120);
+  }, wait);
 }
 
 function fsQuickReplies(options) {
@@ -161,12 +211,166 @@ function fsQuickReplies(options) {
   });
 }
 
+/* ---------------------------------------------------------------------- */
+/* Campo de texto do chat: alterna entre input de uma linha e textarea    */
+/* (usado nas etapas de roteiro / detalhes específicos, que são mais      */
+/* longas).                                                                */
+/* ---------------------------------------------------------------------- */
+
+let fsInputMode = 'text';
+
+function fsEnsureTextarea() {
+  if (document.getElementById('fs-chat-textarea')) return;
+  const row = document.getElementById('fs-chat-inputrow');
+  const sendBtn = document.getElementById('fs-send-btn');
+  if (!row || !sendBtn) return;
+  const ta = document.createElement('textarea');
+  ta.id = 'fs-chat-textarea';
+  ta.className = 'fs-chat-input fs-chat-textarea';
+  ta.rows = 1;
+  ta.style.display = 'none';
+  ta.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      fsSendMessage();
+    }
+  });
+  row.insertBefore(ta, sendBtn);
+}
+
+function fsSetInputMode(mode) {
+  fsInputMode = mode;
+  const input = document.getElementById('fs-chat-input');
+  const textarea = document.getElementById('fs-chat-textarea');
+  if (!input || !textarea) return;
+  if (mode === 'textarea') {
+    input.style.display = 'none';
+    textarea.style.display = 'block';
+    textarea.value = '';
+    textarea.placeholder = 'Escreva com calma... (Ctrl+Enter para enviar)';
+    textarea.focus();
+  } else {
+    textarea.style.display = 'none';
+    input.style.display = 'block';
+  }
+}
+
+function fsActiveInputEl() {
+  return fsInputMode === 'textarea'
+    ? document.getElementById('fs-chat-textarea')
+    : document.getElementById('fs-chat-input');
+}
+
+/* ---------------------------------------------------------------------- */
+/* Modo "imagem" / "extrair movimento" / "vídeo"                          */
+/* ---------------------------------------------------------------------- */
+
+function fsSetMode(mode) {
+  fsMode = mode;
+  document.querySelectorAll('.fs-mode-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
+  const body = document.getElementById('fs-chat-body');
+  const quick = document.getElementById('fs-quick-replies');
+  const inputRow = document.getElementById('fs-chat-inputrow');
+  const upload = document.getElementById('fs-upload-zone');
+  const styleInput = document.getElementById('fs-style-input');
+  const extractBtn = document.getElementById('fs-extract-btn');
+  fsHideTyping();
+  quick.innerHTML = '';
+  body.innerHTML = '';
+  upload.style.display = 'none';
+  styleInput.style.display = 'none';
+  extractBtn.style.display = 'none';
+  fsSetInputMode('text');
+  inputRow.style.display = 'flex';
+
+  if (mode === 'imagem') {
+    document.getElementById('fs-chat-input').placeholder = 'Descreva a imagem que você quer gerar...';
+    fsBotSay('Esse é o gerador de imagem — ainda é só um protótipo. Descreva a imagem que você quer e clique em enviar pra ver como vai funcionar.');
+  } else if (mode === 'video') {
+    document.getElementById('fs-chat-input').placeholder = 'Escreva sua mensagem...';
+    fsStartVideoFlow();
+  } else if (mode === 'extrair') {
+    inputRow.style.display = 'none';
+    upload.style.display = 'block';
+    styleInput.style.display = 'block';
+    extractBtn.style.display = 'inline-flex';
+    upload.classList.remove('has-file');
+    upload.innerHTML = `<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><div>Clique para enviar o vídeo de referência</div>`;
+    fsBotSay('Envie o vídeo viral que você quer usar de referência e descreva o estilo dele. A IA "extrai" o movimento e te devolve um prompt pronto.');
+  }
+}
+
+/* ---- Modo vídeo: avatar -> perguntas (com roteiro e detalhes) -> prompt final ---- */
+
+let fsVideoPhase = 'avatar'; // 'avatar' | 'questions' | 'done'
+let fsVideoStep = 0;
+let fsVideoAnswers = {};
+let fsSelectedVideoAvatar = null;
+
 const FS_VIDEO_QUESTIONS = [
-  { key: 'produto', q: 'Qual é o produto ou tema do vídeo?' },
-  { key: 'tom', q: 'Qual tom o vídeo deve ter?', options: ['Empolgado', 'Natural', 'Humorístico', 'Educativo'] },
-  { key: 'formato', q: 'Pra qual formato é o vídeo?', options: ['TikTok (9:16)', 'Reels (9:16)', 'YouTube Shorts'] },
-  { key: 'duracao', q: 'Quantos segundos o vídeo deve ter?', options: ['7s', '15s', '30s', '60s'] }
+  { key: 'produto', type: 'text', q: 'Qual é o produto ou tema do vídeo?' },
+  { key: 'roteiro', type: 'longtext', optional: true,
+    q: 'Quer me passar o roteiro do vídeo — a fala, as cenas, o texto que vai aparecer? Pode escrever com detalhes ou pular esta etapa.' },
+  { key: 'tom', type: 'choice', q: 'Qual tom o vídeo deve ter?', options: ['Empolgado', 'Natural', 'Humorístico', 'Educativo'] },
+  { key: 'formato', type: 'choice', q: 'Pra qual formato é o vídeo?', options: ['TikTok (9:16)', 'Reels (9:16)', 'YouTube Shorts'] },
+  { key: 'duracao', type: 'choice', q: 'Quantos segundos o vídeo deve ter?', options: ['7s', '15s', '30s', '60s'] },
+  { key: 'detalhes', type: 'longtext', optional: true,
+    q: 'Tem algum detalhe mais específico que não pode faltar? Cenário, iluminação, ângulo de câmera, roupa, cores, expressão... Escreva ou pule.' }
 ];
+
+function fsStartVideoFlow() {
+  fsVideoPhase = 'avatar';
+  fsVideoStep = 0;
+  fsVideoAnswers = {};
+  fsSelectedVideoAvatar = null;
+  document.getElementById('fs-chat-inputrow').style.display = 'none';
+  fsBotSay('Vamos montar seu prompt de vídeo! Primeiro, escolha um avatar pra estrelar (ou pule se preferir não usar avatar).', fsAskAvatarStep);
+}
+
+function fsAvatarStepList() {
+  if (typeof avatars === 'undefined' || !Array.isArray(avatars)) return [];
+  return avatars.slice(0, 8);
+}
+
+function fsAskAvatarStep() {
+  const list = fsAvatarStepList();
+  if (!list.length) {
+    fsChooseVideoAvatar(null);
+    return;
+  }
+  const gridHtml = `<div class="fs-avatar-step-grid">` + list.map(a => `
+      <div class="fs-avatar-step-card" data-id="${a.id}" onclick="fsChooseVideoAvatar(${a.id})" role="button" tabindex="0">
+        <div class="fs-avatar-step-photo"><img src="${a.img}" alt="${fsEscape(a.name)}" loading="lazy"></div>
+        <div class="fs-avatar-step-name">${fsEscape(a.name)}</div>
+      </div>`).join('') + `</div>`;
+  fsAddMsg('bot', gridHtml, { raw: true, wide: true });
+  fsQuickReplies(['Continuar sem avatar']);
+  const quick = document.getElementById('fs-quick-replies');
+  const btn = quick.querySelector('.fs-quick-reply');
+  if (btn) btn.addEventListener('click', () => fsChooseVideoAvatar(null), { once: true });
+}
+
+function fsChooseVideoAvatar(id) {
+  if (fsMode !== 'video' || fsVideoPhase !== 'avatar') return;
+  document.getElementById('fs-quick-replies').innerHTML = '';
+  document.querySelectorAll('.fs-avatar-step-card').forEach(c => c.classList.remove('selected'));
+
+  if (id === null || typeof avatars === 'undefined') {
+    fsSelectedVideoAvatar = null;
+    fsAddMsg('user', 'Continuar sem avatar');
+  } else {
+    const avatar = avatars.find(a => a.id === id) || null;
+    fsSelectedVideoAvatar = avatar;
+    const card = document.querySelector(`.fs-avatar-step-card[data-id="${id}"]`);
+    if (card) card.classList.add('selected');
+    fsAddMsg('user', avatar ? avatar.name : 'Avatar selecionado');
+  }
+
+  fsVideoPhase = 'questions';
+  fsVideoStep = 0;
+  document.getElementById('fs-chat-inputrow').style.display = 'flex';
+  setTimeout(fsAskNextVideoQuestion, 250);
+}
 
 function fsAskNextVideoQuestion() {
   const quick = document.getElementById('fs-quick-replies');
@@ -176,30 +380,57 @@ function fsAskNextVideoQuestion() {
     return;
   }
   const step = FS_VIDEO_QUESTIONS[fsVideoStep];
-  fsAddMsg('bot', step.q);
-  if (step.options) fsQuickReplies(step.options);
+  fsBotSay(step.q, () => {
+    if (step.type === 'choice') {
+      fsSetInputMode('text');
+      fsQuickReplies(step.options);
+    } else if (step.type === 'longtext') {
+      fsSetInputMode('textarea');
+      if (step.optional) {
+        fsQuickReplies(['Pular etapa']);
+        const btn = document.querySelector('#fs-quick-replies .fs-quick-reply');
+        if (btn) btn.addEventListener('click', () => fsHandleAnswer('', true), { once: true });
+      }
+    } else {
+      fsSetInputMode('text');
+    }
+  });
 }
 
-function fsHandleAnswer(text) {
-  if (fsMode !== 'video') return;
-  if (!text || !text.trim()) return;
-  fsAddMsg('user', fsEscape(text));
+function fsHandleAnswer(text, skipped) {
+  if (fsMode !== 'video' || fsVideoPhase !== 'questions') return;
+  if (!skipped && (!text || !text.trim())) return;
   const step = FS_VIDEO_QUESTIONS[fsVideoStep];
-  if (step) fsVideoAnswers[step.key] = text.trim();
+  fsAddMsg('user', skipped ? 'Pular etapa' : text.trim());
+  if (step) fsVideoAnswers[step.key] = skipped ? '' : text.trim();
   fsVideoStep++;
   document.getElementById('fs-quick-replies').innerHTML = '';
+  fsSetInputMode('text');
   setTimeout(fsAskNextVideoQuestion, 300);
 }
 
 function fsFinishVideoPrompt() {
+  fsVideoPhase = 'done';
   const a = fsVideoAnswers;
-  const prompt = `Vertical ${a.formato || 'TikTok (9:16)'} video, ${a.duracao || '15s'} long, ${(a.tom || 'natural').toLowerCase()} tone. Product/theme: ${a.produto || 'product'}. Handheld selfie-style UGC shot, natural lighting, authentic delivery, quick hook in the first 2 seconds, clear call to action at the end.`;
-  fsAddMsg('bot', 'Prontinho! Seu prompt de vídeo está pronto.');
-  fsAddMsg('bot', fsEscape(prompt), { final: true, label: 'Prompt de vídeo', rawText: prompt });
-  fsQuickReplies(['Recomeçar']);
-  const quick = document.getElementById('fs-quick-replies');
-  quick.querySelector('.fs-quick-reply').addEventListener('click', () => fsSetMode('video'), { once: true });
+  const avatar = fsSelectedVideoAvatar;
+
+  const avatarLine = avatar
+    ? ` Featuring ${avatar.name}, ${avatar.age ? avatar.age + '-year-old ' : ''}${avatar.gender === 'f' ? 'female' : avatar.gender === 'm' ? 'male' : 'non-binary'} creator (${avatar.nicho || 'lifestyle'} niche, ${avatar.style || 'natural'} style).`
+    : '';
+  const detalhesLine = a.detalhes ? `\nAdditional details: ${a.detalhes}.` : '';
+  const roteiroBlock = a.roteiro ? `\n\nSCRIPT:\n${a.roteiro}` : '';
+
+  const prompt = `Vertical ${a.formato || 'TikTok (9:16)'} video, ${a.duracao || '15s'} long, ${(a.tom || 'natural').toLowerCase()} tone. Product/theme: ${a.produto || 'product'}.${avatarLine} Handheld selfie-style UGC shot, natural lighting, authentic delivery, quick hook in the first 2 seconds, clear call to action at the end.${detalhesLine}${roteiroBlock}`;
+
+  fsBotSay('Prontinho! Seu prompt de vídeo está pronto.', () => {
+    fsAddMsg('bot', prompt, { final: true, label: 'Prompt de vídeo', rawText: prompt, skipTypewriter: true, wide: true });
+    fsQuickReplies(['Recomeçar']);
+    const btn = document.querySelector('#fs-quick-replies .fs-quick-reply');
+    if (btn) btn.addEventListener('click', () => fsSetMode('video'), { once: true });
+  });
 }
+
+/* ---- Modo "extrair movimento" ---- */
 
 const FS_EXTRACT_PROMPTS = [
   'Handheld mirror selfie shot, natural indoor lighting, subject holding product at chest height, slow subtle sway, casual UGC energy, 9:16 vertical.',
@@ -229,32 +460,35 @@ function fsHandleUploadChange(e) {
 function fsRunExtract() {
   if (!fsExtractFile) { fsToast('Envie um vídeo primeiro'); return; }
   const style = (document.getElementById('fs-style-input').value || '').trim();
-  fsAddMsg('user', `Vídeo: ${fsEscape(fsExtractFile.name)}${style ? ' · Estilo: ' + fsEscape(style) : ''}`);
-  fsAddMsg('bot', 'Analisando o movimento do vídeo de referência...');
-  setTimeout(() => {
+  fsAddMsg('user', `Vídeo: ${fsExtractFile.name}${style ? ' · Estilo: ' + style : ''}`);
+  fsBotSay('Analisando o movimento do vídeo de referência...', () => {
     let hash = 0;
     const key = (style || fsExtractFile.name);
     for (let i = 0; i < key.length; i++) hash = (hash * 31 + key.charCodeAt(i)) >>> 0;
     const prompt = FS_EXTRACT_PROMPTS[hash % FS_EXTRACT_PROMPTS.length];
-    fsAddMsg('bot', 'Movimento extraído com sucesso!');
-    fsAddMsg('bot', fsEscape(prompt), { final: true, label: 'Prompt extraído', rawText: prompt });
-  }, 900);
+    fsBotSay('Movimento extraído com sucesso!', () => {
+      fsAddMsg('bot', prompt, { final: true, label: 'Prompt extraído', rawText: prompt, skipTypewriter: true, wide: true });
+    });
+  });
 }
 
 function fsSendMessage() {
-  const input = document.getElementById('fs-chat-input');
-  const text = input.value.trim();
+  const el = fsActiveInputEl();
+  if (!el) return;
+  const text = el.value.trim();
   if (!text) return;
-  input.value = '';
+  el.value = '';
   if (fsMode === 'imagem') {
-    fsAddMsg('user', fsEscape(text));
-    setTimeout(() => {
-      fsAddMsg('bot', '🖼️ Protótipo — a geração de imagem ainda não está ativa nesta versão. Em breve sua imagem aparecerá aqui.');
-    }, 400);
+    fsAddMsg('user', text);
+    fsBotSay('🖼️ Protótipo — a geração de imagem ainda não está ativa nesta versão. Em breve sua imagem aparecerá aqui.');
   } else if (fsMode === 'video') {
     fsHandleAnswer(text);
   }
 }
+
+/* ---------------------------------------------------------------------- */
+/* Viralize A.I. (inalterado)                                             */
+/* ---------------------------------------------------------------------- */
 
 const VIRALIZE_PROMPTS = {
   beleza: 'UGC-style vertical video, subject applying skincare product in a bright bathroom, natural morning light, close-up on texture, upbeat trending audio, hook: "minha pele nunca ficou assim tão rápido", 15s TikTok format.',
@@ -364,6 +598,7 @@ function copyViralizeOutput() {
 document.addEventListener('DOMContentLoaded', () => {
   renderFsProjects();
   renderViralizeAvatars();
+  fsEnsureTextarea();
 
   document.querySelectorAll('.fs-mode-tab').forEach(tab => {
     tab.addEventListener('click', () => fsSetMode(tab.dataset.mode));
