@@ -1,1 +1,78 @@
+.vv-radar {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  margin-bottom: 22px; padding: 14px 18px; border-radius: 16px;
+  background: rgba(255,255,255,0.045); border: 1px solid rgba(255,255,255,0.08);
+}
+.vv-pulse { position: relative; width: 12px; height: 12px; flex-shrink: 0; border-radius: 50%; background: var(--accent3, #c4b5fd); }
+.vv-radar.is-mining .vv-pulse::after {
+  content: ''; position: absolute; inset: -6px; border-radius: 50%;
+  border: 2px solid var(--accent3, #c4b5fd); opacity: 0; animation: vvPing 1.3s ease-out infinite;
+}
+.vv-radar.is-done .vv-pulse { background: #86efac; }
+@keyframes vvPing { 0% { transform: scale(.4); opacity: .9; } 100% { transform: scale(1.5); opacity: 0; } }
+.vv-radar-text { flex: 1; min-width: 180px; }
+.vv-status { font-size: 14px; font-weight: 600; color: var(--text); }
+.vv-count { margin-top: 2px; font-size: 12px; color: var(--text3); font-variant-numeric: tabular-nums; }
+.vv-remine {
+  min-height: 36px; padding: 0 16px; border-radius: 9999px; cursor: pointer;
+  border: 1px solid rgba(255,255,255,.18); background: transparent; color: var(--text);
+  font: 600 12.5px 'Inter', sans-serif;
+}
+.vv-remine:hover:not(:disabled) { border-color: #fff; background: rgba(255,255,255,.05); }
+.vv-remine:disabled { opacity: .45; cursor: default; }
 
+.vv-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (min-width: 700px) { .vv-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; } }
+@media (min-width: 1100px) { .vv-grid { max-width: 980px; } }
+
+.vv-card {
+  display: flex; flex-direction: column; overflow: hidden; border-radius: 16px;
+  background: rgba(255,255,255,0.045); border: 1px solid rgba(255,255,255,0.08);
+}
+.vv-cover {
+  position: relative; display: block; aspect-ratio: 9 / 16; overflow: hidden;
+  background: linear-gradient(160deg, #1d1530, #100c1a);
+}
+.vv-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.vv-cover-fallback {
+  position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  color: var(--text3); font-size: 12px; font-weight: 600;
+}
+.vv-cover-fallback svg { width: 34px; height: 34px; stroke: var(--accent3, #c4b5fd); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; opacity: .8; }
+.vv-cover.no-cover .vv-cover-fallback { display: flex; }
+.vv-cover.no-cover img { display: none; }
+.vv-play {
+  position: absolute; right: 10px; bottom: 10px; width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(12,10,18,.72); border: 1px solid rgba(255,255,255,.2);
+}
+.vv-play svg { width: 15px; height: 15px; fill: #fff; stroke: none; margin-left: 2px; }
+.vv-hot {
+  position: absolute; top: 10px; left: 10px; padding: 3px 9px; border-radius: 9999px;
+  font-size: 10.5px; font-weight: 700; color: #fff; background: rgba(12,10,18,.78); border: 1px solid rgba(255,255,255,.16);
+}
+.vv-body { display: flex; flex-direction: column; gap: 10px; padding: 12px 12px 14px; flex: 1; }
+.vv-title { font-size: 13.5px; font-weight: 600; line-height: 1.4; color: var(--text); }
+.vv-link {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px; margin-top: auto;
+  min-height: 38px; padding: 0 14px; border-radius: 9999px; text-decoration: none;
+  font: 600 12.5px 'Inter', sans-serif; color: var(--text); border: 1px solid rgba(255,255,255,.18);
+}
+.vv-link:hover { border-color: #fff; background: rgba(255,255,255,.05); }
+.vv-link svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.vv-card.is-scanning .vv-cover::after {
+  content: ''; position: absolute; left: 0; right: 0; height: 38%; top: -40%;
+  background: linear-gradient(180deg, transparent, rgba(196,181,253,.28), transparent);
+  animation: vvScan 1.5s ease-in-out infinite;
+}
+@keyframes vvScan { to { top: 102%; } }
+.vv-bar { height: 10px; border-radius: 6px; background: rgba(255,255,255,.08); }
+.vv-bar.short { width: 60%; }
+
+.vv-card.is-found { animation: vvFound .5s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes vvFound { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .vv-radar.is-mining .vv-pulse::after, .vv-card.is-scanning .vv-cover::after, .vv-card.is-found { animation: none; }
+}
