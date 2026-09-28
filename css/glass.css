@@ -217,7 +217,7 @@ body::after {
 }
 @keyframes fsCursorBlink { 50% { opacity: 0; } }
 
-.fs-avatar-step-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; width: 290px; max-width: 100%; }
+.fs-avatar-step-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; width: 290px; max-width: 100%; white-space: normal; align-items: start; }
 @media (max-width: 480px) { .fs-avatar-step-grid { grid-template-columns: repeat(3,1fr); width: 220px; } }
 .fs-avatar-step-card { cursor: pointer; text-align: center; padding: 6px 2px; border-radius: 10px; border: 1px solid var(--border2); transition: transform .15s, border-color .15s, background .15s; }
 .fs-avatar-step-card:hover { transform: translateY(-2px); border-color: rgba(139,92,246,0.5); }
