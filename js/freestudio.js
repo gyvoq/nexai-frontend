@@ -275,8 +275,7 @@ function fsSetMode(mode) {
     upload.style.display = 'block';
     styleInput.style.display = 'block';
     extractBtn.style.display = 'inline-flex';
-    upload.classList.remove('has-file');
-    upload.innerHTML = `<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><div>Clique para enviar o vídeo de referência</div>`;
+    fsResetUpload();
     fsBotSay('Envie o vídeo viral que você quer usar de referência e descreva o estilo dele. A IA "extrai" o movimento e te devolve um prompt pronto.');
   }
 }
@@ -447,34 +446,103 @@ const FS_EXTRACT_PROMPTS = [
   'Studio-style shot on seamless backdrop, subject rotating product in hand, soft box lighting, slow orbit camera movement.'
 ];
 let fsExtractFile = null;
+let fsExtracting = false;
+
+const FS_VIDEO_EXTS = ['mp4', 'mov', 'webm', 'mkv', 'avi', 'm4v', '3gp', 'wmv'];
+const FS_UPLOAD_EMPTY_HTML = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><div>Clique para enviar o vídeo de referência</div>';
+
+function fsResetUpload() {
+  fsExtractFile = null;
+  const zone = document.getElementById('fs-upload-zone');
+  const input = document.getElementById('fs-video-file-input');
+  if (input) input.value = '';
+  if (zone) { zone.classList.remove('has-file'); zone.innerHTML = FS_UPLOAD_EMPTY_HTML; }
+}
+
+// Confere o CONTEÚDO do arquivo (primeiros bytes), não só o nome/tipo — renomear um .exe ou .pdf para .mp4 não passa.
+function fsDetectVideoSignature(b) {
+  if (!b || b.length < 12) return false;
+  const ascii = (from, to) => String.fromCharCode.apply(null, Array.from(b.slice(from, to)));
+  const box = ascii(4, 8);
+  if (['ftyp', 'moov', 'mdat', 'wide', 'free', 'skip'].indexOf(box) !== -1) return true;         // MP4 / MOV / M4V / 3GP
+  if (b[0] === 0x1A && b[1] === 0x45 && b[2] === 0xDF && b[3] === 0xA3) return true;                // WebM / MKV
+  if (ascii(0, 4) === 'RIFF' && ascii(8, 12) === 'AVI ') return true;                               // AVI
+  const asf = [0x30, 0x26, 0xB2, 0x75, 0x8E, 0x66, 0xCF, 0x11];
+  if (b.length >= 8 && asf.every((v, i) => b[i] === v)) return true;                                // WMV / ASF
+  return false;
+}
+
+async function fsValidateVideoFile(file) {
+  const ext = (file.name.split('.').pop() || '').toLowerCase();
+  if (FS_VIDEO_EXTS.indexOf(ext) === -1) return false;
+  const type = (file.type || '').toLowerCase();
+  // Alguns sistemas informam tipo vazio ou genérico para .mkv/.avi; a checagem dos bytes decide.
+  if (type && type.indexOf('video/') !== 0 && type !== 'application/octet-stream') return false;
+  try {
+    const head = new Uint8Array(await file.slice(0, 16).arrayBuffer());
+    return fsDetectVideoSignature(head);
+  } catch {
+    return false;
+  }
+}
+
 function fsHandleUploadClick() {
   const input = document.getElementById('fs-video-file-input');
   input.click();
 }
-function fsHandleUploadChange(e) {
-  const file = e.target.files && e.target.files[0];
-  const zone = document.getElementById('fs-upload-zone');
+async function fsHandleUploadChange(e) {
+  const input = e.target;
+  const file = input.files && input.files[0];
   if (!file) return;
-  const isVideo = (file.type && file.type.indexOf('video/') === 0) || /\.(mp4|mov|webm|mkv|avi|m4v|3gp|wmv)$/i.test(file.name);
-  if (!isVideo) {
-    e.target.value = '';
-    fsExtractFile = null;
-    zone.classList.remove('has-file');
-    zone.innerHTML = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><div>Clique para enviar o vídeo de referência</div>';
-    fsToast('Envie apenas arquivos de vídeo');
+  fsExtractFile = null;
+  const valid = await fsValidateVideoFile(file);
+  if (!valid) {
+    fsResetUpload();
+    fsToast('Envie apenas arquivos de vídeo (MP4, MOV, WebM, MKV, AVI…)');
     return;
   }
+  const zone = document.getElementById('fs-upload-zone');
   fsExtractFile = file;
   zone.classList.add('has-file');
   zone.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><div>${fsEscape(file.name)}</div>`;
 }
-function fsRunExtract() {
+
+function fsFormatWait(sec) {
+  return sec < 60 ? `${sec}s` : `${Math.ceil(sec / 60)} min`;
+}
+
+async function fsRunExtract() {
+  if (fsExtracting) return;
   if (!fsExtractFile) { fsToast('Envie um vídeo primeiro'); return; }
+  const file = fsExtractFile;
   const style = (document.getElementById('fs-style-input').value || '').trim();
-  fsAddMsg('user', `Vídeo: ${fsExtractFile.name}${style ? ' · Estilo: ' + style : ''}`);
+
+  // Rate limit no servidor (por licença). Só chega aqui com vídeo já validado.
+  fsExtracting = true;
+  const btn = document.getElementById('fs-extract-btn');
+  if (btn) btn.disabled = true;
+  let gate;
+  try {
+    gate = window.NexSession && window.NexSession.requestExtract
+      ? await window.NexSession.requestExtract()
+      : { ok: false, message: 'Sessão indisponível. Recarregue a página.' };
+  } finally {
+    fsExtracting = false;
+    if (btn) btn.disabled = false;
+  }
+  if (!gate.ok) {
+    if (gate.rateLimited) {
+      fsBotSay(`Você atingiu o limite de extrações por agora. Tente novamente em ${fsFormatWait(gate.retryAfterSec)}.`);
+    } else {
+      fsToast(gate.message || 'Não foi possível extrair agora.');
+    }
+    return;
+  }
+
+  fsAddMsg('user', `Vídeo: ${file.name}${style ? ' · Estilo: ' + style : ''}`);
   fsBotSay('Analisando o movimento do vídeo de referência...', () => {
     let hash = 0;
-    const key = (style || fsExtractFile.name);
+    const key = (style || file.name);
     for (let i = 0; i < key.length; i++) hash = (hash * 31 + key.charCodeAt(i)) >>> 0;
     const prompt = FS_EXTRACT_PROMPTS[hash % FS_EXTRACT_PROMPTS.length];
     fsBotSay('Movimento extraído com sucesso!', () => {
