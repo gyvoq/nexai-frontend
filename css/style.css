@@ -1230,12 +1230,11 @@ input[type=range] { width: 100%; accent-color: var(--accent1); cursor: pointer; 
 
 .trending-badge {
   position: absolute; bottom: 7px; left: 7px;
-  background: linear-gradient(135deg, rgba(0,229,179,0.18), rgba(0,229,179,0.08));
-  border: 1px solid rgba(0,229,179,0.3);
-  color: var(--accent3); font-size: 8.5px; font-weight: 700;
+  background: rgba(12,10,18,0.78);
+  border: 1px solid rgba(255,255,255,0.16);
+  color: #fff; font-size: 8.5px; font-weight: 700;
   padding: 2px 7px; border-radius: 8px; letter-spacing: 0.5px;
   display: flex; align-items: center; gap: 3px;
-  backdrop-filter: blur(4px);
 }
 .trending-badge::before { content: '↑'; font-size: 10px; }
 
