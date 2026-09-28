@@ -1,5 +1,3 @@
-
-
 'use strict';
 
 const Session = (() => {
@@ -9,6 +7,7 @@ const Session = (() => {
   const EXPIRY_KEY  = 'nex_session_expiry';
   const TERMS_KEY   = 'nex_terms_accepted';
   const TERMS_VERSION = '1.0';
+  const DEVICE_SINCE_KEY = 'nex_device_since';
 
   async function getDeviceId() {
     try {
@@ -52,6 +51,83 @@ const Session = (() => {
     return 'f' + Math.abs(h).toString(16).padStart(63, '0');
   }
 
+  function getDeviceInfo() {
+    const ua = navigator.userAgent || '';
+
+    let browser = 'Navegador';
+    if (/Edg\//.test(ua)) browser = 'Edge';
+    else if (/OPR\/|Opera/.test(ua)) browser = 'Opera';
+    else if (/SamsungBrowser/.test(ua)) browser = 'Samsung Internet';
+    else if (/Firefox\/|FxiOS/.test(ua)) browser = 'Firefox';
+    else if (/Chrome\/|CriOS/.test(ua)) browser = 'Chrome';
+    else if (/Safari\//.test(ua)) browser = 'Safari';
+
+    let os = 'Sistema desconhecido';
+    if (/Windows/.test(ua)) os = 'Windows';
+    else if (/Android/.test(ua)) os = 'Android';
+    else if (/iPhone|iPad|iPod/.test(ua)) os = 'iOS';
+    else if (/Mac OS X|Macintosh/.test(ua)) os = 'macOS';
+    else if (/CrOS/.test(ua)) os = 'ChromeOS';
+    else if (/Linux/.test(ua)) os = 'Linux';
+
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/.test(ua);
+
+    return {
+      browser,
+      os,
+      kind: isMobile ? 'Celular / tablet' : 'Computador',
+      screen: `${screen.width}×${screen.height}`,
+      timezone: (Intl.DateTimeFormat().resolvedOptions().timeZone || '—'),
+    };
+  }
+
+  function shortDeviceId(id) {
+    return (id || '').slice(0, 12).toUpperCase().match(/.{1,4}/g)?.join('-') || '—';
+  }
+
+  function rememberDeviceSince() {
+    try { localStorage.setItem(DEVICE_SINCE_KEY, new Date().toISOString()); } catch {  }
+  }
+
+  function getDeviceSince() {
+    try { return localStorage.getItem(DEVICE_SINCE_KEY); } catch { return null; }
+  }
+
+  async function renderDeviceCard() {
+    const card = document.getElementById('device-card');
+    if (!card) return;
+
+    const info = getDeviceInfo();
+    const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+
+    set('device-name', `${info.browser} no ${info.os}`);
+    set('device-kind', info.kind);
+    set('device-screen', info.screen);
+
+    const since = getDeviceSince();
+    const sinceRow = document.getElementById('device-since-row');
+    if (sinceRow) sinceRow.hidden = !since;
+    if (since) set('device-since', fmtDate(since));
+
+    const fullId = await getDeviceId();
+    set('device-id', shortDeviceId(fullId));
+
+    const copyBtn = document.getElementById('device-copy-btn');
+    if (copyBtn && !copyBtn.dataset.bound) {
+      copyBtn.dataset.bound = '1';
+      copyBtn.addEventListener('click', async () => {
+        const label = copyBtn.querySelector('span');
+        try {
+          await navigator.clipboard.writeText(fullId);
+          if (label) label.textContent = 'Copiado!';
+        } catch {
+          if (label) label.textContent = 'Não foi possível copiar';
+        }
+        setTimeout(() => { if (label) label.textContent = 'Copiar ID'; }, 1800);
+      });
+    }
+  }
+
   function getToken() {
     try { return sessionStorage.getItem(TOKEN_KEY); } catch { return null; }
   }
@@ -76,6 +152,7 @@ const Session = (() => {
 
   function releaseGate() {
     document.documentElement.classList.add(READY_CLASS);
+    renderDeviceCard();
   }
 
   function lockGate() {
@@ -139,7 +216,6 @@ const Session = (() => {
     try { localStorage.setItem(TERMS_KEY, TERMS_VERSION); } catch {  }
   }
 
-  // Logo idêntico ao do header do app (raio + "Nex AI"), reaproveitando .logo / .logo-icon / .logo-text.
   function buildBrandLogo() {
     const logo = document.createElement('div');
     logo.className = 'logo act-logo';
@@ -156,7 +232,6 @@ const Session = (() => {
     return logo;
   }
 
-  // Linha "Li e concordo..." com links roxos em negrito (usada na ativação e no aceite avulso)
   function buildTermsCheck() {
     const returnPage = (location.pathname.split('/').pop() || 'index.html');
 
@@ -185,7 +260,6 @@ const Session = (() => {
     privacyLink.rel = 'noopener noreferrer';
     privacyLink.textContent = 'Política de Privacidade';
 
-    // Clicar no link não deve marcar/desmarcar o checkbox
     [termsLink, privacyLink].forEach(a => a.addEventListener('click', e => e.stopPropagation()));
 
     text.append('Li e concordo com os ', termsLink, ' e a ', privacyLink);
@@ -442,6 +516,7 @@ const Session = (() => {
         const result = await activate(code);
         saveSession(result.token, result.expiresAt);
         acceptTerms();
+        rememberDeviceSince();
         if (btnEl) btnEl.classList.remove('busy');
 
         accept();
@@ -598,7 +673,7 @@ const Session = (() => {
     init();
   });
 
-  return { getToken, saveSession, clearSession, logout, hasAcceptedTerms };
+  return { getToken, saveSession, clearSession, logout, hasAcceptedTerms, getDeviceId, getDeviceInfo };
 })();
 
 window.NexSession = Session;
