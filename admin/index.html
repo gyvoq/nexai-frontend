@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
 <title>Viralyze — Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -24,13 +24,13 @@
   --radius:10px;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html{color-scheme:dark;}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;-webkit-font-smoothing:antialiased;}
+html{color-scheme:dark;-webkit-text-size-adjust:100%;}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh;font-size:14px;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;}
 button,input,select{font-family:inherit;font-size:inherit;color:inherit;}
-button{cursor:pointer;}
+button{cursor:pointer;touch-action:manipulation;}
 :focus-visible{outline:2px solid var(--purple);outline-offset:2px;}
 
-#login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:20px;z-index:100;}
+#login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:20px;z-index:100;overflow-y:auto;}
 .login-card{width:100%;max-width:360px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 24px;}
 .brand{font-size:18px;font-weight:600;margin-bottom:28px;}
 .login-card label{display:block;color:var(--muted);margin-bottom:8px;}
@@ -43,7 +43,7 @@ button{cursor:pointer;}
 .login-error{color:var(--red);font-size:13px;margin-top:10px;min-height:18px;}
 
 #main{display:none;}
-.header{border-bottom:1px solid var(--border);height:56px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;background:var(--bg);}
+.header{border-bottom:1px solid var(--border);height:calc(56px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 24px 0;display:flex;align-items:center;justify-content:space-between;background:var(--bg);}
 .header .brand{margin:0;font-size:16px;}
 .link-btn{background:none;border:none;color:var(--muted);padding:6px 8px;border-radius:6px;transition:color .15s;}
 .link-btn:hover{color:var(--text);}
@@ -121,6 +121,7 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
 .date-cell{color:var(--muted);}
 .status{display:inline-flex;align-items:center;gap:7px;font-weight:500;}
 .empty{text-align:center;color:var(--muted);padding:44px 16px;}
+.td-label{display:none;}
 
 .actions{display:flex;gap:6px;justify-content:flex-end;}
 .act{background:transparent;border:1px solid;border-radius:7px;padding:5px 11px;font-size:12.5px;font-weight:500;transition:background .15s;}
@@ -147,10 +148,70 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
 .btn-confirm.warn{background:var(--yellow);color:#1a1400;}
 
 @media (max-width:640px){
-  .content{padding:20px 14px 48px;}
-  .header{padding:0 14px;}
-  .search{width:100%;}
+  .brand{margin-bottom:22px;}
+  .header{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right));}
+  .content{padding:16px max(14px,env(safe-area-inset-right)) calc(40px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));}
+  .link-btn{padding:10px 12px;}
+
+  .input{font-size:16px;padding:13px 14px;}
+  .btn-primary{min-height:48px;font-size:15px;}
+
+  .create{padding:16px;margin-bottom:22px;}
+  .create-row{flex-direction:column;align-items:stretch;gap:16px;}
+  .field{width:100%;}
+  .dd-btn{min-width:0;width:100%;min-height:46px;font-size:15px;}
+  .custom-dates.visible{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .qty{width:100%;}
+  .qty button{width:56px;height:46px;font-size:22px;}
+  .qty output{flex:1;font-size:16px;}
+  .toggle{min-height:36px;padding-bottom:0;font-size:15px;}
+  .toggle input{width:20px;height:20px;border-radius:6px;}
+  .toggle input:checked{background-size:14px;}
+  .key-chip{padding:10px 14px;font-size:15px;}
+
+  .dd-menu,.cal{position:fixed;left:0;right:0;bottom:0;top:auto;width:auto;max-width:none;min-width:0;border-radius:18px 18px 0 0;border-bottom:none;padding:12px 12px calc(16px + env(safe-area-inset-bottom));z-index:220;box-shadow:none;}
+  .cal{padding:16px 16px calc(20px + env(safe-area-inset-bottom));}
+  .dd.open::before{content:"";position:fixed;inset:0;background:rgba(0,0,0,.68);z-index:210;}
+  .dd-item{padding:15px 14px;font-size:16px;}
+  .cal-head{font-size:16px;margin-bottom:12px;}
+  .cal-nav{width:44px;height:44px;font-size:24px;}
+  .cal-week span{font-size:13px;padding:6px 0;}
+  .cal-grid,.cal-week{gap:4px;}
+  .day{font-size:16px;}
+
+  .toolbar{flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:10px;}
+  html,body{overflow-x:hidden;}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;min-width:0;margin:0 -14px;padding:0 14px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{flex-shrink:0;white-space:nowrap;padding:10px 14px;font-size:14px;}
   .search-row{width:100%;}
+  .search{flex:1;width:auto;min-width:0;}
+  .icon-btn{min-height:46px;padding:0 16px;}
+
+  .table-wrap{overflow:visible;}
+  table,tbody{display:block;width:100%;}
+  thead{display:none;}
+  tr{display:grid;grid-template-columns:1fr 1fr auto;grid-template-areas:"key key status" "ativ expira expira" "actions actions actions";column-gap:12px;row-gap:12px;padding:16px;border-bottom:1px solid var(--border);}
+  tr:last-child{border-bottom:none;}
+  td{display:block;padding:0;border:none;white-space:normal;min-width:0;}
+  tbody tr:hover td{background:none;}
+  .td-key{grid-area:key;word-break:break-all;}
+  .td-status{grid-area:status;align-self:start;}
+  .td-ativ{grid-area:ativ;}
+  .td-exp{grid-area:expira;}
+  .td-actions{grid-area:actions;}
+  .td-label{display:block;font-size:12px;color:var(--muted);margin-bottom:2px;}
+  .date-cell{color:var(--text);font-size:14px;}
+  td.empty{grid-area:1/1/2/-1;padding:40px 16px;}
+  .key-cell{font-size:15.5px;}
+  .actions{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px;}
+  .act{min-height:44px;font-size:14px;border-radius:10px;}
+
+  .toast{bottom:calc(20px + env(safe-area-inset-bottom));white-space:normal;text-align:center;max-width:calc(100vw - 32px);}
+  .modal-overlay{align-items:flex-end;padding:0;}
+  .modal{max-width:none;border-radius:18px 18px 0 0;border-bottom:none;padding:22px 20px calc(20px + env(safe-area-inset-bottom));}
+  .modal-btns{flex-direction:column-reverse;}
+  .btn-ghost,.btn-confirm{width:100%;min-height:48px;font-size:15px;}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none !important;}}
 </style>
@@ -252,7 +313,7 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
         <button class="tab" data-filter="revoked" onclick="setFilter('revoked',this)"><span class="dot c-revoked"></span>Revogadas <span class="count" id="n-revoked">0</span></button>
       </div>
       <div class="search-row">
-        <input type="search" class="input search" placeholder="Buscar chave" oninput="renderTable()" id="search-input">
+        <input type="search" class="input search" placeholder="Buscar chave" autocomplete="off" autocapitalize="off" spellcheck="false" oninput="renderTable()" id="search-input">
         <button class="icon-btn" onclick="loadLicenses()">Atualizar</button>
       </div>
     </div>
@@ -453,6 +514,7 @@ function setFilter(f,el){
   currentFilter=f;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
+  el.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
   renderTable();
 }
 
@@ -473,11 +535,11 @@ function renderTable(){
     const months=`${l.validityMonths} ${l.validityMonths===1?'mês':'meses'}`;
     const revoke=s==='revoked'?'':`<button class="act act-revoke" onclick="confirmRevoke('${l.key}')">Revogar</button>`;
     return `<tr>
-      <td><span class="key-cell">${l.key}<span class="sub">${months} · criada em ${fmt(l.createdAt)}</span></span></td>
-      <td><span class="status c-${s}"><span class="dot"></span><span style="color:var(--text)">${labels[s]}</span></span></td>
-      <td class="date-cell">${fmt(l.activatedAt)}</td>
-      <td class="date-cell">${fmt(l.expiresAt)}</td>
-      <td><div class="actions">
+      <td class="td-key"><span class="key-cell">${l.key}<span class="sub">${months} · criada em ${fmt(l.createdAt)}</span></span></td>
+      <td class="td-status"><span class="status c-${s}"><span class="dot"></span><span style="color:var(--text)">${labels[s]}</span></span></td>
+      <td class="td-ativ date-cell"><span class="td-label">Ativada</span>${fmt(l.activatedAt)}</td>
+      <td class="td-exp date-cell"><span class="td-label">Expira</span>${fmt(l.expiresAt)}</td>
+      <td class="td-actions"><div class="actions">
         <button class="act act-copy" onclick="copyText('${l.key}')">Copiar</button>
         ${revoke}
         <button class="act act-delete" onclick="confirmDelete('${l.key}')">Apagar</button>
