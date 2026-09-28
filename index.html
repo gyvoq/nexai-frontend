@@ -7,13 +7,14 @@
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=3">
+<link rel="stylesheet" href="css/style.css?v=4">
 <link rel="stylesheet" href="css/activation.css">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/design-system.css?v=4">
-<link rel="stylesheet" href="css/glass.css?v=3">
-<link rel="stylesheet" href="css/elevenlabs-theme.css?v=1">
+<link rel="stylesheet" href="css/glass.css?v=4">
+<link rel="stylesheet" href="css/elevenlabs-theme.css?v=2">
+<link rel="stylesheet" href="css/viralvideos.css?v=1">
 </head>
 <body>
 
@@ -86,6 +87,10 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       Influencers
     </div>
+    <div class="sidebar-item" onclick="switchTab('viralvideos',this)" tabindex="0" role="menuitem" onkeydown="if(event.key==='Enter')switchTab('viralvideos',this)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      Vídeos Virais
+    </div>
     <div class="sidebar-item" onclick="switchTab('imglibrary',this)" tabindex="0" role="menuitem" onkeydown="if(event.key==='Enter')switchTab('imglibrary',this)">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
       Biblioteca de Imagens
@@ -116,6 +121,7 @@
         <div class="stats-bar stats-bar-compact" id="stats-bar"></div>
       </div>
 
+      <div class="inv-toolbar">
       <div class="niche-filter-wrap" id="niche-filter-wrap">
         <button type="button" class="niche-filter-btn" onclick="toggleNicheFilter()" aria-haspopup="true" aria-expanded="false">
           <svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
@@ -131,6 +137,11 @@
           <button class="filter-chip" data-cat="tech"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><line x1="10" y1="18" x2="14" y2="18"/></svg> Tech</button>
           <button class="filter-chip" data-cat="fitness"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><line x1="6" y1="12" x2="18" y2="12"/><rect x="6" y="7" width="3" height="10" rx="1"/><rect x="15" y="7" width="3" height="10" rx="1"/></svg> Fitness</button>
         </div>
+      </div>
+      <button type="button" class="inv-link-btn" onclick="openLinkImport()">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 007.07 0l3-3a5 5 0 00-7.07-7.07l-1.7 1.7"/><path d="M14 11a5 5 0 00-7.07 0l-3 3a5 5 0 007.07 7.07l1.7-1.7"/></svg>
+        Importar por link
+      </button>
       </div>
       <p class="section-label">Campeões de Venda</p>
       <div class="product-grid" id="product-grid" role="list"></div>
@@ -242,7 +253,7 @@
       <div class="filters" id="avatar-filters" role="group" aria-label="Filtrar influencers">
         <button class="filter-chip active" data-gender="all">Todos</button>
         <button class="filter-chip" data-gender="f"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M12 11c-4.5 0-7 3-7 7v2h14v-2c0-4-2.5-7-7-7z"/></svg> Feminino</button>
-        <button class="filter-chip" data-gender="m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M5 20l1-3a6 6 0 0112 0l1 3"/></svg> Masculino</button>
+        <button class="filter-chip" data-gender="m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M12 11c-4.5 0-7 3-7 7v2h14v-2c0-4-2.5-7-7-7z"/></svg> Masculino</button>
         <button class="filter-chip" data-gender="custom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L12 16.9 6.4 20.1l1.4-6.3-4.8-4.3 6.4-.6z"/></svg> Meus Influencers</button>
       </div>
       <p class="section-label">Influencers Prontos</p>
@@ -251,6 +262,7 @@
         <p class="section-label">Meus Influencers Salvos</p>
         <div class="product-grid" id="custom-avatar-grid" role="list"></div>
       </div>
+      <div class="inf-limit-note" id="inf-limit-note" role="status"></div>
       <div class="create-avatar-card">
         <h2 style="font-size:16px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px">
           <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--accent1);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
@@ -441,6 +453,24 @@
       </div>
     </div>
 
+        <div class="tab-content" id="tab-viralvideos">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Vídeos Virais</h1>
+          <p class="page-sub">Os vídeos que estão bombando no TikTok agora, garimpados pra você.</p>
+        </div>
+      </div>
+      <div class="vv-radar is-mining" id="vv-radar" role="status" aria-live="polite">
+        <span class="vv-pulse" aria-hidden="true"></span>
+        <div class="vv-radar-text">
+          <div class="vv-status" id="vv-status">Conectando ao TikTok…</div>
+          <div class="vv-count" id="vv-count">0 vídeos analisados</div>
+        </div>
+        <button type="button" class="vv-remine" id="vv-remine" disabled>Minerar de novo</button>
+      </div>
+      <div class="vv-grid" id="vv-grid"></div>
+    </div>
+
         <div class="tab-content" id="tab-settings">
       <div class="page-header">
         <div>
@@ -457,10 +487,10 @@
               O que é isso?
             </button>
           </div>
-          <div class="settings-row"><div><div class="settings-row-label">Backup completo</div><div class="settings-row-desc">Salva favoritos, avatares, produtos, prompts e preferências em um arquivo</div></div></div>
+          <div class="settings-row"><div><div class="settings-row-label">Backup completo</div><div class="settings-row-desc">Salva favoritos, influencers, produtos, prompts, conversas do Estúdio Livre e preferências em um arquivo</div></div></div>
           <div class="export-row">
-            <button class="export-btn" onclick="generateBackup()"><svg viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.29"/></svg>Gerar Backup</button>
-            <button class="export-btn" onclick="document.getElementById('backup-file-input').click()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Importar Backup</button>
+            <button class="export-btn" onclick="generateBackup()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>Gerar Backup</button>
+            <button class="export-btn" onclick="document.getElementById('backup-file-input').click()"><svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>Importar Backup</button>
           </div>
           <input type="file" id="backup-file-input" accept="application/json,.json" style="display:none" onchange="importBackup(event)">
           <div class="settings-row-desc" id="backup-status" style="margin-top:8px;min-height:14px"></div>
@@ -502,6 +532,10 @@
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     <span class="nav-label">Influencers</span>
   </div>
+  <div class="nav-item" onclick="switchTab('viralvideos',this)" role="menuitem" tabindex="0" aria-label="Vídeos Virais">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+    <span class="nav-label">Virais</span>
+  </div>
   <div class="nav-item" onclick="switchTab('imglibrary',this)" role="menuitem" tabindex="0" aria-label="Biblioteca de Imagens">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
     <span class="nav-label">Galeria</span>
@@ -536,6 +570,32 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="link-import-modal" role="dialog" aria-modal="true" aria-labelledby="link-import-title">
+  <div class="modal" style="max-width:460px">
+    <button class="modal-close" onclick="closeLinkImport()" aria-label="Fechar">
+      <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-title" id="link-import-title">Importar produto por link</div>
+    <div class="modal-sub">Cole o link de um produto de Mercado Livre, Amazon, Shopee, AliExpress, Magalu e outras lojas conhecidas.</div>
+    <div class="form-group">
+      <label class="form-label" for="link-import-url">Link do produto</label>
+      <div class="link-import-row">
+        <input type="url" class="form-input" id="link-import-url" placeholder="https://www.mercadolivre.com.br/..." autocomplete="off" spellcheck="false">
+        <button type="button" class="export-btn" id="link-import-fetch" onclick="fetchProductFromLink()">Buscar</button>
+      </div>
+      <div class="link-import-status" id="link-import-status" role="status" aria-live="polite"></div>
+    </div>
+    <div class="link-preview" id="link-preview">
+      <span class="link-preview-store" id="link-preview-store"></span>
+      <div class="form-group">
+        <label class="form-label" for="link-import-name">Nome do produto</label>
+        <input type="text" class="form-input" id="link-import-name" maxlength="60" autocomplete="off">
+      </div>
+      <button type="button" class="modal-cta" onclick="confirmLinkImport()">Adicionar ao inventário</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
   <div class="modal" style="max-width:380px;text-align:center">
     <div class="modal-title" id="confirm-title" style="font-size:16px;margin-bottom:10px">Confirmar ação</div>
@@ -556,14 +616,14 @@
     <div class="modal-sub">É uma cópia de segurança do seu trabalho, salva em um arquivo no seu aparelho.</div>
     <div class="info-block">
       <div class="info-item">
-        <span class="info-item-emoji" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h8V4"/><path d="M8 13h8v7H8z"/></svg></span>
+        <span class="info-item-emoji" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg></span>
         <div>
           <div class="info-item-title">Gerar Backup</div>
-          <div class="info-item-text">Baixa um arquivo <strong>.json</strong> com seus favoritos, avatares, produtos personalizados, prompts e preferências. Guarde ele no Google Drive, no e-mail ou em qualquer lugar seguro.</div>
+          <div class="info-item-text">Baixa um arquivo <strong>.json</strong> com seus favoritos, influencers, produtos personalizados, prompts, todo o histórico de conversas do Estúdio Livre e preferências. Guarde ele no Google Drive, no e-mail ou em qualquer lugar seguro.</div>
         </div>
       </div>
       <div class="info-item">
-        <span class="info-item-emoji" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><polyline points="7 11 12 16 17 11"/><path d="M5 19h14"/></svg></span>
+        <span class="info-item-emoji" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></span>
         <div>
           <div class="info-item-title">Importar Backup</div>
           <div class="info-item-text">Lê um arquivo que você gerou antes e devolve tudo para o app. Serve para restaurar seus dados ou levar sua conta para outro celular ou computador.</div>
@@ -588,6 +648,7 @@
 <script src="js/session.js"></script>
 <script src="js/script.js"></script>
 <script src="js/freestudio.js"></script>
+<script src="js/viralvideos.js"></script>
 
 </body>
 </html>
