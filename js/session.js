@@ -208,6 +208,35 @@ const Session = (() => {
     showActivationOverlay();
   }
 
+  // Reserva uma extração de movimento. O limite é aplicado no servidor, por licença.
+  async function requestExtract() {
+    const token = getToken();
+    if (!token) return { ok: false, message: 'Sessão expirada. Ative sua licença novamente.' };
+    const ctrl  = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 10_000);
+    try {
+      const res = await fetch(`${API_BASE}/api/extract-motion`, {
+        method : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body   : JSON.stringify({ token }),
+        signal : ctrl.signal,
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) return { ok: true, remaining: data.remaining };
+      if (res.status === 429) return { ok: false, rateLimited: true, retryAfterSec: data.retryAfterSec || 60, message: data.error };
+      if (res.status === 401 || res.status === 403) {
+        clearSession();
+        showActivationOverlay();
+        return { ok: false, message: data.error || 'Sessão inválida.' };
+      }
+      return { ok: false, message: data.error || 'Erro ao processar. Tente novamente.' };
+    } catch {
+      return { ok: false, message: 'Sem conexão com o servidor. Tente novamente.' };
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
   function hasAcceptedTerms() {
     try { return localStorage.getItem(TERMS_KEY) === TERMS_VERSION; } catch { return false; }
   }
@@ -683,7 +712,7 @@ const Session = (() => {
     init();
   });
 
-  return { getToken, saveSession, clearSession, logout, hasAcceptedTerms, getDeviceId, getDeviceInfo };
+  return { getToken, saveSession, clearSession, logout, requestExtract, hasAcceptedTerms, getDeviceId, getDeviceInfo };
 })();
 
 window.NexSession = Session;
