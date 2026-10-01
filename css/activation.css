@@ -8,10 +8,7 @@
   justify-content:center;
   padding:24px;
   font-family:var(--font-ui);
-  background:
-    radial-gradient(ellipse 760px 380px at 50% -80px, var(--orb-glow), transparent 70%),
-    radial-gradient(ellipse 520px 320px at 85% 100%, var(--orb-glow-2), transparent 70%),
-    var(--act-bg);
+  background:var(--act-bg);
 }
 #activation-overlay{z-index:9999}
 #terms-overlay{z-index:10000}
