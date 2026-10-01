@@ -20,32 +20,9 @@ body.landing {
   --shadow-soft-hover: 0 4px 16px rgba(0,0,0,.28);
   --shadow-glow: none
 }
-body::before {
-  content: '';
-  position: fixed;
-  inset: -10% -10% auto -10%;
-  height: 90vh;
-  width: auto;
-  transform: none;
-  z-index: -1;
-  pointer-events: none;
-  opacity: .55;
-  filter: blur(60px);
-  background: radial-gradient(circle 320px at 12% 18%,var(--orb-violet),transparent 70%),radial-gradient(circle 280px at 88% 10%,var(--orb-purple),transparent 70%),radial-gradient(circle 260px at 50% 45%,var(--orb-lavender),transparent 72%),radial-gradient(circle 300px at 20% 80%,var(--orb-deep),transparent 70%),radial-gradient(circle 240px at 82% 70%,var(--orb-orchid),transparent 72%);
-  animation: orbDrift 28s ease-in-out infinite alternate
-}
+body::before,
 body::after {
   display: none
-}
-@keyframes orbDrift {
-  to {
-    transform: translate3d(0,-24px,0) scale(1.05)
-  }
-}
-@media (prefers-reduced-motion:reduce) {
-  body::before {
-    animation: none
-  }
 }
 .hero-title,
 body.landing h1,
@@ -265,17 +242,6 @@ nav a {
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   border: 1px solid var(--hairline)
-}
-.cta-card::before,
-.guarantee-inner::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  filter: blur(40px);
-  opacity: .5;
-  background: radial-gradient(circle 220px at 50% 50%,var(--orb-violet),transparent 70%)
 }
 .cta-card > *,
 .guarantee-inner > * {
