@@ -17,27 +17,8 @@
   border-radius: 50%;
   background: var(--accent3,#c4b5fd)
 }
-.vv-radar.is-mining .vv-pulse::after {
-  content: '';
-  position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  border: 2px solid var(--accent3,#c4b5fd);
-  opacity: 0;
-  animation: vvPing 1.3s ease-out infinite
-}
 .vv-radar.is-done .vv-pulse {
   background: #86efac
-}
-@keyframes vvPing {
-  0% {
-    transform: scale(.4);
-    opacity: .9
-  }
-  100% {
-    transform: scale(1.5);
-    opacity: 0
-  }
 }
 .vv-radar-text {
   flex: 1;
@@ -79,13 +60,8 @@
 }
 @media (min-width:700px) {
   .vv-grid {
-    grid-template-columns: repeat(3,minmax(0,1fr));
-    gap: 18px
-  }
-}
-@media (min-width:1100px) {
-  .vv-grid {
-    max-width: 980px
+    grid-template-columns: repeat(auto-fill,170px);
+    gap: 16px
   }
 }
 .vv-card {
@@ -211,21 +187,6 @@
   stroke-linecap: round;
   stroke-linejoin: round
 }
-.vv-card.is-scanning .vv-cover::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 38%;
-  top: -40%;
-  background: linear-gradient(180deg,transparent,rgba(196,181,253,.28),transparent);
-  animation: vvScan 1.5s ease-in-out infinite
-}
-@keyframes vvScan {
-  to {
-    top: 102%
-  }
-}
 .vv-bar {
   height: 10px;
   border-radius: 6px;
@@ -234,23 +195,23 @@
 .vv-bar.short {
   width: 60%
 }
-.vv-card.is-found {
-  animation: vvFound .5s cubic-bezier(.2,.8,.2,1) both
+.vv-loading {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 72px 0
 }
-@keyframes vvFound {
-  from {
-    opacity: 0;
-    transform: translateY(12px) scale(.97)
-  }
+.vv-spinner {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,.12);
+  border-top-color: var(--accent3,#c4b5fd);
+  animation: vvSpin .8s linear infinite
+}
+@keyframes vvSpin {
   to {
-    opacity: 1;
-    transform: none
-  }
-}
-@media (prefers-reduced-motion:reduce) {
-  .vv-card.is-found,
-  .vv-card.is-scanning .vv-cover::after,
-  .vv-radar.is-mining .vv-pulse::after {
-    animation: none
+    transform: rotate(360deg)
   }
 }
