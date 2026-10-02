@@ -20,8 +20,7 @@ body.landing {
   --shadow-soft-hover: 0 4px 16px rgba(0,0,0,.28);
   --shadow-glow: none
 }
-body::before,
-body::after {
+body::before {
   display: none
 }
 .hero-title,
