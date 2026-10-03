@@ -258,18 +258,13 @@ const NexPlan = (() => {
       agencia: 'brand-safe call to action that is easy to adapt per client',
       explorar: 'friendly call to action to follow for more finds'
     },
-    titles: {
-      afiliado: n => `${n}vender mais como afiliado começa aqui.`,
-      proprio: n => `${n}a sua loja merece criativos que vendem.`,
-      agencia: n => `${n}seus clientes vão notar a diferença.`,
-      explorar: n => `${n}isso é só uma amostra do que dá pra fazer.`
-    },
-    benefits: {
-      afiliado: ['Todos os produtos virais do inventário, não só 4', 'Imagens e vídeos gerados de verdade para o seu criativo', 'Extração de movimento dos vídeos que estão bombando'],
-      proprio: ['Importe os produtos da sua loja no inventário', 'Imagens e vídeos gerados de verdade para o seu produto', 'Backup completo dos seus projetos'],
-      agencia: ['Influencers e renderizações sem bloqueio para cada cliente', 'Imagens e vídeos gerados de verdade', 'Backup completo dos projetos de cada cliente'],
-      explorar: ['Todos os produtos e vídeos virais liberados', 'Imagens e vídeos gerados de verdade', 'Viralize A.I, influencers e extração de movimento']
-    }
+    objections: [
+      ['ideia', 'Não sei o que postar', 'Falta de ideia é o que mais trava. Aqui você escolhe nicho e estilo e recebe o prompt pronto, sem começar do zero.'],
+      ['tempo', 'Não tenho tempo', 'Tranquilo. O prompt sai em segundos, é só copiar e usar. Dá pra deixar um vídeo encaminhado no tempo de um café.'],
+      ['tentei', 'Já tentei e não vendi', 'Acontece muito. Quase sempre o problema está no gancho dos 2 primeiros segundos e no jeito de mostrar o produto. Os prompts já vêm com gancho, ritmo e enquadramento prontos.'],
+      ['dificil', 'Acho IA complicada', 'Você não precisa saber nada técnico. É só responder umas perguntas rápidas e o prompt vem pronto pra usar.'],
+      ['medo', 'Tenho medo de não funcionar', 'Faz sentido ter cuidado. Por isso dá pra testar no plano Free e ver o resultado com os seus olhos antes de decidir qualquer coisa.']
+    ]
   };
 
   function onbDone() {
@@ -299,8 +294,8 @@ Avoid: blurry footage, over-polished ad look, distorted faces or hands, watermar
 
   function startOnboarding() {
     if (document.getElementById('onboarding-overlay')) return;
-    const answers = { name: '', goal: 'explorar', niche: 'beleza', style: 'unboxing' };
-    const TOTAL = 6;
+    const answers = { name: '', goal: 'explorar', niche: 'beleza', obj: 'ideia', style: 'unboxing' };
+    const TOTAL = 7;
     let typeTimer = null;
 
     const ov = el('div');
@@ -323,46 +318,38 @@ Avoid: blurry footage, over-polished ad look, distorted faces or hands, watermar
       card.appendChild(prog);
     }
 
-    function recap(items) {
-      const r = el('div', 'onb-recap');
-      items.forEach(t => r.appendChild(el('span', 'onb-chip', t)));
-      card.appendChild(r);
-    }
-
     function heading(title, sub) {
       card.appendChild(el('div', 'act-title onb-title', title));
       if (sub) card.appendChild(el('div', 'act-sub onb-sub', sub));
     }
 
-    function question(step, title, sub, list, key, labelIdx, next, recapItems) {
+    function bubble(text) {
+      card.appendChild(el('div', 'onb-bubble', text));
+    }
+
+    function question(step, title, sub, list, key, next) {
       frame(step);
-      if (recapItems.length) recap(recapItems);
       heading(title, sub);
       const box = el('div', 'onb-options');
       list.forEach(opt => {
-        const b = el('button', 'onb-option', opt[labelIdx]);
+        const b = el('button', 'onb-option', opt[1]);
         b.type = 'button';
         b.addEventListener('click', () => { answers[key] = opt[0]; next(); });
         box.appendChild(b);
       });
       card.appendChild(box);
-      const skip = el('button', 'onb-skip', 'Pular');
-      skip.type = 'button';
-      skip.addEventListener('click', next);
-      card.appendChild(skip);
       const first = box.querySelector('button');
       if (first) first.focus();
     }
 
     function firstName() { return answers.name ? answers.name.split(/\s+/)[0] : ''; }
-
     function goalLabel() { return (ONB.goals.find(g => g[0] === answers.goal) || ONB.goals[3])[2]; }
     function nicheLabel() { return (ONB.niches.find(n => n[0] === answers.niche) || ONB.niches[0])[1]; }
     function styleLabel() { return (ONB.styles.find(s => s[0] === answers.style) || ONB.styles[0])[1]; }
 
     function stepName() {
       frame(1);
-      heading('Bem-vindo ao Viralyze', 'Como você gosta de ser chamado? Vamos deixar tudo com a sua cara.');
+      heading('Oi! Eu sou o Viralyze', 'Antes de começar, como você gosta de ser chamado?');
       const input = el('input', 'form-input onb-name');
       input.type = 'text';
       input.maxLength = 20;
@@ -378,31 +365,51 @@ Avoid: blurry footage, over-polished ad look, distorted faces or hands, watermar
       input.addEventListener('keydown', e => { if (e.key === 'Enter') apply(); });
       actions.appendChild(go);
       card.appendChild(actions);
-      const skip = el('button', 'onb-skip', 'Pular');
-      skip.type = 'button';
-      skip.addEventListener('click', stepGoal);
-      card.appendChild(skip);
       input.focus();
     }
 
     function stepGoal() {
       const n = firstName();
-      question(2, n ? `${n}, qual é o seu objetivo aqui?` : 'Qual é o seu objetivo aqui?', 'Vamos deixar o Viralyze com a sua cara.', ONB.goals, 'goal', 1, stepNiche, []);
+      question(2, n ? `Prazer, ${n}! O que você quer fazer aqui?` : 'Prazer! O que você quer fazer aqui?', 'Assim eu já adapto tudo pra você.', ONB.goals, 'goal', stepNiche);
     }
 
     function stepNiche() {
-      question(3, 'Em qual nicho você quer viralizar?', `Vamos escolher um produto de exemplo para quem ${goalLabel() === 'explorando' ? 'está explorando' : 'trabalha como ' + goalLabel()}.`, ONB.niches, 'niche', 1, stepStyle, [`Objetivo: ${goalLabel()}`]);
+      question(3, 'E em qual nicho você quer viralizar?', 'Vou escolher um produto de exemplo desse nicho.', ONB.niches, 'niche', stepObjection);
+    }
+
+    function stepObjection() {
+      question(4, `${nicheLabel()}, ótima escolha. Me conta uma coisa:`, 'O que mais te trava hoje na hora de vender com vídeo?', ONB.objections, 'obj', stepReply);
+    }
+
+    function stepReply() {
+      frame(5);
+      const o = ONB.objections.find(x => x[0] === answers.obj) || ONB.objections[0];
+      const n = firstName();
+      heading(n ? `Entendi, ${n}.` : 'Entendi.');
+      bubble(o[2]);
+      const actions = el('div', 'onb-actions');
+      const next = el('button', 'act-btn', 'Me mostra na prática');
+      next.type = 'button';
+      next.addEventListener('click', stepStyle);
+      actions.appendChild(next);
+      card.appendChild(actions);
+      next.focus();
     }
 
     function stepStyle() {
-      question(4, 'Que estilo de vídeo você quer fazer?', `Um estilo que combina com ${nicheLabel().toLowerCase()}.`, ONB.styles, 'style', 1, stepAha, [`Objetivo: ${goalLabel()}`, `Nicho: ${nicheLabel()}`]);
+      question(6, 'Que estilo de vídeo você quer fazer?', `Escolhe um que combine com ${nicheLabel().toLowerCase()}.`, ONB.styles, 'style', stepAha);
+    }
+
+    function close() {
+      onbMarkDone();
+      clearInterval(typeTimer);
+      ov.classList.add('hiding');
+      setTimeout(() => ov.remove(), 380);
     }
 
     function stepAha() {
-      frame(5);
-      recap([goalLabel(), nicheLabel(), styleLabel()]);
-      const n = firstName();
-      heading(n ? `Feito sob medida pra você, ${n}` : 'Feito sob medida pra você', `Um vídeo de ${styleLabel().toLowerCase()} em ${nicheLabel().toLowerCase()}, pensado para o seu perfil de ${goalLabel()}.`);
+      frame(7);
+      heading('Olha o que sai em segundos', `Um vídeo de ${styleLabel().toLowerCase()} em ${nicheLabel().toLowerCase()}, pensado pra quem trabalha como ${goalLabel()}.`);
       const status = el('div', 'onb-status', 'Gerando…');
       const out = el('pre', 'onb-prompt');
       card.append(status, out);
@@ -410,7 +417,7 @@ Avoid: blurry footage, over-polished ad look, distorted faces or hands, watermar
       const copy = el('button', 'onb-secondary', 'Copiar prompt');
       copy.type = 'button';
       copy.hidden = true;
-      const next = el('button', 'act-btn', 'Continuar');
+      const next = el('button', 'act-btn', 'Começar a usar');
       next.type = 'button';
       next.disabled = true;
       actions.append(copy, next);
@@ -424,7 +431,8 @@ Avoid: blurry footage, over-polished ad look, distorted faces or hands, watermar
         out.scrollTop = out.scrollHeight;
         if (i >= full.length) {
           clearInterval(typeTimer);
-          status.textContent = 'Pronto! Esse é o tipo de resultado que você vai ter no Viralyze.';
+          const n = firstName();
+          status.textContent = n ? `Pronto, ${n}! É assim que funciona, agora é só explorar.` : 'Pronto! É assim que funciona, agora é só explorar.';
           copy.hidden = false;
           next.disabled = false;
           next.focus();
@@ -436,37 +444,7 @@ Avoid: blurry footage, over-polished ad look, distorted faces or hands, watermar
         catch { copy.textContent = 'Não foi possível copiar'; }
         setTimeout(() => { copy.textContent = 'Copiar prompt'; }, 1800);
       });
-      next.addEventListener('click', stepCommit);
-    }
-
-    function close() {
-      onbMarkDone();
-      clearInterval(typeTimer);
-      ov.classList.add('hiding');
-      setTimeout(() => ov.remove(), 380);
-    }
-
-    function stepCommit() {
-      frame(6);
-      recap([goalLabel(), nicheLabel(), styleLabel()]);
-      const nm = firstName();
-      const titleFn = ONB.titles[answers.goal] || ONB.titles.explorar;
-      const titleRaw = titleFn(nm ? `${nm}, ` : '');
-      heading(nm ? titleRaw : titleRaw.charAt(0).toUpperCase() + titleRaw.slice(1), `Seu prompt de ${styleLabel().toLowerCase()} em ${nicheLabel().toLowerCase()} é só o começo.`);
-      const list = el('ul', 'onb-benefits');
-      (ONB.benefits[answers.goal] || ONB.benefits.explorar).forEach(t => list.appendChild(el('li', null, t)));
-      card.appendChild(list);
-      const actions = el('div', 'onb-actions');
-      const plans = el('a', 'onb-primary-link', 'Ver planos');
-      plans.href = UPGRADE_URL;
-      plans.target = '_blank';
-      plans.rel = 'noopener noreferrer';
-      plans.addEventListener('click', close);
-      const stay = el('button', 'onb-secondary', 'Continuar no Free');
-      stay.type = 'button';
-      stay.addEventListener('click', close);
-      actions.append(plans, stay);
-      card.appendChild(actions);
+      next.addEventListener('click', close);
     }
 
     stepName();
