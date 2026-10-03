@@ -143,6 +143,8 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
 .modal-btns{display:flex;gap:10px;justify-content:flex-end;}
 .btn-ghost{background:none;border:1px solid var(--border);border-radius:var(--radius);padding:9px 16px;color:var(--text);}
 .btn-ghost:hover{background:var(--surface2);}
+.more-wrap{display:none;justify-content:center;padding:16px;border-top:1px solid var(--border);}
+.more-wrap.show{display:flex;}
 .btn-confirm{border:none;border-radius:var(--radius);padding:9px 16px;font-weight:600;color:#fff;background:var(--purple);}
 .btn-confirm.danger{background:var(--red);}
 .btn-confirm.warn{background:var(--yellow);color:#1a1400;}
@@ -335,7 +337,7 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
         <button class="tab" data-filter="revoked" onclick="setFilter('revoked',this)"><span class="dot c-revoked"></span>Revogadas <span class="count" id="n-revoked">0</span></button>
       </div>
       <div class="search-row">
-        <input type="search" class="input search" placeholder="Buscar chave" autocomplete="off" autocapitalize="off" spellcheck="false" oninput="renderTable()" id="search-input">
+        <input type="search" class="input search" placeholder="Buscar chave" autocomplete="off" autocapitalize="off" spellcheck="false" oninput="resetVisible();renderTable()" id="search-input">
         <button class="icon-btn" onclick="loadLicenses()">Atualizar</button>
       </div>
     </div>
@@ -349,6 +351,7 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
           <tbody id="licenses-tbody"><tr><td colspan="5" class="empty">Carregando…</td></tr></tbody>
         </table>
       </div>
+      <div class="more-wrap" id="more-wrap"><button type="button" class="btn-ghost" id="more-btn" onclick="showMore()"></button></div>
     </div>
   </div>
 </div>
@@ -561,8 +564,14 @@ function setFilter(f,el){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
   el.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
+  resetVisible();
   renderTable();
 }
+
+const PAGE_SIZE=20;
+let visibleCount=PAGE_SIZE;
+function resetVisible(){visibleCount=PAGE_SIZE;}
+function showMore(){visibleCount+=PAGE_SIZE;renderTable();}
 
 function renderTable(){
   const q=(document.getElementById('search-input')?.value||'').toLowerCase().trim();
@@ -571,7 +580,14 @@ function renderTable(){
   if(q)list=list.filter(l=>l.key.toLowerCase().includes(q));
 
   const tbody=document.getElementById('licenses-tbody');
-  if(!list.length){tbody.innerHTML='<tr><td colspan="5" class="empty">Nenhuma licença encontrada</td></tr>';return;}
+  const moreWrap=document.getElementById('more-wrap');
+  const moreBtn=document.getElementById('more-btn');
+  if(!list.length){tbody.innerHTML='<tr><td colspan="5" class="empty">Nenhuma licença encontrada</td></tr>';moreWrap.classList.remove('show');return;}
+  const total=list.length;
+  list=list.slice(0,visibleCount);
+  const remaining=total-list.length;
+  moreWrap.classList.toggle('show',remaining>0);
+  moreBtn.textContent=`Mostrar mais (${Math.min(PAGE_SIZE,remaining)} de ${remaining} restantes)`;
 
   const fmt=iso=>iso?new Date(iso).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'}):'—';
   const labels={active:'Ativa',unused:'Não usada',expired:'Expirada',revoked:'Revogada'};
