@@ -1,9 +1,19 @@
 'use strict';
 
 const VIRAL_VIDEOS = [
-  { n: 1, title: 'Sérum que virou febre: o antes e depois em 7 dias',        url: 'https://www.tiktok.com/tag/tiktokmademebuyit' },
-  { n: 2, title: 'Achadinhos que todo mundo está comprando essa semana',      url: 'https://www.tiktok.com/tag/achadinhos' },
-  { n: 3, title: 'Mini projetor 4K: a sala de cinema mais barata do TikTok',  url: 'https://www.tiktok.com/tag/produtosviral' }
+  { n: 1, title: "Luminária de Natal que está bombando no TikTok", url: 'https://vt.tiktok.com/ZSba9vj6j/' },
+  { n: 2, title: "Saco que limpa tênis sozinho: o achadinho viral", url: 'https://vt.tiktok.com/ZSbaxxwBu/' },
+  { n: 3, title: "Produtos de beleza que todo mundo está comprando", url: 'https://vt.tiktok.com/ZSbaQeUQC/' },
+  { n: 4, title: "Limpador de cozinha que remove qualquer gordura", url: 'https://vt.tiktok.com/ZSbaQJjQG/' },
+  { n: 5, title: "Corta legumes que faz tudo em segundos", url: 'https://vt.tiktok.com/ZSbaQJuMS/' },
+  { n: 6, title: "Vestido viral que esgotou no TikTok Shop", url: 'https://vt.tiktok.com/ZSbaxEsSC/' },
+  { n: 7, title: "Corta unha pet: o achadinho que os donos amaram", url: 'https://vt.tiktok.com/ZSbaxtdpQ/' },
+  { n: 8, title: "Gaveta organizadora de banheiro que virou febre", url: 'https://vt.tiktok.com/ZSbaQLvny/' },
+  { n: 9, title: "Mousepad de vidro: o setup mais desejado do momento", url: 'https://vt.tiktok.com/ZSbaQBPV3/' },
+  { n: 10, title: "Look viral que está em alta no TikTok Shop", url: 'https://vt.tiktok.com/ZSbaQ94yN/' },
+  { n: 11, title: "Prato giratório que facilita a vida na cozinha", url: 'https://vt.tiktok.com/ZSbaQCayG/' },
+  { n: 12, title: "Gadget de cozinha que todo mundo quer ter", url: 'https://vt.tiktok.com/ZSbaQk8eD/' },
+  { n: 13, title: "TV móvel: o achadinho que está viralizando", url: 'https://vt.tiktok.com/ZSbaQpFjg/' }
 ];
 
 const VV_COVER_DIR = 'assets/videos/';
