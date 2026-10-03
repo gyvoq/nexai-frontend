@@ -109,6 +109,31 @@
   stroke-linejoin: round;
   opacity: .8
 }
+.vv-cover img {
+  opacity: 0;
+  transition: opacity .35s ease
+}
+.vv-cover img.is-loaded {
+  opacity: 1
+}
+.vv-cover-loader {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(110deg,#1d1530 30%,#2a1f45 50%,#1d1530 70%);
+  background-size: 200% 100%;
+  animation: vvShimmer 1.4s linear infinite
+}
+.vv-cover.is-loading .vv-cover-loader {
+  display: flex
+}
+@keyframes vvShimmer {
+  to {
+    background-position: -200% 0
+  }
+}
 .vv-cover.no-cover .vv-cover-fallback {
   display: flex
 }
