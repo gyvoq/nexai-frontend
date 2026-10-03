@@ -67,6 +67,7 @@ function fsNormalizeMessage(m) {
   if (typeof m.label === 'string') out.label = m.label.slice(0, 80);
   if (m.final) out.final = true;
   if (m.wide) out.wide = true;
+  if (m.locked === 'imagem' || m.locked === 'video') out.locked = m.locked;
   if (typeof m.rawText === 'string') out.rawText = m.rawText.slice(0, 20000);
   return out;
 }
@@ -299,7 +300,9 @@ function fsAddMsg(who, content, opts = {}) {
   body.scrollTop = body.scrollHeight;
 
   const contentEl = div.querySelector('.fs-msg-content');
-  if (opts.raw) {
+  if (opts.locked) {
+    contentEl.innerHTML = NexPlan.lockedCardHtml(opts.locked);
+  } else if (opts.raw) {
     contentEl.innerHTML = content;
   } else if (who === 'bot' && !opts.skipTypewriter) {
     fsTypewrite(contentEl, content);
@@ -328,6 +331,7 @@ function fsAddMsg(who, content, opts = {}) {
     if (opts.label) rec.label = opts.label;
     if (opts.final) { rec.final = true; rec.rawText = opts.rawText || String(content); }
     if (opts.wide) rec.wide = true;
+    if (opts.locked) rec.locked = opts.locked;
     fsRecordMessage(fsMode, rec);
   }
   return div;
@@ -335,7 +339,7 @@ function fsAddMsg(who, content, opts = {}) {
 
 function fsRestoreChat(history) {
   history.forEach(m => fsAddMsg(m.who, m.content, {
-    label: m.label, final: m.final, rawText: m.rawText, wide: m.wide,
+    label: m.label, final: m.final, rawText: m.rawText, wide: m.wide, locked: m.locked,
     skipTypewriter: true, restore: true, ts: m.ts
   }));
 }
@@ -464,10 +468,12 @@ function fsSetMode(mode) {
   } else if (mode === 'extrair') {
     inputRow.style.display = 'none';
     upload.style.display = 'block';
-    styleInput.style.display = 'block';
-    extractBtn.style.display = 'inline-flex';
+    const freeExtract = window.NexPlan && NexPlan.isFree();
+    styleInput.style.display = freeExtract ? 'none' : 'block';
+    extractBtn.style.display = freeExtract ? 'none' : 'inline-flex';
     fsResetUpload();
-    if (!hasHistory) fsBotSay('Envie o vídeo viral que você quer usar de referência e descreva o estilo dele. A IA "extrai" o movimento e te devolve um prompt pronto.');
+    if (!hasHistory && freeExtract) fsBotSay('O Extrair Movimento é exclusivo do plano Pro. No Free você não consegue enviar vídeos de referência.');
+    else if (!hasHistory) fsBotSay('Envie o vídeo viral que você quer usar de referência e descreva o estilo dele. A IA "extrai" o movimento e te devolve um prompt pronto.');
   }
 }
 
@@ -675,8 +681,10 @@ Call to action: close with a direct, friendly call to action (link in bio / tap 
 
 Avoid: blurry footage, over-polished ad look, distorted faces or hands, watermarks, on-screen text that is hard to read.`;
 
-  fsBotSay('Prontinho! Seu prompt de vídeo está pronto.', () => {
-    fsAddMsg('bot', prompt, { final: true, label: 'Prompt de vídeo', rawText: prompt, skipTypewriter: true, wide: true });
+  const freeVid = window.NexPlan && NexPlan.isFree();
+  fsBotSay(freeVid ? 'Seu vídeo ficou pronto, mas o resultado está bloqueado no plano Free.' : 'Prontinho! Seu prompt de vídeo está pronto.', () => {
+    if (freeVid) fsAddMsg('bot', 'Vídeo bloqueado', { locked: 'video', wide: true, skipTypewriter: true, label: 'Vídeo' });
+    else fsAddMsg('bot', prompt, { final: true, label: 'Prompt de vídeo', rawText: prompt, skipTypewriter: true, wide: true });
     document.getElementById('fs-chat-inputrow').style.display = 'none';
     fsQuickReplies(['Novo prompt de vídeo'], () => { if (!fsGuardLimit()) fsStartVideoFlow(); });
   });
@@ -705,7 +713,8 @@ function fsResetUpload() {
   const zone = document.getElementById('fs-upload-zone');
   const input = document.getElementById('fs-video-file-input');
   if (input) input.value = '';
-  if (zone) { zone.classList.remove('has-file'); zone.innerHTML = FS_UPLOAD_EMPTY_HTML; }
+  const freeUp = window.NexPlan && NexPlan.isFree();
+  if (zone) { zone.classList.remove('has-file'); zone.classList.toggle('is-locked', !!freeUp); zone.innerHTML = freeUp ? NexPlan.lockedUploadHtml() : FS_UPLOAD_EMPTY_HTML; }
 }
 
 function fsDetectVideoSignature(b) {
@@ -734,10 +743,12 @@ async function fsValidateVideoFile(file) {
 }
 
 function fsHandleUploadClick() {
+  if (window.NexPlan && NexPlan.isFree()) { NexPlan.blocked('Extrair Movimento'); return; }
   const input = document.getElementById('fs-video-file-input');
   input.click();
 }
 async function fsHandleUploadChange(e) {
+  if (window.NexPlan && NexPlan.isFree()) { e.target.value = ''; return; }
   const input = e.target;
   const file = input.files && input.files[0];
   if (!file) return;
@@ -759,6 +770,7 @@ function fsFormatWait(sec) {
 }
 
 async function fsRunExtract() {
+  if (window.NexPlan && NexPlan.isFree()) { NexPlan.blocked('Extrair Movimento'); return; }
   if (fsExtracting) return;
   if (!fsExtractFile) { fsToast('Envie um vídeo primeiro'); return; }
   if (fsGuardLimit()) return;
@@ -908,6 +920,7 @@ let fsImgOtherMode = false;
 function fsAllProducts() {
   const builtin = (typeof products !== 'undefined' && Array.isArray(products)) ? products : [];
   const custom = (typeof customProducts !== 'undefined' && Array.isArray(customProducts)) ? customProducts : [];
+  if (window.NexPlan && NexPlan.isFree()) return builtin.slice(0, NexPlan.FREE_LIMIT);
   return custom.concat(builtin);
 }
 
@@ -1100,6 +1113,12 @@ function fsHandleImageAnswer(text, skipped) {
 }
 
 function fsEmitImagePrompt() {
+  if (window.NexPlan && NexPlan.isFree()) {
+    fsImgVersion++;
+    fsAddMsg('bot', 'Imagem bloqueada', { locked: 'imagem', wide: true, skipTypewriter: true, label: 'Imagem' });
+    fsSaveImageState();
+    return;
+  }
   const prompt = fsBuildImagePromptFrom({ answers: fsImgAnswers, avatar: fsImgAvatar, product: fsImgProduct, tone: fsImgTone, variant: fsImgVariant });
   fsImgVersion++;
   const label = 'Prompt de imagem' + (fsImgVersion > 1 ? ' · versão ' + fsImgVersion : '');
@@ -1109,12 +1128,17 @@ function fsEmitImagePrompt() {
 
 function fsShowImageActions() {
   document.getElementById('fs-chat-inputrow').style.display = 'none';
+  if (window.NexPlan && NexPlan.isFree()) {
+    fsQuickReplies(['Novo prompt de imagem'], fsImageAction);
+    return;
+  }
   fsQuickReplies(['Mais realista', 'Mais premium', 'Mudar cenário', 'Gerar outra versão', 'Novo prompt de imagem'], fsImageAction);
 }
 
 function fsFinishImagePrompt() {
   fsImgPhase = 'done';
-  fsBotSay('Prontinho! Seu prompt de imagem está pronto. Se quiser, ajuste com os botões abaixo.', () => {
+  const freeImg = window.NexPlan && NexPlan.isFree();
+  fsBotSay(freeImg ? 'Sua imagem ficou pronta, mas o resultado está bloqueado no plano Free.' : 'Prontinho! Seu prompt de imagem está pronto. Se quiser, ajuste com os botões abaixo.', () => {
     fsEmitImagePrompt();
     fsShowImageActions();
   });
@@ -1346,6 +1370,7 @@ function viralizeRenderLimitUI() {
 }
 
 function selectViralizeAvatar(avatar) {
+  if (window.NexPlan && NexPlan.isFree()) { NexPlan.blocked('Viralize A.I'); return; }
   if (!avatar) return;
   const id = String(avatar.id);
 
