@@ -88,6 +88,236 @@ const products = [
   grad: "grad-beleza",
   tag: "#beleza",
   prompt: "organizador giratório de maquiagem antes e depois"
+},
+{
+  id: 110,
+  name: "Almofada Ergonômica Teal",
+  cat: "casa",
+  img: "./assets/produtos/P10.avif",
+  rank: 10,
+  grad: "grad-casa",
+  tag: "#casa",
+  prompt: "almofada ergonômica para apoio e conforto"
+},
+{
+  id: 111,
+  name: "Aspirador Philco",
+  cat: "casa",
+  img: "./assets/produtos/P11.avif",
+  rank: 11,
+  grad: "grad-casa",
+  tag: "#casa",
+  prompt: "aspirador Philco limpando a casa com praticidade"
+},
+{
+  id: 112,
+  name: "Balança Digital Premium",
+  cat: "saude",
+  img: "./assets/produtos/P12.avif",
+  rank: 12,
+  grad: "grad-saude",
+  tag: "#saude",
+  prompt: "balança digital premium para acompanhar o peso"
+},
+{
+  id: 113,
+  name: "Cinta Postural",
+  cat: "saude",
+  img: "./assets/produtos/P13.avif",
+  rank: 13,
+  grad: "grad-saude",
+  tag: "#saude",
+  prompt: "cinta postural corrigindo a postura no dia a dia"
+},
+{
+  id: 114,
+  name: "Calças Cargo",
+  cat: "moda",
+  img: "./assets/produtos/P14.avif",
+  rank: 14,
+  grad: "grad-moda",
+  tag: "#moda",
+  prompt: "calças cargo em looks de street style"
+},
+{
+  id: 115,
+  name: "Camisetas Coleção",
+  cat: "moda",
+  img: "./assets/produtos/P15.avif",
+  rank: 15,
+  grad: "grad-moda",
+  tag: "#moda",
+  prompt: "coleção de camisetas em diferentes combinações"
+},
+{
+  id: 116,
+  name: "Câmera de Segurança Premium",
+  cat: "tech",
+  img: "./assets/produtos/P16.avif",
+  rank: 16,
+  grad: "grad-tech",
+  tag: "#tech",
+  prompt: "câmera de segurança premium monitorando a casa"
+},
+{
+  id: 117,
+  name: "Difusor de Madeira com Névoa Aromática",
+  cat: "casa",
+  img: "./assets/produtos/P17.avif",
+  rank: 17,
+  grad: "grad-casa",
+  tag: "#casa",
+  prompt: "difusor de madeira soltando névoa aromática"
+},
+{
+  id: 118,
+  name: "Dispensador Futurista de Espuma",
+  cat: "casa",
+  img: "./assets/produtos/P18.avif",
+  rank: 18,
+  grad: "grad-casa",
+  tag: "#casa",
+  prompt: "dispensador de espuma automático em ação"
+},
+{
+  id: 119,
+  name: "Faixa Elástica Neon",
+  cat: "fitness",
+  img: "./assets/produtos/P19.avif",
+  rank: 19,
+  grad: "grad-fitness",
+  tag: "#fitness",
+  prompt: "faixa elástica para treino em casa"
+},
+{
+  id: 120,
+  name: "Capinhas Coloridas",
+  cat: "tech",
+  img: "./assets/produtos/P20.avif",
+  rank: 20,
+  grad: "grad-tech",
+  tag: "#tech",
+  prompt: "capinhas de celular coloridas para todos os modelos"
+},
+{
+  id: 121,
+  name: "Luvas Fitness",
+  cat: "fitness",
+  img: "./assets/produtos/P21.avif",
+  rank: 21,
+  grad: "grad-fitness",
+  tag: "#fitness",
+  prompt: "luvas fitness para treino de academia"
+},
+{
+  id: 122,
+  name: "Massageador Percussivo",
+  cat: "saude",
+  img: "./assets/produtos/P22.avif",
+  rank: 22,
+  grad: "grad-saude",
+  tag: "#saude",
+  prompt: "massageador percussivo aliviando a tensão muscular"
+},
+{
+  id: 123,
+  name: "Mouse Sem Fio",
+  cat: "tech",
+  img: "./assets/produtos/P23.avif",
+  rank: 23,
+  grad: "grad-tech",
+  tag: "#tech",
+  prompt: "mouse sem fio para trabalho e jogos"
+},
+{
+  id: 124,
+  name: "Máquina de Corte Profissional",
+  cat: "beleza",
+  img: "./assets/produtos/P24.avif",
+  rank: 24,
+  grad: "grad-beleza",
+  tag: "#beleza",
+  prompt: "máquina de corte profissional fazendo acabamento"
+},
+{
+  id: 125,
+  name: "Power Bank Premium",
+  cat: "tech",
+  img: "./assets/produtos/P25.avif",
+  rank: 25,
+  grad: "grad-tech",
+  tag: "#tech",
+  prompt: "power bank premium carregando o celular em qualquer lugar"
+},
+{
+  id: 126,
+  name: "Rolo Abdominal",
+  cat: "fitness",
+  img: "./assets/produtos/P26.avif",
+  rank: 26,
+  grad: "grad-fitness",
+  tag: "#fitness",
+  prompt: "rolo abdominal para treino de core"
+},
+{
+  id: 127,
+  name: "Rolos de Bandagem",
+  cat: "saude",
+  img: "./assets/produtos/P27.avif",
+  rank: 27,
+  grad: "grad-saude",
+  tag: "#saude",
+  prompt: "rolos de bandagem para suporte e proteção"
+},
+{
+  id: 128,
+  name: "Smartwatch Neon",
+  cat: "tech",
+  img: "./assets/produtos/P28.avif",
+  rank: 28,
+  grad: "grad-tech",
+  tag: "#tech",
+  prompt: "smartwatch com mostrador neon e funções inteligentes"
+},
+{
+  id: 129,
+  name: "Suporte Veicular",
+  cat: "tech",
+  img: "./assets/produtos/P29.avif",
+  rank: 29,
+  grad: "grad-tech",
+  tag: "#tech",
+  prompt: "suporte veicular firme para celular no carro"
+},
+{
+  id: 130,
+  name: "Termômetro Infravermelho",
+  cat: "saude",
+  img: "./assets/produtos/P30.avif",
+  rank: 30,
+  grad: "grad-saude",
+  tag: "#saude",
+  prompt: "termômetro infravermelho medindo a temperatura sem contato"
+},
+{
+  id: 131,
+  name: "Hoodies Consulado",
+  cat: "moda",
+  img: "./assets/produtos/P31.avif",
+  rank: 31,
+  grad: "grad-moda",
+  tag: "#moda",
+  prompt: "três hoodies Consulado em looks casuais"
+},
+{
+  id: 132,
+  name: "Tênis Marrom",
+  cat: "moda",
+  img: "./assets/produtos/P32.avif",
+  rank: 32,
+  grad: "grad-moda",
+  tag: "#moda",
+  prompt: "tênis marrom estiloso para o dia a dia"
 }
 ];
 const videos = [ {
