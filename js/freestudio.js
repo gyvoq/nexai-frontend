@@ -683,11 +683,41 @@ Avoid: blurry footage, over-polished ad look, distorted faces or hands, watermar
 
   const freeVid = window.NexPlan && NexPlan.isFree();
   fsBotSay(freeVid ? 'Seu vídeo ficou pronto, mas o resultado está bloqueado no plano Free.' : 'Prontinho! Seu prompt de vídeo está pronto.', () => {
-    if (freeVid) fsAddMsg('bot', 'Vídeo bloqueado', { locked: 'video', wide: true, skipTypewriter: true, label: 'Vídeo' });
-    else fsAddMsg('bot', prompt, { final: true, label: 'Prompt de vídeo', rawText: prompt, skipTypewriter: true, wide: true });
     document.getElementById('fs-chat-inputrow').style.display = 'none';
+    if (freeVid) {
+      fsRunLockedVideoGeneration();
+      return;
+    }
+    fsAddMsg('bot', prompt, { final: true, label: 'Prompt de vídeo', rawText: prompt, skipTypewriter: true, wide: true });
     fsQuickReplies(['Novo prompt de vídeo'], () => { if (!fsGuardLimit()) fsStartVideoFlow(); });
   });
+}
+
+function fsRunLockedVideoGeneration() {
+  const flow = fsFlowId;
+  const total = 20000;
+  const steps = ['Preparando a cena…', 'Gerando os quadros…', 'Aplicando movimento e iluminação…', 'Renderizando o vídeo…', 'Finalizando…'];
+  const msg = fsAddMsg('bot', '', { raw: true, wide: true, label: 'Vídeo' });
+  if (!msg) return;
+  const content = msg.querySelector('.fs-msg-content');
+  content.innerHTML = '<div class="fs-gen-card"><div class="fs-gen-title">Gerando seu vídeo…</div><div class="fs-gen-bar"><span></span></div><div class="fs-gen-step"></div></div>';
+  const bar = content.querySelector('.fs-gen-bar span');
+  const stepEl = content.querySelector('.fs-gen-step');
+  const body = document.getElementById('fs-chat-body');
+  if (body) body.scrollTop = body.scrollHeight;
+  const start = Date.now();
+  const timer = setInterval(() => {
+    if (flow !== fsFlowId) { clearInterval(timer); msg.remove(); return; }
+    const p = Math.min(1, (Date.now() - start) / total);
+    bar.style.width = Math.round(p * 100) + '%';
+    stepEl.textContent = steps[Math.min(steps.length - 1, Math.floor(p * steps.length))];
+    if (p >= 1) {
+      clearInterval(timer);
+      msg.remove();
+      fsAddMsg('bot', 'Vídeo bloqueado', { locked: 'video', wide: true, skipTypewriter: true, label: 'Vídeo' });
+      fsQuickReplies(['Novo prompt de vídeo'], () => { if (!fsGuardLimit()) fsStartVideoFlow(); });
+    }
+  }, 200);
 }
 
 const FS_EXTRACT_PROMPTS = [
