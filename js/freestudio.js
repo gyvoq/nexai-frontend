@@ -6,7 +6,12 @@ function fsToast(msg) {
   if (typeof showToast === 'function') showToast(msg);
 }
 function fsCopy(text, btn) {
-  navigator.clipboard?.writeText(text).then(() => fsToast('Copiado!')).catch(() => {});
+  const fail = () => fsToast('Não foi possível copiar');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => fsToast('Copiado!')).catch(fail);
+  } else {
+    fail();
+  }
 }
 
 function toggleNicheFilter(forceClose) {
@@ -357,7 +362,7 @@ function fsEnsureTextarea() {
   ta.rows = 1;
   ta.style.display = 'none';
   ta.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && !e.isComposing) {
       e.preventDefault();
       fsSendMessage();
     }
@@ -400,6 +405,8 @@ function fsSetMode(mode) {
   const styleInput = document.getElementById('fs-style-input');
   const extractBtn = document.getElementById('fs-extract-btn');
   fsHideTyping();
+  fsAwaitingAnswer = false;
+  fsResetVideoInput();
   quick.innerHTML = '';
   body.innerHTML = '';
   body.dataset.lastDay = '';
@@ -452,6 +459,8 @@ const FS_VIDEO_QUESTIONS = [
 ];
 
 function fsStartVideoFlow() {
+  fsFlowId++;
+  document.getElementById('fs-quick-replies').innerHTML = '';
   fsVideoPhase = 'avatar';
   fsVideoStep = 0;
   fsVideoAnswers = {};
@@ -722,6 +731,7 @@ async function fsRunExtract() {
   if (!fsExtractFile) { fsToast('Envie um vídeo primeiro'); return; }
   if (fsGuardLimit()) return;
   const file = fsExtractFile;
+  const flow = fsFlowId;
   const style = (document.getElementById('fs-style-input').value || '').trim();
 
   fsExtracting = true;
@@ -736,6 +746,7 @@ async function fsRunExtract() {
     fsExtracting = false;
     if (btn) btn.disabled = false;
   }
+  if (flow !== fsFlowId) return;
   if (!gate.ok) {
     if (gate.rateLimited) {
       fsBotSay(`Você atingiu o limite de extrações por agora. Tente novamente em ${fsFormatWait(gate.retryAfterSec)}.`);
@@ -763,6 +774,7 @@ function fsSendMessage() {
   const text = el.value.trim();
   if (!text) return;
   if (fsGuardLimit()) return;
+  if (fsMode === 'video' && (fsVideoPhase !== 'questions' || !fsAwaitingAnswer)) return;
   el.value = '';
   if (fsMode === 'imagem') {
     fsMaybeNameProject(text);
@@ -954,7 +966,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   const chatInput = document.getElementById('fs-chat-input');
   if (chatInput) {
-    chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') fsSendMessage(); });
+    chatInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) fsSendMessage(); });
   }
   const sendBtn = document.getElementById('fs-send-btn');
   if (sendBtn) sendBtn.addEventListener('click', fsSendMessage);
