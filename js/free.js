@@ -252,19 +252,35 @@ const NexPlan = (() => {
       ['antes', 'Antes e depois', 'before/after format: quick wipe transition between the problem and the result'],
       ['review', 'Review honesto', 'honest talking-head review: chest-up framing, product held close to the camera']
     ],
-    cta: {
-      afiliado: 'tap the orange cart to grab it on TikTok Shop',
-      proprio: 'link in bio to order straight from our store',
-      agencia: 'brand-safe call to action that is easy to adapt per client',
-      explorar: 'friendly call to action to follow for more finds'
-    },
     objections: [
       ['ideia', 'Não sei o que postar', 'Falta de ideia é o que mais trava. Aqui você escolhe nicho e estilo e recebe o prompt pronto, sem começar do zero.'],
       ['tempo', 'Não tenho tempo', 'Tranquilo. O prompt sai em segundos, é só copiar e usar. Dá pra deixar um vídeo encaminhado no tempo de um café.'],
       ['tentei', 'Já tentei e não vendi', 'Acontece muito. Quase sempre o problema está no gancho dos 2 primeiros segundos e no jeito de mostrar o produto. Os prompts já vêm com gancho, ritmo e enquadramento prontos.'],
       ['dificil', 'Acho IA complicada', 'Você não precisa saber nada técnico. É só responder umas perguntas rápidas e o prompt vem pronto pra usar.'],
       ['medo', 'Tenho medo de não funcionar', 'Faz sentido ter cuidado. Por isso dá pra testar no plano Free e ver o resultado com os seus olhos antes de decidir qualquer coisa.']
-    ]
+    ],
+    pains: {
+      ideia: [
+        n => `${n}ficar sem ideia é vídeo parado.`,
+        (niche, style) => `Cada dia sem postar é um dia que o algoritmo entrega pra outra pessoa de ${niche}. Aqui você nunca mais começa do zero: o ${style} já sai pronto pra usar.`
+      ],
+      tempo: [
+        n => `${n}tempo é o que você não tem.`,
+        (niche, style) => `Enquanto você pensa no que gravar, outro criador de ${niche} já postou. Aqui o ${style} sai em segundos, sem enrolação.`
+      ],
+      tentei: [
+        n => `${n}postar e não vender dói.`,
+        (niche, style) => `Quase nunca é falta de esforço, é falta de gancho e de formato. O ${style} em ${niche} já vem com gancho nos 2 primeiros segundos, do jeito que prende.`
+      ],
+      dificil: [
+        n => `${n}você não precisa entender de IA.`,
+        (niche, style) => `O complicado é o que te fez adiar até agora. Aqui é responder, copiar e postar o seu ${style} de ${niche}.`
+      ],
+      medo: [
+        n => `${n}medo de não funcionar é normal.`,
+        (niche, style) => `Só que ficar sem testar também custa: mais um mês sem resultado em ${niche}. Entra, faz o seu ${style} e vê funcionando.`
+      ]
+    }
   };
 
   function onbDone() {
@@ -275,28 +291,10 @@ const NexPlan = (() => {
     try { localStorage.setItem(ONB_KEY, '1'); } catch {}
   }
 
-  function buildOnbPrompt(a) {
-    const niche = ONB.niches.find(n => n[0] === a.niche) || ONB.niches[0];
-    const style = ONB.styles.find(s => s[0] === a.style) || ONB.styles[0];
-    const cta = ONB.cta[a.goal] || ONB.cta.explorar;
-    return `Vertical TikTok (9:16) video, 15s long, energetic tone.
-Product/theme: ${niche[2]}.
-Style: ${style[2]}.
-
-Camera & framing: handheld selfie-style UGC shot, subtle natural hand movement, no tripod feel.
-Lighting: natural window light, warm and flattering, no harsh shadows.
-Pacing: strong hook in the first 2 seconds, a cut every 2-3 seconds, clear product reveal in the middle.
-Audio: clear close-mic voice with light trending background music.
-Call to action: ${cta}.
-
-Avoid: blurry footage, over-polished ad look, distorted faces or hands, watermarks.`;
-  }
-
   function startOnboarding() {
     if (document.getElementById('onboarding-overlay')) return;
     const answers = { name: '', goal: 'explorar', niche: 'beleza', obj: 'ideia', style: 'unboxing' };
     const TOTAL = 7;
-    let typeTimer = null;
 
     const ov = el('div');
     ov.id = 'onboarding-overlay';
@@ -305,7 +303,6 @@ Avoid: blurry footage, over-polished ad look, distorted faces or hands, watermar
     document.body.appendChild(ov);
 
     function frame(step) {
-      clearInterval(typeTimer);
       card.textContent = '';
       const prog = el('div', 'onb-progress');
       prog.setAttribute('role', 'progressbar');
@@ -397,54 +394,29 @@ Avoid: blurry footage, over-polished ad look, distorted faces or hands, watermar
     }
 
     function stepStyle() {
-      question(6, 'Que estilo de vídeo você quer fazer?', `Escolhe um que combine com ${nicheLabel().toLowerCase()}.`, ONB.styles, 'style', stepAha);
+      question(6, 'Que estilo de vídeo você quer fazer?', `Escolhe um que combine com ${nicheLabel().toLowerCase()}.`, ONB.styles, 'style', stepFinal);
     }
 
     function close() {
       onbMarkDone();
-      clearInterval(typeTimer);
       ov.classList.add('hiding');
       setTimeout(() => ov.remove(), 380);
     }
 
-    function stepAha() {
+    function stepFinal() {
       frame(7);
-      heading('Olha o que sai em segundos', `Um vídeo de ${styleLabel().toLowerCase()} em ${nicheLabel().toLowerCase()}, pensado pra quem trabalha como ${goalLabel()}.`);
-      const status = el('div', 'onb-status', 'Gerando…');
-      const out = el('pre', 'onb-prompt');
-      card.append(status, out);
+      const n = firstName();
+      const pain = ONB.pains[answers.obj] || ONB.pains.ideia;
+      const t = pain[0](n ? `${n}, ` : '');
+      heading(n ? t : t.charAt(0).toUpperCase() + t.slice(1));
+      bubble(pain[1](nicheLabel().toLowerCase(), styleLabel().toLowerCase()));
       const actions = el('div', 'onb-actions');
-      const copy = el('button', 'onb-secondary', 'Copiar prompt');
-      copy.type = 'button';
-      copy.hidden = true;
-      const next = el('button', 'act-btn', 'Começar a usar');
+      const next = el('button', 'act-btn', 'Entrar no Viralyze');
       next.type = 'button';
-      next.disabled = true;
-      actions.append(copy, next);
-      card.appendChild(actions);
-
-      const full = buildOnbPrompt(answers);
-      let i = 0;
-      typeTimer = setInterval(() => {
-        i = Math.min(full.length, i + 4);
-        out.textContent = full.slice(0, i);
-        out.scrollTop = out.scrollHeight;
-        if (i >= full.length) {
-          clearInterval(typeTimer);
-          const n = firstName();
-          status.textContent = n ? `Pronto, ${n}! É assim que funciona, agora é só explorar.` : 'Pronto! É assim que funciona, agora é só explorar.';
-          copy.hidden = false;
-          next.disabled = false;
-          next.focus();
-        }
-      }, 22);
-
-      copy.addEventListener('click', async () => {
-        try { await navigator.clipboard.writeText(full); copy.textContent = 'Copiado!'; }
-        catch { copy.textContent = 'Não foi possível copiar'; }
-        setTimeout(() => { copy.textContent = 'Copiar prompt'; }, 1800);
-      });
       next.addEventListener('click', close);
+      actions.appendChild(next);
+      card.appendChild(actions);
+      next.focus();
     }
 
     stepName();
