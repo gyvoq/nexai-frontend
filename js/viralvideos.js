@@ -16,7 +16,8 @@ const VIRAL_VIDEOS = [
   { n: 13, title: "TV móvel: o achadinho que está viralizando", url: 'https://vt.tiktok.com/ZSbaQpFjg/' }
 ];
 
-const VV_COVER_DIR = 'assets/videos/';
+const VV_OEMBED = ['https://www.tiktok.com/oembed?url=', 'https://noembed.com/embed?url='];
+const vvCoverCache = new Map();
 const VV_LOADING_MS = 1500;
 const VV_REFRESH_AFTER_MS = 60 * 1000;
 
@@ -26,7 +27,35 @@ let vvMining = false;
 
 function vvEsc(s) { return (window.Sanitize && Sanitize.escapeHTML) ? Sanitize.escapeHTML(s) : String(s); }
 function vvSafeUrl(u) { return /^https:\/\/([a-z0-9-]+\.)?tiktok\.com\//i.test(u) ? u : '#'; }
-function vvCoverSrc(n) { return VV_COVER_DIR + 'V' + n + '.avif'; }
+function vvSafeImg(u) { return typeof u === 'string' && /^https:\/\//i.test(u) ? u : ''; }
+
+async function vvFetchCover(url) {
+  if (vvCoverCache.has(url)) return vvCoverCache.get(url);
+  const job = (async () => {
+    for (const base of VV_OEMBED) {
+      try {
+        const res = await fetch(base + encodeURIComponent(url));
+        if (!res.ok) continue;
+        const data = await res.json();
+        const img = vvSafeImg(data.thumbnail_url);
+        if (img) return img;
+      } catch (e) {}
+    }
+    return '';
+  })();
+  vvCoverCache.set(url, job);
+  const result = await job;
+  if (!result) vvCoverCache.delete(url);
+  return result;
+}
+
+async function vvLoadCover(v, img, cover) {
+  const src = await vvFetchCover(v.url);
+  if (!src) { cover.classList.add('no-cover'); return; }
+  img.addEventListener('error', () => cover.classList.add('no-cover'), { once: true });
+  img.referrerPolicy = 'no-referrer';
+  img.src = src;
+}
 
 const VV_ICON_PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
 const VV_ICON_VIDEO = '<svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>';
@@ -36,7 +65,7 @@ function vvFoundCard(v) {
   const title = vvEsc(v.title);
   const href = vvSafeUrl(v.url);
   return '<a class="vv-cover" href="' + href + '" target="_blank" rel="noopener noreferrer" aria-label="Abrir no TikTok: ' + title + '">' +
-      '<img src="' + vvCoverSrc(v.n) + '" alt="Capa do vídeo: ' + title + '" loading="lazy">' +
+      '<img alt="Capa do vídeo: ' + title + '" loading="lazy">' +
       '<span class="vv-cover-fallback">' + VV_ICON_VIDEO + '<span>V' + v.n + '</span></span>' +
       '<span class="vv-hot">Em alta agora</span>' +
       '<span class="vv-play" aria-hidden="true">' + VV_ICON_PLAY + '</span>' +
@@ -53,7 +82,7 @@ function vvRevealCard(card, v) {
   card.innerHTML = vvFoundCard(v);
   const img = card.querySelector('.vv-cover img');
   const cover = card.querySelector('.vv-cover');
-  if (img && cover) img.addEventListener('error', () => cover.classList.add('no-cover'), { once: true });
+  if (img && cover) vvLoadCover(v, img, cover);
 }
 
 function vvSetRadar(state, status, count) {
