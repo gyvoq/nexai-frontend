@@ -1110,13 +1110,12 @@ function scrollToFirstProduct() {
 }
 
 function productCard(p, selectable, i = 0, clickFn = "selectStudioProduct") {
-  const fav = isFav("prod", p.id);
   const imgContent = p.img ? `<img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.55"><path d="M21 8L12 3 3 8l9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>`;
   const customBadge = p.custom ? `<span style="position:absolute;bottom:7px;right:7px;background:rgba(124,107,255,0.85);color:white;font-size:8px;padding:2px 6px;border-radius:7px;font-weight:700;backdrop-filter:blur(4px)">MEU</span>` : "";
   const trendBadge = p.rank <= 5 ? `<div class="trending-badge">TOP ${p.rank}</div>` : "";
   const newBadge = p.isNew ? `<span class="badge-new">NOVO</span>` : "";
   const safeName = Sanitize.escapeHTML(p.name);
-  return `<div class="product-card" data-cat="${p.cat}" data-id="${p.id}" ${selectable ? `onclick="${clickFn}('${p.id}',this)" role="option" tabindex="0" aria-label="${safeName}"` : ""} role="listitem">\n    <div class="card-img ${p.grad}">${imgContent}${customBadge}${trendBadge}${newBadge}\n      <button class="fav-btn ${fav ? "active" : ""}" onclick="event.stopPropagation();this.innerHTML=heartSVG(!this.classList.contains('active'));toggleFav('prod',${p.id},this)" aria-label="${fav ? "Remover dos favoritos" : "Adicionar aos favoritos"}">${heartSVG(fav)}</button>\n    </div>\n    <div class="card-body">\n      <div class="card-name">${safeName}</div>\n      ${!selectable ? `<button class="card-btn" onclick="event.stopPropagation();addToInventory(${p.id},'${safeName.replace(/'/g, "\\'")}')"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar</button>` : ""}\n    </div>\n  </div>`;
+  return `<div class="product-card" data-cat="${p.cat}" data-id="${p.id}" ${selectable ? `onclick="${clickFn}('${p.id}',this)" role="option" tabindex="0" aria-label="${safeName}"` : ""} role="listitem">\n    <div class="card-img ${p.grad}">${imgContent}${customBadge}${trendBadge}${newBadge}\n    </div>\n    <div class="card-body">\n      <div class="card-name">${safeName}</div>\n      ${!selectable ? `<button class="card-btn" onclick="event.stopPropagation();addToInventory(${p.id},'${safeName.replace(/'/g, "\\'")}')"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar</button>` : ""}\n    </div>\n  </div>`;
 }
 
 function renderProducts() {
@@ -2235,17 +2234,6 @@ function showConfirm(msg, onConfirm) {
   });
 }
 
-/* ====== CARD EXPLICATIVO DO BACKUP ====== */
-function openBackupInfo() {
-  const m = document.getElementById("backup-info-modal");
-  if (m) m.classList.add("open");
-}
-
-function closeBackupInfo() {
-  const m = document.getElementById("backup-info-modal");
-  if (m) m.classList.remove("open");
-}
-
 /* ====== EXCLUIR TUDO (confirmacao digitando a palavra) ====== */
 const DELETE_ALL_WORD = "excluir";
 
@@ -2607,14 +2595,13 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") {
     closeAddModal();
-    closeBackupInfo();
     closeDeleteAllModal();
   }
 });
 
 /* Clicar fora do card fecha os modais de ajuda e de exclusao */
 document.addEventListener("DOMContentLoaded", () => {
-  initInfOtherOptions();
+  try { initInfOtherOptions(); } catch (err) { console.error("initInfOtherOptions", err); }
   updateInfLimitNote();
   document.getElementById("link-import-modal")?.addEventListener("click", e => {
     if (e.target === e.currentTarget) closeLinkImport();
@@ -2624,9 +2611,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   document.getElementById("link-import-name")?.addEventListener("keydown", e => {
     if (e.key === "Enter") { e.preventDefault(); confirmLinkImport(); }
-  });
-  document.getElementById("backup-info-modal")?.addEventListener("click", e => {
-    if (e.target === e.currentTarget) closeBackupInfo();
   });
   document.getElementById("delete-all-modal")?.addEventListener("click", e => {
     if (e.target === e.currentTarget) closeDeleteAllModal();
