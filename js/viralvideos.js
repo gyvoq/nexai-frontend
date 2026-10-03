@@ -88,6 +88,19 @@ function vvRevealCard(card, v) {
   if (img && cover) vvLoadCover(v, img, cover);
 }
 
+function vvLockCard(card, v) {
+  card.className = 'vv-card vv-locked';
+  card.removeAttribute('aria-hidden');
+  card.innerHTML = '<div class="vv-cover no-cover vv-locked-cover">' +
+      '<span class="vv-cover-fallback">' + VV_ICON_VIDEO + '<span>V' + v.n + '</span></span>' +
+      '<span class="lock-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></span>' +
+    '</div>' +
+    '<div class="vv-body">' +
+      '<div class="vv-title">Vídeo disponível no Pro</div>' +
+      NexPlan.upgradeLink('Fazer upgrade', 'vv-link') +
+    '</div>';
+}
+
 function vvSetRadar(state, status, count) {
   const radar = document.getElementById('vv-radar');
   if (!radar) return;
@@ -105,8 +118,12 @@ function vvShowAll() {
   const grid = document.getElementById('vv-grid');
   if (!grid) return;
   grid.innerHTML = VIRAL_VIDEOS.map(() => '<div></div>').join('');
-  Array.from(grid.children).forEach((el, i) => vvRevealCard(el, VIRAL_VIDEOS[i]));
-  vvSetRadar('done', VIRAL_VIDEOS.length + ' vídeos em alta encontrados', '');
+  const free = window.NexPlan && NexPlan.isFree();
+  Array.from(grid.children).forEach((el, i) => {
+    if (free && i >= NexPlan.FREE_LIMIT) vvLockCard(el, VIRAL_VIDEOS[i]);
+    else vvRevealCard(el, VIRAL_VIDEOS[i]);
+  });
+  vvSetRadar('done', free ? NexPlan.FREE_LIMIT + ' de ' + VIRAL_VIDEOS.length + ' vídeos liberados no Free' : VIRAL_VIDEOS.length + ' vídeos em alta encontrados', '');
 }
 
 function startViralMining(force) {
