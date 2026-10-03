@@ -5,9 +5,7 @@ const NexPlan = (() => {
   const FREE_LIMIT = 4;
   const ONB_KEY = 'nex_onb_v1';
   const LOCK_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>';
-  const IMG_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
-  const VID_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
-  const LOCKED_TABS = ['viralize'];
+  const LOCKED_TABS = ['viralize', 'influencer'];
 
   let plan = 'pro';
   let expiresAt = null;
@@ -58,6 +56,11 @@ const NexPlan = (() => {
       item.classList.toggle('is-locked', locked);
     });
 
+    document.querySelectorAll('.inv-link-btn, .backup-btn').forEach(b => {
+      b.disabled = isFree();
+      b.setAttribute('aria-disabled', isFree() ? 'true' : 'false');
+    });
+
     const mini = document.querySelector('.plan-mini');
     if (!mini) return;
     const name = mini.querySelector('.plan-mini-name');
@@ -93,9 +96,8 @@ const NexPlan = (() => {
   }
 
   function lockedProductCard(p) {
-    const img = p.img ? `<img src="${p.img}" alt="" loading="lazy" onerror="this.style.display='none'">` : '';
     return `<div class="product-card locked" data-cat="${p.cat}" data-id="${p.id}" role="listitem" aria-label="Produto bloqueado" onclick="NexPlan.blocked('Este produto')">
-      <div class="card-img ${p.grad}">${img}<span class="lock-badge">${LOCK_SVG}</span></div>
+      <div class="card-img ${p.grad}"><span class="lock-badge">${LOCK_SVG}</span></div>
       <div class="card-body">
         <div class="card-name">Disponível no Pro</div>
         ${upgradeLink('Fazer upgrade', 'card-btn free-upgrade-btn')}
@@ -106,7 +108,7 @@ const NexPlan = (() => {
   function lockedCardHtml(kind) {
     const video = kind === 'video';
     return `<div class="fs-locked-card">
-      <div class="fs-locked-visual${video ? ' is-video' : ''}">${video ? VID_SVG : IMG_SVG}<span class="fs-locked-lock">${LOCK_SVG}</span></div>
+      <div class="fs-locked-visual${video ? ' is-video' : ''}"><span class="fs-locked-lock">${LOCK_SVG}</span></div>
       <div class="fs-locked-info">
         <div class="fs-locked-title">${video ? 'Vídeo bloqueado' : 'Imagem bloqueada'}</div>
         <div class="fs-locked-sub">${video ? 'Seu vídeo está pronto, mas só o plano Pro libera o resultado.' : 'Sua imagem está pronta, mas só o plano Pro libera o resultado.'}</div>
@@ -257,10 +259,10 @@ const NexPlan = (() => {
       explorar: 'friendly call to action to follow for more finds'
     },
     titles: {
-      afiliado: 'Pronto pra vender mais como afiliado?',
-      proprio: 'Pronto pra escalar a sua loja?',
-      agencia: 'Pronto pra atender mais clientes?',
-      explorar: 'Gostou do que viu?'
+      afiliado: n => `${n}vender mais como afiliado começa aqui.`,
+      proprio: n => `${n}a sua loja merece criativos que vendem.`,
+      agencia: n => `${n}seus clientes vão notar a diferença.`,
+      explorar: n => `${n}isso é só uma amostra do que dá pra fazer.`
     },
     benefits: {
       afiliado: ['Todos os produtos virais do inventário, não só 4', 'Imagens e vídeos gerados de verdade para o seu criativo', 'Extração de movimento dos vídeos que estão bombando'],
@@ -297,8 +299,8 @@ Avoid: blurry footage, over-polished ad look, distorted faces or hands, watermar
 
   function startOnboarding() {
     if (document.getElementById('onboarding-overlay')) return;
-    const answers = { goal: 'explorar', niche: 'beleza', style: 'unboxing' };
-    const TOTAL = 5;
+    const answers = { name: '', goal: 'explorar', niche: 'beleza', style: 'unboxing' };
+    const TOTAL = 6;
     let typeTimer = null;
 
     const ov = el('div');
@@ -352,26 +354,55 @@ Avoid: blurry footage, over-polished ad look, distorted faces or hands, watermar
       if (first) first.focus();
     }
 
+    function firstName() { return answers.name ? answers.name.split(/\s+/)[0] : ''; }
+
     function goalLabel() { return (ONB.goals.find(g => g[0] === answers.goal) || ONB.goals[3])[2]; }
     function nicheLabel() { return (ONB.niches.find(n => n[0] === answers.niche) || ONB.niches[0])[1]; }
     function styleLabel() { return (ONB.styles.find(s => s[0] === answers.style) || ONB.styles[0])[1]; }
 
+    function stepName() {
+      frame(1);
+      heading('Bem-vindo ao Viralyze', 'Como você gosta de ser chamado? Vamos deixar tudo com a sua cara.');
+      const input = el('input', 'form-input onb-name');
+      input.type = 'text';
+      input.maxLength = 20;
+      input.placeholder = 'Seu nome';
+      input.autocomplete = 'given-name';
+      input.setAttribute('aria-label', 'Seu nome');
+      card.appendChild(input);
+      const actions = el('div', 'onb-actions');
+      const go = el('button', 'act-btn', 'Continuar');
+      go.type = 'button';
+      const apply = () => { answers.name = input.value.trim().slice(0, 20); stepGoal(); };
+      go.addEventListener('click', apply);
+      input.addEventListener('keydown', e => { if (e.key === 'Enter') apply(); });
+      actions.appendChild(go);
+      card.appendChild(actions);
+      const skip = el('button', 'onb-skip', 'Pular');
+      skip.type = 'button';
+      skip.addEventListener('click', stepGoal);
+      card.appendChild(skip);
+      input.focus();
+    }
+
     function stepGoal() {
-      question(1, 'Qual é o seu objetivo aqui?', 'Vamos deixar o Viralyze com a sua cara.', ONB.goals, 'goal', 1, stepNiche, []);
+      const n = firstName();
+      question(2, n ? `${n}, qual é o seu objetivo aqui?` : 'Qual é o seu objetivo aqui?', 'Vamos deixar o Viralyze com a sua cara.', ONB.goals, 'goal', 1, stepNiche, []);
     }
 
     function stepNiche() {
-      question(2, 'Em qual nicho você quer viralizar?', 'Vamos escolher um produto de exemplo para você.', ONB.niches, 'niche', 1, stepStyle, [`Objetivo: ${goalLabel()}`]);
+      question(3, 'Em qual nicho você quer viralizar?', `Vamos escolher um produto de exemplo para quem ${goalLabel() === 'explorando' ? 'está explorando' : 'trabalha como ' + goalLabel()}.`, ONB.niches, 'niche', 1, stepStyle, [`Objetivo: ${goalLabel()}`]);
     }
 
     function stepStyle() {
-      question(3, 'Que estilo de vídeo você quer fazer?', 'É isso que vai moldar o seu primeiro prompt.', ONB.styles, 'style', 1, stepAha, [`Objetivo: ${goalLabel()}`, `Nicho: ${nicheLabel()}`]);
+      question(4, 'Que estilo de vídeo você quer fazer?', `Um estilo que combina com ${nicheLabel().toLowerCase()}.`, ONB.styles, 'style', 1, stepAha, [`Objetivo: ${goalLabel()}`, `Nicho: ${nicheLabel()}`]);
     }
 
     function stepAha() {
-      frame(4);
+      frame(5);
       recap([goalLabel(), nicheLabel(), styleLabel()]);
-      heading('Montamos o seu primeiro prompt', `Um vídeo de ${styleLabel().toLowerCase()} em ${nicheLabel().toLowerCase()}, pronto para usar.`);
+      const n = firstName();
+      heading(n ? `Feito sob medida pra você, ${n}` : 'Feito sob medida pra você', `Um vídeo de ${styleLabel().toLowerCase()} em ${nicheLabel().toLowerCase()}, pensado para o seu perfil de ${goalLabel()}.`);
       const status = el('div', 'onb-status', 'Gerando…');
       const out = el('pre', 'onb-prompt');
       card.append(status, out);
@@ -416,9 +447,12 @@ Avoid: blurry footage, over-polished ad look, distorted faces or hands, watermar
     }
 
     function stepCommit() {
-      frame(5);
+      frame(6);
       recap([goalLabel(), nicheLabel(), styleLabel()]);
-      heading(ONB.titles[answers.goal] || ONB.titles.explorar, `Seu prompt de ${styleLabel().toLowerCase()} em ${nicheLabel().toLowerCase()} é só o começo.`);
+      const nm = firstName();
+      const titleFn = ONB.titles[answers.goal] || ONB.titles.explorar;
+      const titleRaw = titleFn(nm ? `${nm}, ` : '');
+      heading(nm ? titleRaw : titleRaw.charAt(0).toUpperCase() + titleRaw.slice(1), `Seu prompt de ${styleLabel().toLowerCase()} em ${nicheLabel().toLowerCase()} é só o começo.`);
       const list = el('ul', 'onb-benefits');
       (ONB.benefits[answers.goal] || ONB.benefits.explorar).forEach(t => list.appendChild(el('li', null, t)));
       card.appendChild(list);
@@ -435,7 +469,7 @@ Avoid: blurry footage, over-polished ad look, distorted faces or hands, watermar
       card.appendChild(actions);
     }
 
-    stepGoal();
+    stepName();
   }
 
   function onReady() {
