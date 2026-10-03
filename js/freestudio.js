@@ -71,6 +71,22 @@ function fsNormalizeMessage(m) {
   return out;
 }
 
+const FS_IMG_KEYS = ['produto', 'estilo', 'cenario', 'visual', 'formato', 'detalhes'];
+
+function fsNormalizeLastImage(li) {
+  if (!li || typeof li !== 'object' || !li.answers || typeof li.answers !== 'object') return null;
+  const answers = {};
+  FS_IMG_KEYS.forEach(k => { if (typeof li.answers[k] === 'string') answers[k] = li.answers[k].slice(0, 5000); });
+  return {
+    answers,
+    avatarId: typeof li.avatarId === 'string' ? li.avatarId.slice(0, 80) : '',
+    productId: typeof li.productId === 'string' ? li.productId.slice(0, 80) : '',
+    tone: li.tone === 'realista' || li.tone === 'premium' ? li.tone : null,
+    variant: Math.max(0, Math.min(99, parseInt(li.variant, 10) || 0)),
+    version: Math.max(0, Math.min(999, parseInt(li.version, 10) || 0))
+  };
+}
+
 function fsNormalizeProject(p) {
   if (!p || typeof p !== 'object') return null;
   const chats = {};
@@ -85,6 +101,7 @@ function fsNormalizeProject(p) {
     createdAt: created,
     updatedAt: Number(p.updatedAt) > 0 ? Number(p.updatedAt) : created,
     lastMode: FS_MODES.indexOf(p.lastMode) !== -1 ? p.lastMode : 'imagem',
+    lastImage: fsNormalizeLastImage(p.lastImage),
     chats
   };
 }
@@ -421,8 +438,20 @@ function fsSetMode(mode) {
   if (hasHistory) fsRestoreChat(history);
 
   if (mode === 'imagem') {
-    document.getElementById('fs-chat-input').placeholder = 'Descreva a imagem que você quer gerar...';
-    if (!hasHistory) fsBotSay('Descreva a imagem que você quer (produto, cenário, estilo...) e eu monto um prompt de imagem pronto pra você copiar.');
+    fsImgAwaiting = false;
+    fsImgOtherMode = false;
+    if (hasHistory) {
+      fsImgPhase = 'idle';
+      inputRow.style.display = 'none';
+      if (fsRestoreImageState()) {
+        fsImgPhase = 'done';
+        fsShowImageActions();
+      } else {
+        fsQuickReplies(['Novo prompt de imagem'], () => { if (!fsGuardLimit()) fsStartImageFlow(); });
+      }
+    } else {
+      fsStartImageFlow();
+    }
   } else if (mode === 'video') {
     document.getElementById('fs-chat-input').placeholder = 'Escreva sua mensagem...';
     if (hasHistory) {
@@ -491,10 +520,11 @@ function fsAvatarPhotoHtml(a) {
     : '<span style="display:flex;width:100%;height:100%;align-items:center;justify-content:center;color:var(--accent3)">' + FS_AVATAR_PLACEHOLDER + '</span>';
 }
 
-function fsAskAvatarStep() {
+function fsAskAvatarStep(choose) {
+  const choosePick = typeof choose === 'function' ? choose : fsChooseVideoAvatar;
   const list = fsAvatarStepList();
   if (!list.length) {
-    fsChooseVideoAvatar(null);
+    choosePick(null);
     return;
   }
   const gridHtml = '<div class="fs-avatar-step-grid">' + list.map((a, i) =>
@@ -505,12 +535,12 @@ function fsAskAvatarStep() {
   const msg = fsAddMsg('bot', gridHtml, { raw: true, noSave: true });
   if (msg) {
     msg.querySelectorAll('.fs-avatar-step-card').forEach(card => {
-      const pick = () => fsChooseVideoAvatar(list[Number(card.dataset.idx)]);
+      const pick = () => choosePick(list[Number(card.dataset.idx)]);
       card.addEventListener('click', pick);
       card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
     });
   }
-  fsQuickReplies(['Continuar sem avatar'], () => fsChooseVideoAvatar(null));
+  fsQuickReplies(['Continuar sem avatar'], () => choosePick(null));
 }
 
 function fsChooseVideoAvatar(avatar) {
@@ -533,7 +563,8 @@ function fsChooseVideoAvatar(avatar) {
   fsVideoPhase = 'questions';
   fsVideoStep = 0;
   document.getElementById('fs-chat-inputrow').style.display = 'flex';
-  setTimeout(fsAskNextVideoQuestion, 250);
+  const flow = fsFlowId;
+  setTimeout(() => { if (flow === fsFlowId) fsAskNextVideoQuestion(); }, 250);
 }
 
 const FS_OTHER_MAX_CHARS = 20;
@@ -600,7 +631,8 @@ function fsHandleAnswer(text, skipped) {
   if (step && step.key === 'produto') fsMaybeNameProject(value);
   fsVideoStep++;
   fsSetInputMode('text');
-  setTimeout(fsAskNextVideoQuestion, 300);
+  const flowNext = fsFlowId;
+  setTimeout(() => { if (flowNext === fsFlowId) fsAskNextVideoQuestion(); }, 300);
 }
 
 function fsAvatarLine(avatar) {
@@ -768,15 +800,392 @@ async function fsRunExtract() {
   });
 }
 
-function fsBuildImagePrompt(desc) {
-  const subject = String(desc || '').trim().replace(/[.\s]+$/, '');
-  return `Subject: ${subject}.
-Style: ultra-realistic commercial product photography with an authentic UGC look, sharp focus, rich detail, true-to-life textures.
-Composition: main subject centered with rule-of-thirds balance, clean uncluttered background, shallow depth of field, vertical 9:16 framing.
-Lighting: soft natural window light with gentle highlights and smooth shadows, warm and flattering.
-Camera: 50mm lens, f/2.8, 4K resolution, professional color grading.
-Colors: vibrant yet natural tones, accurate product colors.
-Avoid: blur, distorted hands or faces, extra fingers, warped product shapes, watermarks, unreadable text, low resolution.`;
+const FS_IMG_STYLES = {
+  'Capa TikTok Shop': {
+    shot: 'eye-catching hero cover shot of the product, thumbnail-ready',
+    composition: 'product large and centered, bold clean background, strong contrast and instant readability',
+    camera: '50mm lens, f/4, straight-on angle',
+    light: 'bright high-key lighting with crisp highlights'
+  },
+  'Antes e depois': {
+    shot: 'split-screen before and after comparison image',
+    composition: 'two equal halves separated by a clean line, identical framing in both halves, clearly visible difference, subtle BEFORE and AFTER labels',
+    camera: '35mm lens, f/5.6, locked-off static framing',
+    light: 'even, consistent lighting in both halves'
+  },
+  'Unboxing de cima': {
+    shot: 'top-down unboxing flat lay',
+    composition: 'hands opening the package, product revealed on the table, packaging and accessories neatly visible',
+    camera: 'overhead angle, 35mm lens, f/5.6',
+    light: 'soft diffused daylight from a window'
+  },
+  'Selfie no espelho': {
+    shot: 'casual mirror selfie',
+    composition: 'person holding the product at chest height, phone visible in the reflection, relaxed natural pose',
+    camera: 'smartphone camera look, wide angle, slight handheld imperfection',
+    light: 'natural indoor light, flattering and soft'
+  },
+  'Produto em estúdio': {
+    shot: 'clean studio product shot',
+    composition: 'product centered on a seamless backdrop with a subtle reflection on the surface, generous negative space',
+    camera: '85mm macro lens, f/8, tripod',
+    light: 'softbox lighting with gentle gradients and defined highlights'
+  },
+  'Lifestyle': {
+    shot: 'candid lifestyle photo of the product in real use',
+    composition: 'product used naturally in a real-life moment, environment visible, authentic and unposed',
+    camera: '35mm lens, f/2.8, handheld feel',
+    light: 'natural ambient light with soft warmth'
+  }
+};
+
+const FS_IMG_VISUALS = {
+  'UGC realista': 'authentic UGC look, smartphone-quality photo, natural imperfections, real-life feel',
+  'Premium comercial': 'high-end commercial advertising photography, polished retouching, refined and aspirational',
+  'Minimalista': 'minimalist clean aesthetic, neutral palette, lots of negative space',
+  'Colorido': 'bold vibrant color palette, playful saturated tones, high energy'
+};
+
+const FS_IMG_SCENARIOS = {
+  'Banheiro': 'a bright, clean bathroom with soft natural light',
+  'Cozinha': 'a modern, tidy kitchen with warm light',
+  'Academia': 'a well-lit modern gym',
+  'Quarto': 'a cozy bedroom with soft textures',
+  'Fundo neutro': 'a seamless neutral studio backdrop',
+  'Ao ar livre': 'an outdoor setting in golden hour light'
+};
+
+const FS_IMG_FORMATS = {
+  '9:16': '9:16 vertical',
+  '1:1': '1:1 square',
+  '4:5': '4:5 portrait'
+};
+
+const FS_IMG_TONES = {
+  realista: 'hyper-realistic, natural skin and material textures, visible fine details, subtle natural imperfections, shot on a full-frame camera',
+  premium: 'luxury editorial look, refined styling, elegant minimal props, flawless retouching, rich cinematic color grading'
+};
+
+const FS_IMG_VARIANTS = [
+  { angle: '', light: '' },
+  { angle: 'slightly low hero angle', light: 'warm golden light from the side with a soft rim light' },
+  { angle: 'high overhead angle', light: 'cool, airy daylight from a large window' },
+  { angle: 'tight close-up with macro detail', light: 'dramatic side lighting with soft contrast' }
+];
+
+const FS_IMG_CAT_SCENARIO = {
+  beleza: 'Banheiro', saude: 'Banheiro', moda: 'Quarto', casa: 'Quarto', tech: 'Fundo neutro', fitness: 'Academia'
+};
+
+function fsImgScenarioOptions() {
+  const base = Object.keys(FS_IMG_SCENARIOS);
+  const pref = FS_IMG_CAT_SCENARIO[fsImgProduct && fsImgProduct.cat];
+  const list = pref ? [pref].concat(base.filter(x => x !== pref)) : base;
+  return list.concat('Outro');
+}
+
+const FS_IMG_QUESTIONS = [
+  { key: 'produto', type: 'product', q: 'Qual é o produto da imagem? Escreva o nome ou escolha um do catálogo.' },
+  { key: 'estilo', type: 'choice', q: 'Que tipo de foto você quer?', options: Object.keys(FS_IMG_STYLES) },
+  { key: 'cenario', type: 'choice', q: 'Qual cenário? (o primeiro é o que mais combina com o produto)', options: fsImgScenarioOptions, allowOther: true, otherLabel: 'cenário' },
+  { key: 'visual', type: 'choice', q: 'Qual estilo visual?', options: Object.keys(FS_IMG_VISUALS) },
+  { key: 'formato', type: 'choice', q: 'Qual formato da imagem?', options: ['9:16', '1:1', '4:5', 'Outro'], allowOther: true, otherLabel: 'formato' },
+  { key: 'detalhes', type: 'longtext', optional: true,
+    q: 'Tem algum detalhe específico que não pode faltar? Cores, objetos, expressão, roupa... Escreva ou pule.' }
+];
+
+let fsImgPhase = 'idle';
+let fsImgStep = 0;
+let fsImgAnswers = {};
+let fsImgAvatar = null;
+let fsImgProduct = null;
+let fsImgTone = null;
+let fsImgVariant = 0;
+let fsImgVersion = 0;
+let fsImgAwaiting = false;
+let fsImgOtherMode = false;
+
+function fsAllProducts() {
+  const builtin = (typeof products !== 'undefined' && Array.isArray(products)) ? products : [];
+  const custom = (typeof customProducts !== 'undefined' && Array.isArray(customProducts)) ? customProducts : [];
+  return custom.concat(builtin);
+}
+
+function fsBuildImagePromptFrom(st) {
+  const a = st.answers || {};
+  const style = FS_IMG_STYLES[a.estilo] || FS_IMG_STYLES['Capa TikTok Shop'];
+  const visual = FS_IMG_VISUALS[a.visual] || a.visual || FS_IMG_VISUALS['UGC realista'];
+  const scenario = FS_IMG_SCENARIOS[a.cenario] || a.cenario || FS_IMG_SCENARIOS['Fundo neutro'];
+  const format = FS_IMG_FORMATS[a.formato] || a.formato || FS_IMG_FORMATS['9:16'];
+  const variant = FS_IMG_VARIANTS[(st.variant || 0) % FS_IMG_VARIANTS.length];
+  const tone = st.tone ? FS_IMG_TONES[st.tone] : '';
+  const name = (st.product && st.product.name) || a.produto || 'product';
+  const hint = st.product && st.product.prompt ? ' (' + st.product.prompt + ')' : '';
+  const lines = [];
+  lines.push('Subject: ' + name + hint + '.');
+  lines.push('Shot type: ' + style.shot + '.');
+  if (st.avatar) lines.push('Person: ' + fsAvatarLine(st.avatar).trim().replace(/^Featuring /, '') );
+  lines.push('Setting: ' + scenario + '.');
+  lines.push('Visual style: ' + visual + (tone ? ', ' + tone : '') + '.');
+  lines.push('Composition: ' + style.composition + (variant.angle ? ', ' + variant.angle : '') + '.');
+  lines.push('Camera: ' + style.camera + ', 4K resolution, professional color grading.');
+  lines.push('Lighting: ' + (variant.light || style.light) + '.');
+  lines.push('Format: ' + format + ' aspect ratio.');
+  if (a.detalhes) lines.push('Additional details: ' + a.detalhes + '.');
+  lines.push('Avoid: blur, distorted hands or faces, extra fingers, warped product shapes, watermarks, unreadable text, low resolution.');
+  return lines.join('\n');
+}
+
+function fsSaveImageState() {
+  if (!fsActiveProject) return;
+  fsActiveProject.lastImage = {
+    answers: Object.assign({}, fsImgAnswers),
+    avatarId: fsImgAvatar ? String(fsImgAvatar.id) : '',
+    productId: fsImgProduct ? String(fsImgProduct.id) : '',
+    tone: fsImgTone,
+    variant: fsImgVariant,
+    version: fsImgVersion
+  };
+  fsSaveProjects();
+}
+
+function fsRestoreImageState() {
+  const li = fsActiveProject && fsActiveProject.lastImage;
+  if (!li) return false;
+  fsImgAnswers = Object.assign({}, li.answers);
+  fsImgAvatar = li.avatarId ? (fsAllAvatars().find(x => String(x.id) === li.avatarId) || null) : null;
+  fsImgProduct = li.productId ? (fsAllProducts().find(x => String(x.id) === li.productId) || null) : null;
+  fsImgTone = li.tone;
+  fsImgVariant = li.variant;
+  fsImgVersion = li.version;
+  return true;
+}
+
+function fsStartImageFlow() {
+  fsFlowId++;
+  document.getElementById('fs-quick-replies').innerHTML = '';
+  fsImgPhase = 'avatar';
+  fsImgStep = 0;
+  fsImgAnswers = {};
+  fsImgAvatar = null;
+  fsImgProduct = null;
+  fsImgTone = null;
+  fsImgVariant = 0;
+  fsImgVersion = 0;
+  fsImgAwaiting = false;
+  fsImgOtherMode = false;
+  if (fsActiveProject) { fsActiveProject.lastImage = null; fsSaveProjects(); }
+  fsResetVideoInput();
+  fsSetInputMode('text');
+  document.getElementById('fs-chat-inputrow').style.display = 'none';
+  fsBotSay('Vamos montar seu prompt de imagem! Primeiro, escolha um avatar pra aparecer na foto (ou continue sem avatar).', () => fsAskAvatarStep(fsChooseImageAvatar));
+}
+
+function fsChooseImageAvatar(avatar) {
+  if (fsMode !== 'imagem' || fsImgPhase !== 'avatar') return;
+  document.getElementById('fs-quick-replies').innerHTML = '';
+  const grids = document.querySelectorAll('#fs-chat-body .fs-avatar-step-grid');
+  const grid = grids.length ? grids[grids.length - 1] : null;
+  if (grid) grid.querySelectorAll('.fs-avatar-step-card').forEach(c => c.classList.remove('selected'));
+  if (!avatar) {
+    fsImgAvatar = null;
+    fsAddMsg('user', 'Continuar sem avatar');
+  } else {
+    fsImgAvatar = avatar;
+    const list = fsAvatarStepList();
+    const idx = list.findIndex(x => String(x.id) === String(avatar.id));
+    const card = grid && idx >= 0 ? grid.querySelector('.fs-avatar-step-card[data-idx="' + idx + '"]') : null;
+    if (card) card.classList.add('selected');
+    fsAddMsg('user', avatar.name || 'Avatar selecionado');
+  }
+  fsImgPhase = 'questions';
+  fsImgStep = 0;
+  document.getElementById('fs-chat-inputrow').style.display = 'flex';
+  const flow = fsFlowId;
+  setTimeout(() => { if (flow === fsFlowId) fsAskNextImageQuestion(); }, 250);
+}
+
+function fsAskNextImageQuestion() {
+  if (fsMode !== 'imagem' || fsImgPhase !== 'questions') return;
+  document.getElementById('fs-quick-replies').innerHTML = '';
+  fsImgAwaiting = false;
+  fsImgOtherMode = false;
+  fsResetVideoInput();
+  if (fsImgStep >= FS_IMG_QUESTIONS.length) {
+    fsFinishImagePrompt();
+    return;
+  }
+  const step = FS_IMG_QUESTIONS[fsImgStep];
+  fsBotSay(step.q, () => {
+    fsImgAwaiting = true;
+    if (step.type === 'choice') {
+      fsSetInputMode('text');
+      const opts = typeof step.options === 'function' ? step.options() : step.options;
+      fsQuickReplies(opts, v => fsHandleImageAnswer(v));
+    } else if (step.type === 'longtext') {
+      fsSetInputMode('textarea');
+      if (step.optional) fsQuickReplies(['Pular etapa'], () => fsHandleImageAnswer('', true));
+    } else if (step.type === 'product') {
+      fsSetInputMode('text');
+      fsQuickReplies(['Escolher do catálogo'], () => fsShowProductPicker());
+    } else {
+      fsSetInputMode('text');
+    }
+  });
+}
+
+function fsShowProductPicker() {
+  if (fsMode !== 'imagem' || fsImgPhase !== 'questions' || !fsImgAwaiting) return;
+  const list = fsAllProducts();
+  document.getElementById('fs-quick-replies').innerHTML = '';
+  if (!list.length) { fsToast('Nenhum produto no catálogo'); return; }
+  const gridHtml = '<div class="fs-avatar-step-grid fs-product-pick-grid">' + list.map((p, i) =>
+    '<div class="fs-avatar-step-card" data-idx="' + i + '" role="button" tabindex="0">' +
+    '<div class="fs-avatar-step-photo">' + fsAvatarPhotoHtml({ img: p.img, name: p.name }) + '</div>' +
+    '<div class="fs-avatar-step-name">' + fsEscape(p.name) + '</div></div>'
+  ).join('') + '</div>';
+  const msg = fsAddMsg('bot', gridHtml, { raw: true, noSave: true });
+  if (msg) {
+    msg.querySelectorAll('.fs-avatar-step-card').forEach(card => {
+      const pick = () => fsPickImageProduct(list[Number(card.dataset.idx)]);
+      card.addEventListener('click', pick);
+      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+    });
+  }
+}
+
+function fsPickImageProduct(prod) {
+  if (!prod || fsMode !== 'imagem' || fsImgPhase !== 'questions' || !fsImgAwaiting) return;
+  const step = FS_IMG_QUESTIONS[fsImgStep];
+  if (!step || step.key !== 'produto') return;
+  fsImgProduct = prod;
+  fsHandleImageAnswer(prod.name);
+}
+
+function fsHandleImageAnswer(text, skipped) {
+  if (fsMode !== 'imagem' || fsImgPhase !== 'questions' || !fsImgAwaiting) return;
+  if (!skipped && (!text || !text.trim())) return;
+  if (fsGuardLimit()) return;
+  const step = FS_IMG_QUESTIONS[fsImgStep];
+  const value = skipped ? '' : text.trim();
+  fsImgAwaiting = false;
+  document.getElementById('fs-quick-replies').innerHTML = '';
+  fsAddMsg('user', skipped ? 'Pular etapa' : value);
+
+  if (step && step.allowOther && !fsImgOtherMode && value === 'Outro') {
+    fsBotSay('Qual ' + step.otherLabel + ' você quer? (máximo ' + FS_OTHER_MAX_CHARS + ' caracteres)', () => {
+      fsImgOtherMode = true;
+      fsImgAwaiting = true;
+      fsSetInputMode('text');
+      const input = document.getElementById('fs-chat-input');
+      input.maxLength = FS_OTHER_MAX_CHARS;
+      input.placeholder = 'Até ' + FS_OTHER_MAX_CHARS + ' caracteres';
+      input.focus();
+    });
+    return;
+  }
+
+  if (step) fsImgAnswers[step.key] = fsImgOtherMode ? value.slice(0, FS_OTHER_MAX_CHARS) : value;
+  if (step && step.key === 'produto') {
+    if (!fsImgProduct || fsImgProduct.name !== value) {
+      const lower = value.toLowerCase();
+      fsImgProduct = fsAllProducts().find(p => String(p.name).toLowerCase() === lower) || null;
+    }
+    fsMaybeNameProject(value);
+  }
+  fsImgStep++;
+  fsSetInputMode('text');
+  const flow = fsFlowId;
+  setTimeout(() => { if (flow === fsFlowId) fsAskNextImageQuestion(); }, 300);
+}
+
+function fsEmitImagePrompt() {
+  const prompt = fsBuildImagePromptFrom({ answers: fsImgAnswers, avatar: fsImgAvatar, product: fsImgProduct, tone: fsImgTone, variant: fsImgVariant });
+  fsImgVersion++;
+  const label = 'Prompt de imagem' + (fsImgVersion > 1 ? ' · versão ' + fsImgVersion : '');
+  fsAddMsg('bot', prompt, { final: true, label, rawText: prompt, skipTypewriter: true, wide: true });
+  fsSaveImageState();
+}
+
+function fsShowImageActions() {
+  document.getElementById('fs-chat-inputrow').style.display = 'none';
+  fsQuickReplies(['Mais realista', 'Mais premium', 'Mudar cenário', 'Gerar outra versão', 'Novo prompt de imagem'], fsImageAction);
+}
+
+function fsFinishImagePrompt() {
+  fsImgPhase = 'done';
+  fsBotSay('Prontinho! Seu prompt de imagem está pronto. Se quiser, ajuste com os botões abaixo.', () => {
+    fsEmitImagePrompt();
+    fsShowImageActions();
+  });
+}
+
+function fsRegenerateImage(msg) {
+  fsImgPhase = 'done';
+  fsBotSay(msg || 'Pronto, ajustei o prompt pra você:', () => {
+    fsEmitImagePrompt();
+    fsShowImageActions();
+  });
+}
+
+function fsImageAction(label) {
+  if (fsMode !== 'imagem' || fsImgPhase !== 'done') return;
+  if (label === 'Novo prompt de imagem') {
+    if (!fsGuardLimit()) fsStartImageFlow();
+    return;
+  }
+  if (fsGuardLimit()) return;
+  document.getElementById('fs-quick-replies').innerHTML = '';
+  fsAddMsg('user', label);
+  if (label === 'Mais realista') {
+    fsImgTone = 'realista';
+    fsRegenerateImage('Deixei mais realista:');
+  } else if (label === 'Mais premium') {
+    fsImgTone = 'premium';
+    fsRegenerateImage('Deixei mais premium:');
+  } else if (label === 'Gerar outra versão') {
+    fsImgVariant = (fsImgVariant + 1) % FS_IMG_VARIANTS.length;
+    fsRegenerateImage('Aqui vai outra versão:');
+  } else if (label === 'Mudar cenário') {
+    fsImgPhase = 'scenario';
+    fsBotSay('Qual cenário você quer agora?', () => {
+      fsQuickReplies(fsImgScenarioOptions(), v => fsPickNewScenario(v));
+    });
+  }
+}
+
+function fsPickNewScenario(v) {
+  if (fsMode !== 'imagem' || fsImgPhase !== 'scenario') return;
+  if (fsGuardLimit()) return;
+  document.getElementById('fs-quick-replies').innerHTML = '';
+  fsAddMsg('user', v);
+  if (v === 'Outro') {
+    fsBotSay('Qual cenário você quer? (máximo ' + FS_OTHER_MAX_CHARS + ' caracteres)', () => {
+      fsImgPhase = 'scenario-other';
+      fsImgAwaiting = true;
+      fsSetInputMode('text');
+      document.getElementById('fs-chat-inputrow').style.display = 'flex';
+      const input = document.getElementById('fs-chat-input');
+      input.maxLength = FS_OTHER_MAX_CHARS;
+      input.placeholder = 'Até ' + FS_OTHER_MAX_CHARS + ' caracteres';
+      input.focus();
+    });
+  } else {
+    fsImgAnswers.cenario = v;
+    fsRegenerateImage('Troquei o cenário:');
+  }
+}
+
+function fsHandleScenarioOther(text) {
+  if (fsMode !== 'imagem' || fsImgPhase !== 'scenario-other' || !fsImgAwaiting) return;
+  const value = String(text || '').trim().slice(0, FS_OTHER_MAX_CHARS);
+  if (!value) return;
+  fsImgAwaiting = false;
+  fsAddMsg('user', value);
+  fsResetVideoInput();
+  document.getElementById('fs-chat-inputrow').style.display = 'none';
+  fsImgAnswers.cenario = value;
+  fsRegenerateImage('Troquei o cenário:');
 }
 
 function fsSendMessage() {
@@ -785,17 +1194,15 @@ function fsSendMessage() {
   const text = el.value.trim();
   if (!text) return;
   if (fsGuardLimit()) return;
-  if (fsMode === 'video' && (fsVideoPhase !== 'questions' || !fsAwaitingAnswer)) return;
-  el.value = '';
-  if (fsMode === 'imagem') {
-    fsMaybeNameProject(text);
-    fsAddMsg('user', text);
-    const prompt = fsBuildImagePrompt(text);
-    fsBotSay('Prontinho! Seu prompt de imagem está pronto.', () => {
-      fsAddMsg('bot', prompt, { final: true, label: 'Prompt de imagem', rawText: prompt, skipTypewriter: true, wide: true });
-    });
-  } else if (fsMode === 'video') {
+  if (fsMode === 'video') {
+    if (fsVideoPhase !== 'questions' || !fsAwaitingAnswer) return;
+    el.value = '';
     fsHandleAnswer(text);
+  } else if (fsMode === 'imagem') {
+    if (!fsImgAwaiting || (fsImgPhase !== 'questions' && fsImgPhase !== 'scenario-other')) return;
+    el.value = '';
+    if (fsImgPhase === 'questions') fsHandleImageAnswer(text);
+    else fsHandleScenarioOther(text);
   }
 }
 
