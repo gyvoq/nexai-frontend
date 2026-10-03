@@ -422,7 +422,7 @@ function fsSetMode(mode) {
 
   if (mode === 'imagem') {
     document.getElementById('fs-chat-input').placeholder = 'Descreva a imagem que você quer gerar...';
-    if (!hasHistory) fsBotSay('Esse é o gerador de imagem — ainda é só um protótipo. Descreva a imagem que você quer e clique em enviar pra ver como vai funcionar.');
+    if (!hasHistory) fsBotSay('Descreva a imagem que você quer (produto, cenário, estilo...) e eu monto um prompt de imagem pronto pra você copiar.');
   } else if (mode === 'video') {
     document.getElementById('fs-chat-input').placeholder = 'Escreva sua mensagem...';
     if (hasHistory) {
@@ -768,6 +768,17 @@ async function fsRunExtract() {
   });
 }
 
+function fsBuildImagePrompt(desc) {
+  const subject = String(desc || '').trim().replace(/[.\s]+$/, '');
+  return `Subject: ${subject}.
+Style: ultra-realistic commercial product photography with an authentic UGC look, sharp focus, rich detail, true-to-life textures.
+Composition: main subject centered with rule-of-thirds balance, clean uncluttered background, shallow depth of field, vertical 9:16 framing.
+Lighting: soft natural window light with gentle highlights and smooth shadows, warm and flattering.
+Camera: 50mm lens, f/2.8, 4K resolution, professional color grading.
+Colors: vibrant yet natural tones, accurate product colors.
+Avoid: blur, distorted hands or faces, extra fingers, warped product shapes, watermarks, unreadable text, low resolution.`;
+}
+
 function fsSendMessage() {
   const el = fsActiveInputEl();
   if (!el) return;
@@ -779,7 +790,10 @@ function fsSendMessage() {
   if (fsMode === 'imagem') {
     fsMaybeNameProject(text);
     fsAddMsg('user', text);
-    fsBotSay('🖼️ Protótipo — a geração de imagem ainda não está ativa nesta versão. Em breve sua imagem aparecerá aqui.');
+    const prompt = fsBuildImagePrompt(text);
+    fsBotSay('Prontinho! Seu prompt de imagem está pronto.', () => {
+      fsAddMsg('bot', prompt, { final: true, label: 'Prompt de imagem', rawText: prompt, skipTypewriter: true, wide: true });
+    });
   } else if (fsMode === 'video') {
     fsHandleAnswer(text);
   }
