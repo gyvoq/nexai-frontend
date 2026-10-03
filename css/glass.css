@@ -472,6 +472,11 @@ select {
     width: 220px
   }
 }
+.fs-product-pick-grid {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 2px
+}
 .fs-avatar-step-card {
   cursor: pointer;
   text-align: center;
