@@ -50,9 +50,11 @@ async function vvFetchCover(url) {
 }
 
 async function vvLoadCover(v, img, cover) {
+  cover.classList.add('is-loading');
   const src = await vvFetchCover(v.url);
-  if (!src) { cover.classList.add('no-cover'); return; }
-  img.addEventListener('error', () => cover.classList.add('no-cover'), { once: true });
+  if (!src) { cover.classList.remove('is-loading'); cover.classList.add('no-cover'); return; }
+  img.addEventListener('load', () => { cover.classList.remove('is-loading'); img.classList.add('is-loaded'); }, { once: true });
+  img.addEventListener('error', () => { cover.classList.remove('is-loading'); cover.classList.add('no-cover'); }, { once: true });
   img.referrerPolicy = 'no-referrer';
   img.src = src;
 }
@@ -66,6 +68,7 @@ function vvFoundCard(v) {
   const href = vvSafeUrl(v.url);
   return '<a class="vv-cover" href="' + href + '" target="_blank" rel="noopener noreferrer" aria-label="Abrir no TikTok: ' + title + '">' +
       '<img alt="Capa do vídeo: ' + title + '" loading="lazy">' +
+      '<span class="vv-cover-loader" aria-hidden="true"><span class="vv-spinner"></span></span>' +
       '<span class="vv-cover-fallback">' + VV_ICON_VIDEO + '<span>V' + v.n + '</span></span>' +
       '<span class="vv-hot">Em alta agora</span>' +
       '<span class="vv-play" aria-hidden="true">' + VV_ICON_PLAY + '</span>' +
