@@ -754,6 +754,7 @@ const BACKUP_APP_ID = "viralyze-backup";
 const BACKUP_LEGACY_APP_IDS = [ "nex-ai-backup" ];
 
 function generateBackup() {
+  if (window.NexPlan && NexPlan.isFree()) { NexPlan.blocked("Gerar backup"); return; }
   const backup = {
     app: BACKUP_APP_ID,
     version: BACKUP_VERSION,
@@ -785,6 +786,7 @@ function generateBackup() {
 }
 
 function importBackup(event) {
+  if (window.NexPlan && NexPlan.isFree()) { if (event && event.target) event.target.value = ""; NexPlan.blocked("Importar backup"); return; }
   const input = event.target;
   const file = input.files && input.files[0];
   if (!file) return;
@@ -859,6 +861,7 @@ function importBackup(event) {
 }
 
 function openAddModal() {
+  if (window.NexPlan && NexPlan.isFree()) { NexPlan.blocked("Importar produtos"); return; }
   document.getElementById("add-product-modal").classList.add("open");
   document.getElementById("np-nome").focus();
 }
@@ -870,6 +873,7 @@ function closeAddModal() {
 const gradients = [ "grad-beleza", "grad-saude", "grad-fitness", "grad-tech", "grad-moda", "grad-casa" ];
 
 function saveNewProduct() {
+  if (window.NexPlan && NexPlan.isFree()) { NexPlan.blocked("Importar produtos"); return; }
   const nome = Sanitize.sanitizeInput(document.getElementById("np-nome").value, 60);
   if (!nome) {
     showToast("Informe o nome do produto!");
@@ -1004,6 +1008,7 @@ function parseProductLink(raw) {
 let linkImportPending = null;
 
 function openLinkImport() {
+  if (window.NexPlan && NexPlan.isFree()) { NexPlan.blocked("Importar produtos"); return; }
   const m = document.getElementById("link-import-modal");
   if (!m) return;
   linkImportPending = null;
@@ -1050,6 +1055,7 @@ function fetchProductFromLink() {
 }
 
 function confirmLinkImport() {
+  if (window.NexPlan && NexPlan.isFree()) { NexPlan.blocked("Importar produtos"); return; }
   if (!linkImportPending) { fetchProductFromLink(); return; }
   const nome = Sanitize.sanitizeInput(document.getElementById("link-import-name").value, 60);
   if (!nome) {
@@ -1085,6 +1091,7 @@ function confirmLinkImport() {
 
 /* Produtos personalizados aparecem primeiro, do mais novo para o mais antigo */
 function allProducts() {
+  if (window.NexPlan && NexPlan.isFree()) return [ ...products ];
   return [ ...customProducts, ...products ];
 }
 
@@ -1119,7 +1126,8 @@ function productCard(p, selectable, i = 0, clickFn = "selectStudioProduct") {
 }
 
 function renderProducts() {
-  document.getElementById("product-grid").innerHTML = allProducts().map((p, i) => productCard(p, false, i)).join("");
+  const free = window.NexPlan && NexPlan.isFree();
+  document.getElementById("product-grid").innerHTML = allProducts().map((p, i) => free && i >= NexPlan.FREE_LIMIT ? NexPlan.lockedProductCard(p) : productCard(p, false, i)).join("");
 }
 
 function parseViews(str) {
@@ -1852,6 +1860,7 @@ function generateVideoPrompt() {
 }
 
 function generateAvatarPromptAI() {
+  if (window.NexPlan && NexPlan.isFree()) { NexPlan.renderLockedInfluencer(); return; }
   const nome = document.getElementById("av-nome").value.trim() || "Influencer";
   const idade = document.getElementById("av-idade").value || "28";
   const genero = document.getElementById("av-genero").value || "neutral";
@@ -1907,6 +1916,7 @@ const INF_FIELD_DEFAULTS = {
 };
 
 function resetInfluencerForm() {
+  if (window.NexPlan) NexPlan.resetInfluencerRender();
   ["av-nome", "av-desc", "avatar-prompt-output"].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = "";
@@ -1947,6 +1957,7 @@ function resetInfluencerForm() {
 }
 
 function saveGeneratedAvatar() {
+  if (window.NexPlan && NexPlan.isFree()) { NexPlan.blocked("Salvar influencer"); return; }
   if (customAvatars.length >= MAX_CUSTOM_AVATARS) {
     showToast(`Limite de ${MAX_CUSTOM_AVATARS} influencers atingido. Exclua um para criar outro.`);
     updateInfLimitNote();
