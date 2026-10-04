@@ -275,14 +275,14 @@ body.landing {
   </a>
   <div class="legal-eyebrow"><span class="legal-eyebrow-dot"></span>Documento legal</div>
   <h1>Política de <em>Privacidade</em></h1>
-  <p class="legal-updated">Esta Política de Privacidade explica como a Viralyze coleta, usa, armazena e protege seus dados pessoais ao utilizar nossa plataforma, em conformidade com a Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018).<br>Última atualização: 9 de agosto de 2026.</p>
+  <p class="legal-updated">Esta Política de Privacidade explica como a Viralyze coleta, usa, armazena e protege seus dados pessoais ao utilizar nossa plataforma, em conformidade com a Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018).<br>Versão 2.0 — Última atualização: 4 de outubro de 2026.</p>
 </section>
 
 <div class="legal-wrap">
 
     <div class="legal-section" id="introducao">
       <h2><span class="legal-section-num">01</span>Introdução</h2>
-      <p>A Viralyze ("nós", "nossa") respeita a sua privacidade e está comprometida em proteger os dados pessoais dos usuários da plataforma. Esta Política de Privacidade descreve quais dados coletamos, para quais finalidades os utilizamos e quais direitos você possui sobre eles.</p>
+      <p>A Viralyze ("nós", "nossa") respeita a sua privacidade e está comprometida em proteger os dados pessoais dos usuários da plataforma. Esta Política de Privacidade descreve quais dados coletamos, para quais finalidades os utilizamos e quais direitos você possui sobre eles. Para os dados tratados diretamente por nós, a Viralyze atua como controladora, nos termos da LGPD.</p>
       <p>Ao usar a Viralyze, você concorda com as práticas descritas nesta política. Recomendamos a leitura em conjunto com os nossos <a href="https://viralyze-tok.vercel.app/landing/terms.html" style="color:var(--pink)">Termos de Uso</a>.</p>
     </div>
 
@@ -291,99 +291,120 @@ body.landing {
       <p>A Viralyze foi desenhada para coletar o mínimo de dados possível em seus próprios servidores. Coletamos:</p>
       <ul>
         <li><strong>Dados de licença:</strong> a chave de licença adquirida, seu status (ativa, expirada, revogada), a data de ativação/expiração e um token de sessão gerado na ativação. Não coletamos nome, e-mail ou senha diretamente na Plataforma;</li>
+        <li><strong>Identificador do dispositivo:</strong> no momento da ativação, é gerado e enviado aos nossos servidores um código criptográfico (hash) calculado a partir de características técnicas do seu navegador e dispositivo, usado para controlar a sessão única de cada licença. Veja os detalhes na seção 3;</li>
+        <li><strong>Dados de uso:</strong> registros mínimos de utilização de recursos que possuem limite (por exemplo, a contagem de solicitações associada à sua sessão), usados para aplicar limites de uso e prevenir abusos;</li>
         <li><strong>Dados de compra:</strong> nome, e-mail e dados de pagamento informados no ato da compra são coletados e processados por um marketplace parceiro, usado para vender e entregar sua chave de licença — a Viralyze não tem acesso a esses dados nem armazena números de cartão;</li>
-        <li><strong>Dados técnicos:</strong> endereço IP e informações da requisição podem ser processados momentaneamente por medidas de segurança (ex.: limitação de tentativas de ativação), sem formar um histórico de navegação armazenado;</li>
-        <li><strong>Dados salvos localmente no seu navegador:</strong> produtos pesquisados, prompts gerados, avatares configurados, favoritos e preferências (como tema) ficam armazenados apenas no armazenamento local do seu navegador (localStorage/sessionStorage) e <strong>não são enviados nem armazenados nos servidores da Viralyze</strong>. Limpar os dados do navegador ou trocar de dispositivo apaga esse conteúdo.</li>
+        <li><strong>Dados de suporte:</strong> se você falar com nosso suporte pelo WhatsApp, receberemos seu número de telefone, seu nome de perfil e o conteúdo das mensagens que você enviar, que usaremos para atendê-lo;</li>
+        <li><strong>Dados técnicos:</strong> endereço IP e informações da requisição são processados por medidas de segurança (ex.: limitação de tentativas de ativação) e podem constar em registros técnicos (logs) da infraestrutura pelo tempo necessário à segurança e ao funcionamento do Serviço;</li>
+        <li><strong>Dados salvos localmente no seu navegador:</strong> produtos pesquisados, prompts gerados, avatares configurados, projetos, favoritos e preferências de uso ficam armazenados apenas no armazenamento local do seu navegador e <strong>não são enviados nem armazenados nos servidores da Viralyze</strong>. Limpar os dados do navegador ou trocar de dispositivo apaga esse conteúdo (veja a seção 8).</li>
       </ul>
+    </div>
+
+    <div class="legal-section" id="dispositivo">
+      <h2><span class="legal-section-num">03</span>Identificador do dispositivo</h2>
+      <p>Cada licença só pode ter uma sessão ativa por vez. Para fazer cumprir essa regra e evitar que a mesma chave seja compartilhada, a Plataforma gera um identificador do dispositivo ao ativar a licença. Ele é calculado no seu próprio navegador a partir de um conjunto de características técnicas, como o tipo e a versão do navegador, o idioma, o número de núcleos do processador, a resolução e a profundidade de cor da tela, o fuso horário, o modelo do processador gráfico e o resultado de um desenho de teste feito pelo navegador.</p>
+      <p>Essas informações são combinadas e transformadas em um código por meio de uma função criptográfica (SHA-256). <strong>Apenas esse código é enviado aos nossos servidores;</strong> as características individuais não são enviadas. O código não permite identificar você pelo nome, não é usado para publicidade, perfilamento comercial ou rastreamento entre outros sites, e serve exclusivamente para vincular a licença à sessão ativa e prevenir fraudes e uso compartilhado indevido.</p>
+      <p>Dentro da Plataforma, você pode ver uma versão resumida desse identificador e copiá-lo. Ele pode mudar se você trocar de navegador, de dispositivo ou alterar configurações do navegador que modifiquem essas características.</p>
+      <div class="legal-callout">Esse tratamento é necessário para o funcionamento do controle de licenças. Se você tiver dúvidas ou quiser se opor a ele, fale com o nosso suporte (seção 14), ciente de que, sem o identificador, não é possível ativar a licença.</div>
     </div>
 
     <div class="legal-section" id="como-usamos">
-      <h2><span class="legal-section-num">03</span>Como usamos seus dados</h2>
+      <h2><span class="legal-section-num">04</span>Como usamos seus dados</h2>
       <p>Utilizamos os dados que processamos para:</p>
       <ul>
         <li>Validar sua chave de licença e manter sua sessão de acesso ativa;</li>
+        <li>Controlar a sessão única por licença e aplicar os limites de uso dos recursos;</li>
         <li>Fornecer, manter e melhorar os recursos da Viralyze, incluindo a geração de prompts e recomendações de produtos;</li>
-        <li>Prevenir fraudes, abusos, uso compartilhado indevido de chaves e violações destes termos;</li>
+        <li>Prestar atendimento e responder às suas solicitações de suporte;</li>
+        <li>Prevenir fraudes, abusos, uso compartilhado indevido de chaves e violações dos Termos de Uso;</li>
         <li>Cumprir obrigações legais e regulatórias.</li>
       </ul>
-      <p>Comunicações sobre a compra (confirmação, cobrança) e o envio da chave de licença são realizados pelo marketplace parceiro, não pela Viralyze diretamente.</p>
+      <p>Comunicações sobre a compra (confirmação, cobrança) e o envio da chave de licença são realizados pelo marketplace parceiro, não pela Viralyze diretamente. Não utilizamos seus dados para decisões exclusivamente automatizadas que produzam efeitos jurídicos sobre você.</p>
     </div>
 
     <div class="legal-section" id="base-legal">
-      <h2><span class="legal-section-num">04</span>Base legal para o tratamento</h2>
+      <h2><span class="legal-section-num">05</span>Base legal para o tratamento</h2>
       <p>Tratamos seus dados pessoais com base nas seguintes hipóteses legais previstas na LGPD:</p>
       <ul>
-        <li><strong>Execução de contrato:</strong> para fornecer o Serviço que você contratou;</li>
-        <li><strong>Legítimo interesse:</strong> para melhorar a Plataforma e prevenir fraudes;</li>
+        <li><strong>Execução de contrato:</strong> para fornecer o Serviço que você contratou, o que inclui validar a licença e manter a sessão e o atendimento de suporte;</li>
+        <li><strong>Legítimo interesse:</strong> para prevenir fraudes e uso compartilhado de licenças (incluindo o identificador do dispositivo), proteger a segurança do Serviço e melhorar a Plataforma, sempre respeitando seus direitos e expectativas;</li>
         <li><strong>Cumprimento de obrigação legal:</strong> para atender exigências fiscais e regulatórias;</li>
-        <li><strong>Consentimento:</strong> para comunicações de marketing opcionais, que você pode revogar a qualquer momento.</li>
+        <li><strong>Consentimento:</strong> nas situações em que a lei o exigir. Não enviamos comunicações de marketing e, se isso mudar, pediremos o seu consentimento antes, que poderá ser revogado a qualquer momento.</li>
       </ul>
     </div>
 
     <div class="legal-section" id="compartilhamento">
-      <h2><span class="legal-section-num">05</span>Compartilhamento de dados</h2>
+      <h2><span class="legal-section-num">06</span>Compartilhamento de dados</h2>
       <p>Não vendemos seus dados pessoais. Podemos compartilhar ou processar informações com:</p>
       <ul>
         <li>O marketplace parceiro responsável pela venda, pela coleta de nome, e-mail, dados de pagamento e pela entrega da chave de licença — regido pela política de privacidade própria dele;</li>
-        <li>Provedores de infraestrutura e hospedagem (ex.: banco de dados na nuvem), sob obrigações contratuais de confidencialidade, para armazenar os dados de licença descritos na seção 2;</li>
+        <li>Provedores de infraestrutura e hospedagem (ex.: hospedagem do site e do servidor, banco de dados na nuvem), sob obrigações contratuais de confidencialidade, para armazenar e processar os dados de licença descritos na seção 2;</li>
+        <li>O Google Fonts, que fornece as fontes tipográficas das nossas páginas. Ao carregar uma página, seu navegador faz uma requisição aos servidores do Google, que recebem seu endereço IP e dados técnicos dessa requisição, nos termos da política de privacidade do Google;</li>
+        <li>O WhatsApp (Meta), caso você use o botão de suporte, nos termos da política de privacidade do próprio serviço;</li>
         <li>Autoridades públicas, quando exigido por lei, ordem judicial ou solicitação regulatória.</li>
       </ul>
     </div>
 
     <div class="legal-section" id="ia-terceiros">
-      <h2><span class="legal-section-num">06</span>Prompts e ferramentas de IA de terceiros</h2>
+      <h2><span class="legal-section-num">07</span>Prompts, links e ferramentas de terceiros</h2>
       <p>Os prompts que você gera na Viralyze são criados a partir das suas escolhas (produto, avatar, ambiente etc.) e ficam salvos localmente no seu navegador para que você possa reutilizá-los, conforme descrito na seção 2. Caso você opte por copiar e utilizar esses prompts em ferramentas externas — como Midjourney, DALL-E, Stable Diffusion, Runway, Kling AI, Pika Labs ou Sora — o tratamento de dados realizado por essas ferramentas passa a ser regido pelas políticas de privacidade próprias de cada provedor, sobre as quais a Viralyze não tem controle.</p>
+      <p>O mesmo vale para os links externos exibidos na Plataforma, como os de vídeos e produtos do TikTok: ao clicar neles, você sai da Viralyze e passa a se sujeitar às regras do site de destino.</p>
     </div>
 
     <div class="legal-section" id="cookies">
-      <h2><span class="legal-section-num">07</span>Armazenamento local e tecnologias similares</h2>
-      <p>A Viralyze não utiliza cookies de rastreamento ou de análise. Em vez disso, utilizamos o armazenamento local do próprio navegador (localStorage e sessionStorage) para duas finalidades:</p>
+      <h2><span class="legal-section-num">08</span>Armazenamento local e tecnologias similares</h2>
+      <p>A Viralyze não utiliza cookies de rastreamento, de análise ou de publicidade, e não usa ferramentas de métricas de terceiros. Em vez disso, utilizamos o armazenamento local do próprio navegador (localStorage e sessionStorage) para as seguintes finalidades:</p>
       <ul>
-        <li><strong>Sessão de acesso:</strong> o token de sessão gerado após a ativação da chave de licença é mantido em sessionStorage, sendo apagado automaticamente ao fechar o navegador;</li>
-        <li><strong>Preferências e conteúdo gerado:</strong> tema visual, produtos favoritos, avatares e prompts criados por você ficam salvos em localStorage, permanecendo apenas no seu dispositivo até que você os apague ou limpe os dados do navegador.</li>
+        <li><strong>Sessão de acesso:</strong> o token de sessão e sua data de expiração, gerados após a ativação da licença, são mantidos em sessionStorage e apagados automaticamente ao fechar o navegador;</li>
+        <li><strong>Aceite dos termos:</strong> a versão dos Termos de Uso que você aceitou, para que não seja necessário confirmar a cada acesso;</li>
+        <li><strong>Funcionamento da Plataforma:</strong> a data em que o dispositivo foi ativado, o progresso do tutorial de boas-vindas e a contagem diária de uso de recursos com limite;</li>
+        <li><strong>Conteúdo criado por você:</strong> produtos favoritos e selecionados, avatares e produtos personalizados, projetos e prompts gerados ficam salvos em localStorage, permanecendo apenas no seu dispositivo.</li>
       </ul>
-      <p>Essas informações não são transmitidas aos servidores da Viralyze. Você pode apagá-las a qualquer momento limpando os dados de navegação do seu navegador para este site.</p>
+      <p>Essas informações não são transmitidas aos servidores da Viralyze, com exceção do token de sessão, que é enviado para validar o seu acesso. Você pode apagar o conteúdo criado por você a qualquer momento usando a opção de excluir todos os dados dentro da Plataforma, ou limpando os dados de navegação do seu navegador para este site.</p>
     </div>
 
     <div class="legal-section" id="armazenamento">
-      <h2><span class="legal-section-num">08</span>Armazenamento e segurança</h2>
-      <p>Adotamos medidas técnicas e organizacionais para proteger seus dados contra acesso não autorizado, perda, alteração ou divulgação indevida, incluindo criptografia em trânsito, controle de acesso e monitoramento contínuo.</p>
-      <p>Os dados descritos na seção 2 são armazenados em infraestrutura de banco de dados em nuvem que pode estar localizada fora do Brasil (ex.: Estados Unidos). Nesses casos, a transferência internacional é feita para provedores que adotam padrões de segurança e privacidade reconhecidos internacionalmente, em conformidade com o art. 33 da LGPD.</p>
+      <h2><span class="legal-section-num">09</span>Segurança e transferência internacional</h2>
+      <p>Adotamos medidas técnicas e organizacionais para proteger seus dados contra acesso não autorizado, perda, alteração ou divulgação indevida, incluindo criptografia em trânsito (HTTPS) e controle de acesso aos sistemas que armazenam os dados de licença.</p>
+      <p>Os dados descritos na seção 2 são armazenados em infraestrutura em nuvem que pode estar localizada fora do Brasil (ex.: Estados Unidos). Nesses casos, a transferência internacional é feita para provedores que adotam padrões de segurança e privacidade reconhecidos internacionalmente, em conformidade com o art. 33 da LGPD.</p>
+      <p>Se ocorrer um incidente de segurança que possa acarretar risco ou dano relevante aos titulares, comunicaremos os afetados e a Autoridade Nacional de Proteção de Dados (ANPD), nos termos da LGPD.</p>
       <div class="legal-callout">Nenhum sistema é 100% infalível. Caso identifique qualquer atividade suspeita relacionada à sua chave de licença, entre em contato imediatamente com nosso suporte.</div>
     </div>
 
     <div class="legal-section" id="retencao">
-      <h2><span class="legal-section-num">09</span>Retenção de dados</h2>
-      <p>Os dados da chave de licença (status, datas de ativação/expiração e token de sessão) são mantidos em nosso banco de dados enquanto a licença existir, para permitir reativações e suporte. Dados salvos localmente no seu navegador (prompts, avatares, favoritos, preferências) permanecem sob seu controle e podem ser apagados a qualquer momento limpando os dados de navegação. Após solicitação de exclusão de uma licença, os registros podem ser retidos por prazo adicional quando exigido por obrigação legal, fiscal ou contratual, sendo então eliminados ou anonimizados.</p>
+      <h2><span class="legal-section-num">10</span>Retenção de dados</h2>
+      <p>Os dados da chave de licença (status, datas de ativação/expiração, token de sessão e identificador do dispositivo) são mantidos em nosso banco de dados enquanto a licença existir, para permitir reativações e suporte. As conversas de suporte são mantidas pelo tempo necessário para atender sua solicitação e comprovar o atendimento. Dados salvos localmente no seu navegador (prompts, avatares, favoritos, projetos, preferências) permanecem sob seu controle e podem ser apagados a qualquer momento. Após solicitação de exclusão de uma licença, os registros podem ser retidos por prazo adicional quando exigido por obrigação legal, fiscal ou contratual, sendo então eliminados ou anonimizados.</p>
     </div>
 
     <div class="legal-section" id="direitos">
-      <h2><span class="legal-section-num">10</span>Seus direitos como titular</h2>
+      <h2><span class="legal-section-num">11</span>Seus direitos como titular</h2>
       <p>Nos termos da LGPD, você tem direito a:</p>
       <ul>
         <li>Confirmar a existência de tratamento e acessar seus dados;</li>
         <li>Corrigir dados incompletos, inexatos ou desatualizados;</li>
-        <li>Solicitar a anonimização, bloqueio ou eliminação de dados desnecessários;</li>
+        <li>Solicitar a anonimização, bloqueio ou eliminação de dados desnecessários, excessivos ou tratados em desconformidade com a lei;</li>
         <li>Solicitar a portabilidade dos seus dados a outro fornecedor;</li>
+        <li>Solicitar a eliminação dos dados tratados com base em consentimento, quando for o caso;</li>
         <li>Revogar o consentimento e se opor a tratamentos realizados com base no legítimo interesse;</li>
-        <li>Solicitar informações sobre com quem compartilhamos seus dados.</li>
+        <li>Solicitar informações sobre com quem compartilhamos seus dados;</li>
+        <li>Peticionar à Autoridade Nacional de Proteção de Dados (ANPD) em caso de descumprimento da lei.</li>
       </ul>
-      <p>Para exercer qualquer um desses direitos, entre em contato conforme indicado na seção 13.</p>
+      <p>Para exercer qualquer um desses direitos, entre em contato conforme indicado na seção 14. Para sua segurança, poderemos pedir informações que confirmem que a solicitação vem do titular da licença.</p>
     </div>
 
     <div class="legal-section" id="menores">
-      <h2><span class="legal-section-num">11</span>Privacidade de menores</h2>
+      <h2><span class="legal-section-num">12</span>Privacidade de menores</h2>
       <p>A Viralyze não é destinada a menores de 18 anos e não coleta intencionalmente dados pessoais de crianças ou adolescentes. Caso identifiquemos que uma chave de licença foi adquirida ou ativada por um menor, a licença e os dados associados serão removidos.</p>
     </div>
 
     <div class="legal-section" id="alteracoes">
-      <h2><span class="legal-section-num">12</span>Alterações nesta política</h2>
-      <p>Podemos atualizar esta Política de Privacidade periodicamente para refletir mudanças em nossas práticas ou na legislação aplicável. Alterações relevantes serão comunicadas por e-mail ou aviso na Plataforma. Recomendamos revisar esta página regularmente.</p>
+      <h2><span class="legal-section-num">13</span>Alterações nesta política</h2>
+      <p>Podemos atualizar esta Política de Privacidade periodicamente para refletir mudanças em nossas práticas ou na legislação aplicável. A data da última atualização fica indicada no topo desta página. Alterações relevantes serão comunicadas por aviso na Plataforma ou por meio do marketplace parceiro. Recomendamos revisar esta página regularmente.</p>
     </div>
 
     <div class="legal-section" id="contato">
-      <h2><span class="legal-section-num">13</span>Contato</h2>
-      <p>Para dúvidas, solicitações ou reclamações sobre o tratamento dos seus dados pessoais, entre em contato pelo WhatsApp. Respondemos o quanto antes, respeitando os prazos legais previstos na LGPD para cada tipo de solicitação.</p>
+      <h2><span class="legal-section-num">14</span>Contato e encarregado de dados</h2>
+      <p>Para dúvidas, solicitações ou reclamações sobre o tratamento dos seus dados pessoais, entre em contato pelo WhatsApp. Esse é também o canal do nosso encarregado pelo tratamento de dados pessoais (DPO), responsável por receber suas solicitações e as comunicações da ANPD. Respondemos o quanto antes, respeitando os prazos legais previstos na LGPD para cada tipo de solicitação.</p>
       <a href="https://wa.me/5512982294991" target="_blank" rel="noopener" class="legal-contact-btn">
         Falar com o suporte
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
