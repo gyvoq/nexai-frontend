@@ -22,7 +22,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=4">
 <link rel="stylesheet" href="css/activation.css">
-<link rel="stylesheet" href="css/free.css?v=1">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/design-system.css?v=4">
@@ -60,7 +59,6 @@
 
 <header class="header">
   <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
-    <a class="free-upgrade-pill free-only-inline" href="https://viralyze-tok.vercel.app/landing/landing.html#pricing" target="_blank" rel="noopener noreferrer">Fazer upgrade</a>
     <button onclick="openSearch()" aria-label="Busca global" id="header-search-btn" style="display:none;background:var(--surface2);border:1px solid var(--border2);border-radius:20px;padding:5px 11px;align-items:center;gap:6px;color:var(--text3);font-size:12px;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif;">
       <svg style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <span id="search-label-desk" style="display:none">Buscar</span>
@@ -136,7 +134,6 @@
         <div class="stats-bar stats-bar-compact" id="stats-bar"></div>
       </div>
 
-      <div class="free-banner"><span><strong>Plano Free:</strong> 4 produtos liberados. Faça upgrade para liberar o inventário completo.</span><a class="free-upgrade-btn" href="https://viralyze-tok.vercel.app/landing/landing.html#pricing" target="_blank" rel="noopener noreferrer">Fazer upgrade</a></div>
 
       <div class="inv-toolbar">
       <div class="niche-filter-wrap" id="niche-filter-wrap">
@@ -229,7 +226,6 @@
           <p class="page-sub">Escolha um avatar e receba na hora um prompt de vídeo viral pronto pra usar.</p>
         </div>
       </div>
-      <div class="viralize-lock"><div class="viralize-lock-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></div><div class="viralize-lock-text"><div class="viralize-lock-title">Viralize A.I é exclusivo do plano Pro</div><div class="viralize-lock-sub">Escolha um avatar e receba na hora um prompt de vídeo viral pronto. Disponível no Pro.</div></div><a class="free-upgrade-btn" href="https://viralyze-tok.vercel.app/landing/landing.html#pricing" target="_blank" rel="noopener noreferrer">Fazer upgrade</a></div>
       <p class="section-label">Escolha um avatar</p>
       <div class="viralize-avatar-grid" id="viralize-avatar-grid"></div>
       <div class="viralize-output" id="viralize-output">
@@ -268,7 +264,6 @@
           <p class="page-sub">Crie e gerencie influencers IA para sua marca</p>
         </div>
       </div>
-      <div class="viralize-lock"><div class="viralize-lock-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></div><div class="viralize-lock-text"><div class="viralize-lock-title">Influencers é exclusivo do plano Pro</div><div class="viralize-lock-sub">Crie e gerencie influencers IA para sua marca. Disponível no Pro.</div></div><a class="free-upgrade-btn" href="https://viralyze-tok.vercel.app/landing/landing.html#pricing" target="_blank" rel="noopener noreferrer">Fazer upgrade</a></div>
       <div class="filters" id="avatar-filters" role="group" aria-label="Filtrar influencers">
         <button class="filter-chip active" data-gender="all">Todos</button>
         <button class="filter-chip" data-gender="f"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M12 11c-4.5 0-7 3-7 7v2h14v-2c0-4-2.5-7-7-7z"/></svg> Feminino</button>
@@ -446,16 +441,6 @@
               <textarea class="prompt-box" id="avatar-prompt-output" style="margin-top:10px;min-height:130px"
                         readonly placeholder="Preencha as informações e clique em Gerar Prompt..."
                         aria-readonly="true" aria-label="Prompt do influencer"></textarea>
-              <div class="inf-render-locked" id="inf-render-locked" hidden>
-                <div class="inf-render-stage">
-                  <svg class="inf-render-silhouette" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 016-6h4a6 6 0 016 6v1"/></svg>
-                  <span class="lock-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></span>
-                </div>
-                <div class="inf-render-bar"><span></span></div>
-                <div class="inf-render-label" role="status" aria-live="polite"></div>
-                <div class="inf-render-sub">Seu influencer foi renderizado, mas só o plano Pro libera o resultado.</div>
-                <div class="inf-render-cta"><a class="free-upgrade-btn" href="https://viralyze-tok.vercel.app/landing/landing.html#pricing" target="_blank" rel="noopener noreferrer">Fazer upgrade</a></div>
-              </div>
               <button class="modal-cta inf-save-btn" style="margin-top:10px" onclick="saveGeneratedAvatar()">
                 <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:inline;margin-right:5px" aria-hidden="true"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                 Salvar Influencer
@@ -489,7 +474,6 @@
           <p class="page-sub">Os vídeos que estão bombando no TikTok agora, garimpados pra você.</p>
         </div>
       </div>
-      <div class="free-banner"><span><strong>Plano Free:</strong> 4 vídeos liberados. Faça upgrade para ver todos.</span><a class="free-upgrade-btn" href="https://viralyze-tok.vercel.app/landing/landing.html#pricing" target="_blank" rel="noopener noreferrer">Fazer upgrade</a></div>
       <div class="vv-radar is-mining" id="vv-radar" role="status" aria-live="polite">
         <span class="vv-pulse" aria-hidden="true"></span>
         <div class="vv-radar-text">
@@ -518,7 +502,6 @@
             <button class="export-btn backup-btn" onclick="generateBackup()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>Gerar Backup</button>
             <button class="export-btn backup-btn" onclick="document.getElementById('backup-file-input').click()"><svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>Importar Backup</button>
           </div>
-          <div class="free-banner" style="margin:12px 0 0"><span>Gerar e importar backup é exclusivo do plano Pro.</span><a class="free-upgrade-btn" href="https://viralyze-tok.vercel.app/landing/landing.html#pricing" target="_blank" rel="noopener noreferrer">Fazer upgrade</a></div>
           <input type="file" id="backup-file-input" accept="application/json,.json" style="display:none" onchange="importBackup(event)">
           <div class="settings-row-desc" id="backup-status" style="margin-top:8px;min-height:14px"></div>
         </div>
@@ -637,7 +620,6 @@
 <div id="voice-orb-root"></div>
 
 <script src="js/sanitize.js"></script>
-<script src="js/free.js"></script>
 <script src="js/session.js"></script>
 <script src="js/script.js?v=2"></script>
 <script src="js/freestudio.js"></script>
