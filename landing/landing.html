@@ -722,6 +722,70 @@ h1 em {
   object-position: top;
 }
 
+.recurso-media { cursor: zoom-in; }
+.recurso-media-btn {
+  position: absolute;
+  right: 0.9rem;
+  bottom: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 100px;
+  background: rgba(0,0,0,0.62);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font: 600 0.72rem var(--font-ui, inherit);
+  letter-spacing: 0.02em;
+  cursor: zoom-in;
+  opacity: 0.92;
+  transition: opacity 0.2s, background 0.2s;
+}
+.recurso-media-btn svg { width: 14px; height: 14px; }
+.recurso-media:hover .recurso-media-btn, .recurso-media-btn:focus-visible { opacity: 1; background: rgba(139,92,246,0.85); }
+
+.img-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 4vh 4vw;
+  background: rgba(0,0,0,0.88);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  cursor: zoom-out;
+}
+.img-lightbox.open { display: flex; }
+.img-lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--hairline-strong, rgba(255,255,255,0.22));
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  object-fit: contain;
+}
+.img-lightbox-close {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 50%;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  cursor: pointer;
+}
+.img-lightbox-close svg { width: 18px; height: 18px; }
+body.lightbox-open { overflow: hidden; }
+
 @media (max-width: 860px) {
   .recurso-panel, .recurso-panel.reverse { grid-template-columns: 1fr; min-height: 0; }
   .recurso-panel.reverse .recurso-text, .recurso-panel.reverse .recurso-media { order: initial; }
@@ -1249,7 +1313,7 @@ body.landing .hero {
             <li><span class="recurso-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Favorite e use direto nas suas criações</li>
           </ul>
         </div>
-        <div class="recurso-media"><img src="../assets/landing/1.avif" alt="Inventário de produtos da Viralyze" loading="lazy" decoding="async"></div>
+        <div class="recurso-media"><img src="../assets/landing/1.avif" alt="Inventário de produtos da Viralyze" loading="lazy" decoding="async"><button type="button" class="recurso-media-btn" aria-label="Ampliar imagem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>Ampliar</button></div>
       </div>
 
       <div class="recurso-panel reverse reveal">
@@ -1264,7 +1328,7 @@ body.landing .hero {
             <li><span class="recurso-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Adicionado direto ao seu inventário</li>
           </ul>
         </div>
-        <div class="recurso-media"><img src="../assets/landing/2.avif" alt="Modal de importar produto por link" loading="lazy" decoding="async"></div>
+        <div class="recurso-media"><img src="../assets/landing/2.avif" alt="Modal de importar produto por link" loading="lazy" decoding="async"><button type="button" class="recurso-media-btn" aria-label="Ampliar imagem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>Ampliar</button></div>
       </div>
 
       <div class="recurso-panel reveal">
@@ -1279,7 +1343,7 @@ body.landing .hero {
             <li><span class="recurso-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Referências prontas pra usar de base</li>
           </ul>
         </div>
-        <div class="recurso-media"><img src="../assets/landing/3.avif" alt="Radar de vídeos virais" loading="lazy" decoding="async"></div>
+        <div class="recurso-media"><img src="../assets/landing/3.avif" alt="Radar de vídeos virais" loading="lazy" decoding="async"><button type="button" class="recurso-media-btn" aria-label="Ampliar imagem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>Ampliar</button></div>
       </div>
 
       <div class="recurso-panel reverse reveal">
@@ -1294,22 +1358,22 @@ body.landing .hero {
             <li><span class="recurso-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Salve os seus e reutilize em qualquer criação</li>
           </ul>
         </div>
-        <div class="recurso-media"><img src="../assets/landing/4.avif" alt="Galeria e criador de influencers" loading="lazy" decoding="async"></div>
+        <div class="recurso-media"><img src="../assets/landing/4.avif" alt="Galeria e criador de influencers" loading="lazy" decoding="async"><button type="button" class="recurso-media-btn" aria-label="Ampliar imagem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>Ampliar</button></div>
       </div>
 
       <div class="recurso-panel reveal">
         <div class="recurso-text">
           <div class="recurso-count">05 / 07</div>
           <div class="recurso-category">Estúdio Livre</div>
-          <h3 class="recurso-title">Prompts de imagem e vídeo <em>num chat só</em>.</h3>
-          <p class="recurso-desc">Converse com a IA, descreva o que quer e receba o prompt pronto pra colar na sua ferramenta favorita.</p>
+          <h3 class="recurso-title">Gere imagens e prompts de vídeo <em>num chat só</em>.</h3>
+          <p class="recurso-desc">Converse com a IA, descreva o que quer e receba a imagem pronta. Pra vídeo, você recebe o prompt pra colar na sua ferramenta favorita.</p>
           <ul class="recurso-checklist">
             <li><span class="recurso-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Modos Gerar Imagem e Prompt de Vídeo</li>
             <li><span class="recurso-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Projetos separados por produto ou campanha</li>
             <li><span class="recurso-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Criações guardadas na Biblioteca de Imagens</li>
           </ul>
         </div>
-        <div class="recurso-media"><img src="../assets/landing/5.avif" alt="Chat do Estúdio Livre" loading="lazy" decoding="async"></div>
+        <div class="recurso-media"><img src="../assets/landing/5.avif" alt="Chat do Estúdio Livre" loading="lazy" decoding="async"><button type="button" class="recurso-media-btn" aria-label="Ampliar imagem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>Ampliar</button></div>
       </div>
 
       <div class="recurso-panel reverse reveal">
@@ -1324,7 +1388,7 @@ body.landing .hero {
             <li><span class="recurso-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Prompt pronto pra gerar o seu vídeo</li>
           </ul>
         </div>
-        <div class="recurso-media"><img src="../assets/landing/6.avif" alt="Modo Extrair Movimento do Estúdio Livre" loading="lazy" decoding="async"></div>
+        <div class="recurso-media"><img src="../assets/landing/6.avif" alt="Modo Extrair Movimento do Estúdio Livre" loading="lazy" decoding="async"><button type="button" class="recurso-media-btn" aria-label="Ampliar imagem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>Ampliar</button></div>
       </div>
 
       <div class="recurso-panel reveal">
@@ -1339,7 +1403,7 @@ body.landing .hero {
             <li><span class="recurso-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Pensado pra vender no TikTok Shop</li>
           </ul>
         </div>
-        <div class="recurso-media"><img src="../assets/landing/7.avif" alt="Viralize A.I com avatar e prompt gerado" loading="lazy" decoding="async"></div>
+        <div class="recurso-media"><img src="../assets/landing/7.avif" alt="Viralize A.I com avatar e prompt gerado" loading="lazy" decoding="async"><button type="button" class="recurso-media-btn" aria-label="Ampliar imagem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>Ampliar</button></div>
       </div>
 
     </div>
@@ -1543,6 +1607,46 @@ body.landing .hero {
     if (!isOpen) item.classList.add('active');
   }
 
+</script>
+<div class="img-lightbox" id="imgLightbox" role="dialog" aria-modal="true" aria-label="Imagem ampliada">
+  <button type="button" class="img-lightbox-close" id="imgLightboxClose" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  <img src="" alt="">
+</div>
+
+<script>
+(function () {
+  var box = document.getElementById('imgLightbox');
+  var big = box.querySelector('img');
+  var closeBtn = document.getElementById('imgLightboxClose');
+  var lastFocus = null;
+
+  function openBox(img) {
+    lastFocus = document.activeElement;
+    big.src = img.currentSrc || img.src;
+    big.alt = img.alt;
+    box.classList.add('open');
+    document.body.classList.add('lightbox-open');
+    closeBtn.focus();
+  }
+
+  function closeBox() {
+    box.classList.remove('open');
+    document.body.classList.remove('lightbox-open');
+    big.src = '';
+    if (lastFocus) lastFocus.focus();
+  }
+
+  document.querySelectorAll('.recurso-media').forEach(function (media) {
+    var img = media.querySelector('img');
+    media.addEventListener('click', function () { openBox(img); });
+  });
+
+  box.addEventListener('click', closeBox);
+  closeBtn.addEventListener('click', closeBox);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && box.classList.contains('open')) closeBox();
+  });
+})();
 </script>
 </body>
 </html>
