@@ -754,7 +754,6 @@ const BACKUP_APP_ID = "viralyze-backup";
 const BACKUP_LEGACY_APP_IDS = [ "nex-ai-backup" ];
 
 function generateBackup() {
-  if (window.NexPlan && NexPlan.isFree()) { NexPlan.blocked("Gerar backup"); return; }
   const backup = {
     app: BACKUP_APP_ID,
     version: BACKUP_VERSION,
@@ -786,7 +785,6 @@ function generateBackup() {
 }
 
 function importBackup(event) {
-  if (window.NexPlan && NexPlan.isFree()) { if (event && event.target) event.target.value = ""; NexPlan.blocked("Importar backup"); return; }
   const input = event.target;
   const file = input.files && input.files[0];
   if (!file) return;
@@ -861,7 +859,6 @@ function importBackup(event) {
 }
 
 function openAddModal() {
-  if (window.NexPlan && NexPlan.isFree()) { NexPlan.blocked("Importar produtos"); return; }
   document.getElementById("add-product-modal").classList.add("open");
   document.getElementById("np-nome").focus();
 }
@@ -873,7 +870,6 @@ function closeAddModal() {
 const gradients = [ "grad-beleza", "grad-saude", "grad-fitness", "grad-tech", "grad-moda", "grad-casa" ];
 
 function saveNewProduct() {
-  if (window.NexPlan && NexPlan.isFree()) { NexPlan.blocked("Importar produtos"); return; }
   const nome = Sanitize.sanitizeInput(document.getElementById("np-nome").value, 60);
   if (!nome) {
     showToast("Informe o nome do produto!");
@@ -905,8 +901,6 @@ function saveNewProduct() {
   showToast(`"${nome}" adicionado com sucesso!`);
 }
 
-/* ====== IMPORTAR PRODUTO POR LINK ====== */
-/* Lojas aceitas: o domínio precisa terminar com um destes. */
 const LINK_STORES = [
   { label: "Mercado Livre", hosts: [ "mercadolivre.com.br", "mercadolivre.com", "mercadolibre.com", "meli.la" ] },
   { label: "Amazon", hosts: [ "amazon.com.br", "amazon.com", "amzn.to", "a.co" ] },
@@ -973,7 +967,6 @@ function extractNameFromUrl(u) {
   return bestWords >= 2 || (bestWords === 1 && best.length >= 6) ? best.slice(0, 60) : "";
 }
 
-/* Categoria estimada pelo nome; se nada bater, fica "custom" */
 const LINK_CAT_KEYWORDS = {
   beleza: [ "serum", "perfume", "creme", "batom", "maquiagem", "shampoo", "skincare", "hidratante", "esmalte", "protetor solar", "cilios", "base facial" ],
   saude: [ "vitamina", "suplemento", "colageno", "massageador", "termometro", "oximetro", "probiotico" ],
@@ -992,7 +985,6 @@ function guessProductCategory(name) {
   return "custom";
 }
 
-/* Lê a URL e devolve { ok, store, name, url } ou { ok:false, error } */
 function parseProductLink(raw) {
   let text = String(raw || "").trim();
   if (!text) return { ok: false, error: "Cole o link do produto." };
@@ -1008,7 +1000,6 @@ function parseProductLink(raw) {
 let linkImportPending = null;
 
 function openLinkImport() {
-  if (window.NexPlan && NexPlan.isFree()) { NexPlan.blocked("Importar produtos"); return; }
   const m = document.getElementById("link-import-modal");
   if (!m) return;
   linkImportPending = null;
@@ -1055,7 +1046,6 @@ function fetchProductFromLink() {
 }
 
 function confirmLinkImport() {
-  if (window.NexPlan && NexPlan.isFree()) { NexPlan.blocked("Importar produtos"); return; }
   if (!linkImportPending) { fetchProductFromLink(); return; }
   const nome = Sanitize.sanitizeInput(document.getElementById("link-import-name").value, 60);
   if (!nome) {
@@ -1089,13 +1079,10 @@ function confirmLinkImport() {
   showToast(`"${nome}" adicionado ao inventário!`);
 }
 
-/* Produtos personalizados aparecem primeiro, do mais novo para o mais antigo */
 function allProducts() {
-  if (window.NexPlan && NexPlan.isFree()) return [ ...products ];
   return [ ...customProducts, ...products ];
 }
 
-/* Reaplica o filtro de categoria ativo depois de redesenhar a grade de mineracao */
 function reapplyMiningFilter() {
   const chip = document.querySelector("#mining-filters .filter-chip.active");
   if (!chip) return;
@@ -1105,7 +1092,6 @@ function reapplyMiningFilter() {
   });
 }
 
-/* Leva o usuario ate o produto recem-adicionado, que agora fica no topo da grade */
 function scrollToFirstProduct() {
   const grid = document.getElementById("studio-product-grid") || document.getElementById("vid-product-grid");
   const first = grid && grid.querySelector(".product-card");
@@ -1126,8 +1112,7 @@ function productCard(p, selectable, i = 0, clickFn = "selectStudioProduct") {
 }
 
 function renderProducts() {
-  const free = window.NexPlan && NexPlan.isFree();
-  document.getElementById("product-grid").innerHTML = allProducts().map((p, i) => free && i >= NexPlan.FREE_LIMIT ? NexPlan.lockedProductCard(p) : productCard(p, false, i)).join("");
+  document.getElementById("product-grid").innerHTML = allProducts().map((p, i) => productCard(p, false, i)).join("");
 }
 
 function parseViews(str) {
@@ -1191,10 +1176,8 @@ function renderVideos() {
   }).join("");
 }
 
-/* Quantos produtos estao visiveis agora em cada aba */
 const productPageState = { studio: 0, vid: 0 };
 
-/* Lote inicial e passo de cada clique: 20 no celular, 30 no PC */
 const PRODUCTS_LIMIT_MOBILE = 20;
 const PRODUCTS_LIMIT_DESKTOP = 30;
 const PRODUCTS_MOBILE_BREAKPOINT = 768;
@@ -1268,7 +1251,6 @@ function showLessProducts(which) {
   }
 }
 
-/* Reajusta o lote ao girar o celular ou redimensionar a janela */
 let _productPageBreakpoint = null;
 function refreshProductPagination() {
   const bp = getProductPageLimit();
@@ -1860,7 +1842,6 @@ function generateVideoPrompt() {
 }
 
 function generateAvatarPromptAI() {
-  if (window.NexPlan && NexPlan.isFree()) { NexPlan.renderLockedInfluencer(); return; }
   const nome = document.getElementById("av-nome").value.trim() || "Influencer";
   const idade = document.getElementById("av-idade").value || "28";
   const genero = document.getElementById("av-genero").value || "neutral";
@@ -1887,7 +1868,6 @@ function generateAvatarPromptAI() {
   loading.classList.remove("visible");
 }
 
-/* Limite de influencers salvos por conta (dá pra criar vários, até este número) */
 const MAX_CUSTOM_AVATARS = 10;
 
 function updateInfLimitNote() {
@@ -1901,9 +1881,6 @@ function updateInfLimitNote() {
     : `<span>Influencers criados: <strong>${n}/${MAX_CUSTOM_AVATARS}</strong>. Você pode criar vários, até o limite.</span>`;
 }
 
-/* Valores padrão de fábrica (não usar hidden.defaultValue: em <input type="hidden">
-   o próprio atributo "value" é o que a IDL "value" grava, então defaultValue
-   acompanha qualquer alteração feita via JS e não serve como "original"). */
 const INF_FIELD_DEFAULTS = {
   "av-genero": "Feminino",
   "av-etnia": "Latina/Latino",
@@ -1916,7 +1893,6 @@ const INF_FIELD_DEFAULTS = {
 };
 
 function resetInfluencerForm() {
-  if (window.NexPlan) NexPlan.resetInfluencerRender();
   ["av-nome", "av-desc", "avatar-prompt-output"].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = "";
@@ -1957,7 +1933,6 @@ function resetInfluencerForm() {
 }
 
 function saveGeneratedAvatar() {
-  if (window.NexPlan && NexPlan.isFree()) { NexPlan.blocked("Salvar influencer"); return; }
   if (customAvatars.length >= MAX_CUSTOM_AVATARS) {
     showToast(`Limite de ${MAX_CUSTOM_AVATARS} influencers atingido. Exclua um para criar outro.`);
     updateInfLimitNote();
@@ -2018,7 +1993,6 @@ function toggleChip(el) {
   el.classList.toggle("selected");
 }
 
-/* ---- Influencer creation wizard (Identidade / Corpo / Rosto / Cabelo / Estilo / Renderização) ---- */
 let currentInfStep = 1;
 const INF_STEP_COUNT = 6;
 
@@ -2116,7 +2090,6 @@ function selectInfOption(el, hiddenInputId, value) {
   updateInfSummary();
 }
 
-/* ---- Botão "Outro" em todos os campos da criação de influencer ---- */
 const INF_OTHER_MAX = 30;
 const INF_CHIP_OTHER_MAX = 24;
 const INF_CHIP_OTHER_LIMIT = 3;
@@ -2245,7 +2218,6 @@ function showConfirm(msg, onConfirm) {
   });
 }
 
-/* ====== EXCLUIR TUDO (confirmacao digitando a palavra) ====== */
 const DELETE_ALL_WORD = "excluir";
 
 function openDeleteAllModal() {
@@ -2300,7 +2272,6 @@ function confirmDeleteAll() {
   showToast("Tudo foi excluído.");
 }
 
-/* Apaga os dados do app. Nao mexe na sessao nem no aceite dos termos. */
 function wipeAllData() {
   try {
     localStorage.removeItem(FAV_KEY);
@@ -2610,7 +2581,6 @@ document.addEventListener("keydown", e => {
   }
 });
 
-/* Clicar fora do card fecha os modais de ajuda e de exclusao */
 document.addEventListener("DOMContentLoaded", () => {
   try { initInfOtherOptions(); } catch (err) { console.error("initInfOtherOptions", err); }
   updateInfLimitNote();
