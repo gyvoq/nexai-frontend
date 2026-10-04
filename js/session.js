@@ -142,7 +142,6 @@ const Session = (() => {
   }
 
   function clearSession() {
-    if (window.NexPlan) NexPlan.reset();
     try {
       sessionStorage.removeItem(TOKEN_KEY);
       sessionStorage.removeItem(EXPIRY_KEY);
@@ -154,7 +153,6 @@ const Session = (() => {
   function releaseGate() {
     document.documentElement.classList.add(READY_CLASS);
     renderDeviceCard();
-    if (window.NexPlan) NexPlan.onReady();
   }
 
   function lockGate() {
@@ -210,7 +208,6 @@ const Session = (() => {
     showActivationOverlay();
   }
 
-  // Reserva uma extração de movimento. O limite é aplicado no servidor, por licença.
   async function requestExtract() {
     const token = getToken();
     if (!token) return { ok: false, message: 'Sessão expirada. Ative sua licença novamente.' };
@@ -478,28 +475,7 @@ const Session = (() => {
 
     _bindDigitEvents(digits, termsCheckbox);
 
-    if (window.NexPlan) {
-      const claim = NexPlan.buildClaimBanner({
-        apiBase: API_BASE,
-        getDeviceId,
-        redeem: code => {
-          fillDigits(digits, code);
-          if (typeof window.submitActivation === 'function') window.submitActivation();
-        },
-      });
-      card.prepend(claim);
-    }
-
     return ov;
-  }
-
-  function fillDigits(digits, code) {
-    const clean = Sanitize.sanitizeCode(code).slice(0, 5);
-    digits.forEach((d, i) => {
-      d.value = clean[i] || '';
-      d.classList.toggle('filled', !!d.value);
-    });
-    digits[4].dispatchEvent(new Event('input'));
   }
 
   function _bindDigitEvents(digits, termsCheckbox) {
@@ -577,7 +553,6 @@ const Session = (() => {
       try {
         const result = await activate(code);
         saveSession(result.token, result.expiresAt);
-        if (window.NexPlan) NexPlan.set(result.plan, result.expiresAt);
         acceptTerms();
         rememberDeviceSince();
         if (btnEl) btnEl.classList.remove('busy');
@@ -611,7 +586,7 @@ const Session = (() => {
             if (btnEl) btnEl.disabled = false;
             clearMsg();
           }, 15000);
-        } else if (isDeviceLock || /teste grátis/i.test(err.message || '')) {
+        } else if (isDeviceLock) {
           attempts--;
           text = err.message;
         } else if (attempts >= MAX_CLIENT_ATTEMPTS) {
@@ -711,8 +686,6 @@ const Session = (() => {
         showActivationOverlay();
         return;
       }
-
-      if (window.NexPlan) NexPlan.set(result.plan, result.expiresAt);
 
       const expiryEl = document.getElementById('expiry-display');
       if (expiryEl) expiryEl.textContent = fmtDate(result.expiresAt);
