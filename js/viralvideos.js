@@ -16,8 +16,7 @@ const VIRAL_VIDEOS = [
   { n: 13, title: "TV móvel: o achadinho que está viralizando", url: 'https://vt.tiktok.com/ZSbaQpFjg/' }
 ];
 
-const VV_OEMBED = ['https://www.tiktok.com/oembed?url=', 'https://noembed.com/embed?url='];
-const vvCoverCache = new Map();
+const VV_API = (window.NexSession && NexSession.API_BASE) || 'https://nexai-backend-production-5e36.up.railway.app';
 const VV_LOADING_MS = 1500;
 const VV_REFRESH_AFTER_MS = 60 * 1000;
 
@@ -27,36 +26,18 @@ let vvMining = false;
 
 function vvEsc(s) { return (window.Sanitize && Sanitize.escapeHTML) ? Sanitize.escapeHTML(s) : String(s); }
 function vvSafeUrl(u) { return /^https:\/\/([a-z0-9-]+\.)?tiktok\.com\//i.test(u) ? u : '#'; }
-function vvSafeImg(u) { return typeof u === 'string' && /^https:\/\//i.test(u) ? u : ''; }
+function vvCoverSrc(url, bust) { return VV_API + '/api/viral-cover?url=' + encodeURIComponent(url) + (bust ? '&r=' + Date.now() : ''); }
 
-async function vvFetchCover(url) {
-  if (vvCoverCache.has(url)) return vvCoverCache.get(url);
-  const job = (async () => {
-    for (const base of VV_OEMBED) {
-      try {
-        const res = await fetch(base + encodeURIComponent(url));
-        if (!res.ok) continue;
-        const data = await res.json();
-        const img = vvSafeImg(data.thumbnail_url);
-        if (img) return img;
-      } catch (e) {}
-    }
-    return '';
-  })();
-  vvCoverCache.set(url, job);
-  const result = await job;
-  if (!result) vvCoverCache.delete(url);
-  return result;
-}
-
-async function vvLoadCover(v, img, cover) {
+function vvLoadCover(v, img, cover) {
   cover.classList.add('is-loading');
-  const src = await vvFetchCover(v.url);
-  if (!src) { cover.classList.remove('is-loading'); cover.classList.add('no-cover'); return; }
-  img.addEventListener('load', () => { cover.classList.remove('is-loading'); img.classList.add('is-loaded'); }, { once: true });
-  img.addEventListener('error', () => { cover.classList.remove('is-loading'); cover.classList.add('no-cover'); }, { once: true });
+  let retried = false;
+  img.addEventListener('load', () => { cover.classList.remove('is-loading'); img.classList.add('is-loaded'); });
+  img.addEventListener('error', () => {
+    if (!retried) { retried = true; setTimeout(() => { img.src = vvCoverSrc(v.url, true); }, 1500); return; }
+    cover.classList.remove('is-loading'); cover.classList.add('no-cover');
+  });
   img.referrerPolicy = 'no-referrer';
-  img.src = src;
+  img.src = vvCoverSrc(v.url);
 }
 
 const VV_ICON_PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
