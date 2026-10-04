@@ -1006,18 +1006,52 @@ function parseProductLink(raw) {
 }
 
 let linkImportPending = null;
+let linkImportImageRun = 0; // evita que uma busca antiga sobrescreva uma mais nova
 
 function openLinkImport() {
   if (window.NexPlan && NexPlan.isFree()) { NexPlan.blocked("Importar produtos"); return; }
   const m = document.getElementById("link-import-modal");
   if (!m) return;
   linkImportPending = null;
+  linkImportImageRun++;
   document.getElementById("link-import-url").value = "";
   document.getElementById("link-import-name").value = "";
   document.getElementById("link-preview").classList.remove("open");
+  setLinkImportThumb(null, false);
   setLinkImportStatus("");
   m.classList.add("open");
   setTimeout(() => document.getElementById("link-import-url").focus(), 60);
+}
+
+/* Mostra/esconde/anima o thumbnail da imagem do produto no preview */
+function setLinkImportThumb(src, loading) {
+  const wrap = document.getElementById("link-preview-thumb");
+  const img = document.getElementById("link-preview-img");
+  if (!wrap || !img) return;
+  if (!src && !loading) { wrap.style.display = "none"; wrap.classList.remove("is-loading"); img.removeAttribute("src"); img.classList.remove("is-loaded"); return; }
+  wrap.style.display = "flex";
+  wrap.classList.toggle("is-loading", !!loading);
+  if (src) {
+    img.classList.remove("is-loaded");
+    img.onload = () => img.classList.add("is-loaded");
+    img.onerror = () => { wrap.style.display = "none"; };
+    img.src = src;
+  }
+}
+
+/* Busca a og:image da página do produto no backend (o navegador não consegue por CORS) */
+async function fetchLinkImportImage(result) {
+  if (!(window.NexSession && NexSession.fetchProductImage)) return;
+  const run = ++linkImportImageRun;
+  setLinkImportThumb(null, true);
+  const res = await NexSession.fetchProductImage(result.url);
+  if (run !== linkImportImageRun || linkImportPending !== result) return; // resposta de uma busca antiga
+  if (res.ok && res.image) {
+    result.image = res.image;
+    setLinkImportThumb(res.image, false);
+  } else {
+    setLinkImportThumb(null, false);
+  }
 }
 
 function closeLinkImport() {
@@ -1037,7 +1071,9 @@ function fetchProductFromLink() {
   const preview = document.getElementById("link-preview");
   if (!result.ok) {
     linkImportPending = null;
+    linkImportImageRun++;
     preview.classList.remove("open");
+    setLinkImportThumb(null, false);
     setLinkImportStatus(result.error, true);
     return;
   }
@@ -1052,6 +1088,7 @@ function fetchProductFromLink() {
     setLinkImportStatus("Não conseguimos ler o nome por esse link. Digite o nome abaixo.", true);
   }
   nameInput.focus();
+  fetchLinkImportImage(result);
 }
 
 function confirmLinkImport() {
@@ -1070,7 +1107,7 @@ function confirmLinkImport() {
     name: nome,
     price: "",
     cat: cat,
-    img: "",
+    img: linkImportPending.image || "",
     rank: products.length + customProducts.length + 1,
     grad: gradients.indexOf(gradId) !== -1 ? gradId : gradients[customProducts.length % gradients.length],
     tag: "#meu",
