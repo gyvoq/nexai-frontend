@@ -711,7 +711,7 @@ const Session = (() => {
     init();
   });
 
-  return { getToken, saveSession, clearSession, logout, requestExtract, hasAcceptedTerms, getDeviceId, getDeviceInfo };
+  return { API_BASE, getToken, saveSession, clearSession, logout, requestExtract, hasAcceptedTerms, getDeviceId, getDeviceInfo };
 })();
 
 window.NexSession = Session;
