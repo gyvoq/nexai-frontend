@@ -306,28 +306,6 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
       </div>
     </section>
 
-    <section class="create">
-      <div class="create-title">Chaves Free</div>
-      <div class="create-row">
-        <div class="field">
-          <span>Quantidade</span>
-          <input type="number" class="input" id="free-count" value="20" min="1" max="100" style="width:100px">
-        </div>
-        <div class="field">
-          <span>Dias de teste</span>
-          <input type="number" class="input" id="free-days" value="7" min="1" max="30" style="width:100px">
-        </div>
-        <button class="btn-primary" id="free-btn" onclick="createFreeKeys()">Gerar chaves free</button>
-      </div>
-      <div class="created" id="free-keys-box">
-        <div class="created-head">
-          <span id="free-title">Chaves free criadas</span>
-          <button class="link-btn" onclick="copyFreeKeys()">Copiar todas</button>
-        </div>
-        <div class="keys" id="free-keys-list"></div>
-      </div>
-    </section>
-
     <div class="toolbar">
       <div class="tabs" id="tabs">
         <button class="tab active" data-filter="all" onclick="setFilter('all',this)">Todas <span class="count" id="n-all">0</span></button>
@@ -535,30 +513,6 @@ async function createLicenses(){
 function copyAllKeys(){navigator.clipboard.writeText(createdKeys.join('\n')).then(()=>showToast('Chaves copiadas'));}
 function copyText(t){navigator.clipboard.writeText(t).then(()=>showToast('Chave copiada'));}
 
-let freeKeys=[];
-async function createFreeKeys(){
-  const btn=document.getElementById('free-btn');
-  const count=parseInt(document.getElementById('free-count').value,10);
-  const days=parseInt(document.getElementById('free-days').value,10);
-  if(!(count>=1&&count<=100)){showToast('Quantidade deve ser entre 1 e 100');return;}
-  if(!(days>=1&&days<=30)){showToast('Dias deve ser entre 1 e 30');return;}
-  btn.disabled=true; btn.textContent='Gerando…';
-  try{
-    const r=await fetch(`${API}/api/admin/licenses/free`,{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Secret':adminSecret},body:JSON.stringify({count,days})});
-    if(!r.ok){showToast('Erro ao gerar chaves free');}
-    else{
-      const d=await r.json();
-      freeKeys=d.keys;
-      document.getElementById('free-title').textContent=`${freeKeys.length} chaves free · ${d.days} dias`;
-      document.getElementById('free-keys-list').innerHTML=freeKeys.map(k=>`<button class="key-chip" onclick="copyText('${k}')" title="Copiar">${k}</button>`).join('');
-      document.getElementById('free-keys-box').style.display='block';
-      loadLicenses();
-    }
-  }catch(err){showToast('Erro ao gerar chaves free');}
-  btn.disabled=false; btn.textContent='Gerar chaves free';
-}
-function copyFreeKeys(){navigator.clipboard.writeText(freeKeys.join('\n')).then(()=>showToast('Chaves copiadas'));}
-
 function setFilter(f,el){
   currentFilter=f;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
@@ -594,7 +548,7 @@ function renderTable(){
 
   tbody.innerHTML=list.map(l=>{
     const s=getStatus(l);
-    const months=l.plan==='free'?`Free · ${l.validityDays||7} dias · ${l.activated?'ativada':(l.reserved?'reservada':'livre')}`:`${l.validityMonths} ${l.validityMonths===1?'mês':'meses'}`;
+    const months=`${l.validityMonths} ${l.validityMonths===1?'mês':'meses'}`;
     const revoke=s==='revoked'?'':`<button class="act act-revoke" onclick="confirmRevoke('${l.key}')">Revogar</button>`;
     return `<tr>
       <td class="td-key"><span class="key-cell">${l.key}<span class="sub">${months} · criada em ${fmt(l.createdAt)}</span></span></td>
