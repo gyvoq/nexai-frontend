@@ -239,36 +239,6 @@ const Session = (() => {
     }
   }
 
-  // Busca a og:image da página do produto via backend (evita CORS no navegador).
-  async function fetchProductImage(url) {
-    const token = getToken();
-    if (!token) return { ok: false, message: 'Sessão expirada. Ative sua licença novamente.' };
-    const ctrl  = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 10_000);
-    try {
-      const res = await fetch(`${API_BASE}/api/product-link/og-image`, {
-        method : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body   : JSON.stringify({ token, url }),
-        signal : ctrl.signal,
-      });
-      const data = await res.json().catch(() => ({}));
-      if (res.status === 429) return { ok: false, rateLimited: true, retryAfterSec: data.retryAfterSec || 60, message: data.error };
-      if (res.status === 401 || res.status === 403) {
-        clearSession();
-        showActivationOverlay();
-        return { ok: false, message: data.error || 'Sessão inválida.' };
-      }
-      if (!res.ok) return { ok: false, message: data.error || 'Erro ao processar. Tente novamente.' };
-      if (!data.ok) return { ok: false, message: data.error || 'Não encontramos imagem nessa página.' };
-      return { ok: true, image: data.image };
-    } catch {
-      return { ok: false, message: 'Sem conexão com o servidor. Tente novamente.' };
-    } finally {
-      clearTimeout(timer);
-    }
-  }
-
   function hasAcceptedTerms() {
     try { return localStorage.getItem(TERMS_KEY) === TERMS_VERSION; } catch { return false; }
   }
@@ -768,7 +738,7 @@ const Session = (() => {
     init();
   });
 
-  return { getToken, saveSession, clearSession, logout, requestExtract, fetchProductImage, hasAcceptedTerms, getDeviceId, getDeviceInfo };
+  return { getToken, saveSession, clearSession, logout, requestExtract, hasAcceptedTerms, getDeviceId, getDeviceInfo };
 })();
 
 window.NexSession = Session;
