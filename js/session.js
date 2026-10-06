@@ -145,6 +145,11 @@ const Session = (() => {
     try { return sessionStorage.getItem(TOKEN_KEY); } catch { return null; }
   }
 
+  function emitLicense(expiresAt) {
+    if (!expiresAt) return;
+    try { window.dispatchEvent(new CustomEvent('nex:license', { detail: { expiresAt } })); } catch {  }
+  }
+
   function saveSession(token, expiresAt) {
     try {
       sessionStorage.setItem(TOKEN_KEY, token);
@@ -152,6 +157,7 @@ const Session = (() => {
     } catch (e) {
       console.warn('[Session] Erro ao salvar sessão:', e);
     }
+    emitLicense(expiresAt);
   }
 
   function clearSession() {
@@ -159,6 +165,29 @@ const Session = (() => {
       sessionStorage.removeItem(TOKEN_KEY);
       sessionStorage.removeItem(EXPIRY_KEY);
     } catch {  }
+  }
+
+  async function getExtractQuota() {
+    const token = getToken();
+    if (!token) return null;
+    const ctrl  = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 8_000);
+    try {
+      const res = await fetch(`${API_BASE}/api/extract-quota`, {
+        method : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body   : JSON.stringify({ token }),
+        signal : ctrl.signal,
+      });
+      if (!res.ok) return null;
+      const d = await res.json().catch(() => null);
+      if (!d || typeof d.limit !== 'number' || typeof d.remaining !== 'number') return null;
+      return { limit: d.limit, remaining: d.remaining, resetSec: typeof d.resetSec === 'number' ? d.resetSec : 0 };
+    } catch {
+      return null;
+    } finally {
+      clearTimeout(timer);
+    }
   }
 
   const READY_CLASS = 'nex-ready';
@@ -235,7 +264,7 @@ const Session = (() => {
         signal : ctrl.signal,
       });
       const data = await res.json().catch(() => ({}));
-      if (res.ok) return { ok: true, remaining: data.remaining };
+      if (res.ok) return { ok: true, remaining: data.remaining, limit: data.limit, resetSec: data.resetSec };
       if (res.status === 429) return { ok: false, rateLimited: true, retryAfterSec: data.retryAfterSec || 60, message: data.error };
       if (res.status === 401 || res.status === 403) {
         clearSession();
@@ -703,6 +732,8 @@ const Session = (() => {
 
       const expiryEl = document.getElementById('expiry-display');
       if (expiryEl) expiryEl.textContent = fmtDate(result.expiresAt);
+      try { sessionStorage.setItem(EXPIRY_KEY, result.expiresAt); } catch {  }
+      emitLicense(result.expiresAt);
 
       if (!hasAcceptedTerms()) {
         showTermsOverlay(async () => releaseGate());
@@ -725,7 +756,7 @@ const Session = (() => {
     init();
   });
 
-  return { API_BASE, getToken, saveSession, clearSession, logout, requestExtract, hasAcceptedTerms, getDeviceId, getDeviceInfo };
+  return { API_BASE, getToken, saveSession, clearSession, logout, requestExtract, getExtractQuota, hasAcceptedTerms, getDeviceId, getDeviceInfo };
 })();
 
 window.NexSession = Session;
