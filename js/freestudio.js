@@ -87,6 +87,26 @@ function fsNormalizeLastImage(li) {
   };
 }
 
+const FS_FLOW_VIDEO_KEYS = ['produto', 'roteiro', 'tom', 'formato', 'duracao', 'detalhes'];
+
+function fsNormalizeFlow(f) {
+  if (!f || typeof f !== 'object') return null;
+  if (f.mode !== 'imagem' && f.mode !== 'video') return null;
+  if (f.phase !== 'avatar' && f.phase !== 'questions') return null;
+  const keys = f.mode === 'imagem' ? FS_IMG_KEYS : FS_FLOW_VIDEO_KEYS;
+  const src = f.answers && typeof f.answers === 'object' ? f.answers : {};
+  const answers = {};
+  keys.forEach(k => { if (typeof src[k] === 'string') answers[k] = src[k].slice(0, 5000); });
+  return {
+    mode: f.mode,
+    phase: f.phase,
+    step: Math.max(0, Math.min(20, parseInt(f.step, 10) || 0)),
+    answers,
+    avatarId: typeof f.avatarId === 'string' ? f.avatarId.slice(0, 80) : '',
+    productId: typeof f.productId === 'string' ? f.productId.slice(0, 80) : ''
+  };
+}
+
 function fsNormalizeProject(p) {
   if (!p || typeof p !== 'object') return null;
   const chats = {};
@@ -102,6 +122,7 @@ function fsNormalizeProject(p) {
     updatedAt: Number(p.updatedAt) > 0 ? Number(p.updatedAt) : created,
     lastMode: FS_MODES.indexOf(p.lastMode) !== -1 ? p.lastMode : 'imagem',
     lastImage: fsNormalizeLastImage(p.lastImage),
+    flow: fsNormalizeFlow(p.flow),
     chats
   };
 }
@@ -109,7 +130,7 @@ function fsNormalizeProject(p) {
 function fsLoadProjects() {
   try {
     const saved = JSON.parse(localStorage.getItem(FS_PROJECTS_KEY) || 'null');
-    if (Array.isArray(saved) && saved.length) return saved.map(fsNormalizeProject).filter(Boolean);
+    if (Array.isArray(saved)) return saved.map(fsNormalizeProject).filter(Boolean);
   } catch (e) {}
   return [
     { id: 'p1', title: 'Sérum Facial — vídeo UGC' },
@@ -197,21 +218,51 @@ function fsMaybeNameProject(text) {
 function renderFsProjects() {
   const grid = document.getElementById('fs-project-grid');
   if (!grid) return;
+  const trash = '<svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>';
   grid.innerHTML =
-    `<div class="fs-new-project-card" data-click="fsCreateProject" role="button" tabindex="0">
+    `<button type="button" class="fs-new-project-card" data-click="fsCreateProject">
       <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       <span>Novo projeto</span>
-    </div>` +
+    </button>` +
     fsProjects.map(p => {
       const n = fsProjectMessageCount(p);
+      const title = fsEscape(p.title);
+      const args = fsEscape(JSON.stringify([String(p.id)]));
       const meta2 = n
-        ? `<div class="fs-project-card-meta">${n} ${n === 1 ? 'mensagem' : 'mensagens'} · ${fsEscape(fsDayLabel(p.updatedAt))}, ${fsEscape(fsTimeStr(p.updatedAt))}</div>`
+        ? `<span class="fs-project-card-meta">${n} ${n === 1 ? 'mensagem' : 'mensagens'} · ${fsEscape(fsDayLabel(p.updatedAt))}, ${fsEscape(fsTimeStr(p.updatedAt))}</span>`
         : '';
-      return `<div class="fs-project-card" data-click="fsOpenProject" data-args="${fsEscape(JSON.stringify([String(p.id)]))}" role="button" tabindex="0">
-      <div class="fs-project-card-title">${fsEscape(p.title)}</div>
-      <div class="fs-project-card-meta">Estúdio Livre</div>${meta2}
+      return `<div class="fs-project-item">
+      <button type="button" class="fs-project-card" data-click="fsOpenProject" data-args="${args}">
+        <span class="fs-project-card-title">${title}</span>
+        <span class="fs-project-card-meta">Estúdio Livre</span>${meta2}
+      </button>
+      <button type="button" class="fs-project-delete" data-click="fsDeleteProject" data-args="${args}" aria-label="Apagar chat ${title}" title="Apagar chat">${trash}</button>
     </div>`;
     }).join('');
+}
+
+function fsSyncChatLayout() {
+  const tab = document.getElementById('tab-freestudio');
+  const view = document.getElementById('fs-chat-view');
+  const chatOpen = !!(tab && view && fsActiveProject && view.style.display !== 'none');
+  if (tab) tab.classList.toggle('fs-chat-open', chatOpen);
+  document.body.classList.toggle('fs-chat-open', chatOpen && !!tab && tab.classList.contains('active'));
+}
+
+function fsDeleteProject(id) {
+  const p = fsProjects.find(x => x.id === String(id));
+  if (!p) return;
+  showConfirm('Apagar o chat "' + p.title + '"? Todas as mensagens deste projeto serão removidas e não dá para desfazer.', () => {
+    if (fsActiveProject && fsActiveProject.id === p.id) fsBackToProjects();
+    fsProjects = fsProjects.filter(x => x.id !== p.id);
+    fsSaveProjects();
+    renderFsProjects();
+    fsToast('Chat apagado');
+  });
+}
+
+function fsDeleteActiveProject() {
+  if (fsActiveProject) fsDeleteProject(fsActiveProject.id);
 }
 
 function fsCreateProject() {
@@ -228,15 +279,18 @@ function fsOpenProject(id) {
   document.getElementById('fs-projects-view').style.display = 'none';
   document.getElementById('fs-chat-view').style.display = 'flex';
   document.getElementById('fs-chat-title').textContent = fsActiveProject.title;
+  fsSyncChatLayout();
   fsSetMode(fsActiveProject.lastMode || 'imagem');
 }
 
 function fsBackToProjects() {
   fsFlowId++;
   fsHideTyping();
+  fsStopQuotaClock();
   fsActiveProject = null;
   document.getElementById('fs-chat-view').style.display = 'none';
   document.getElementById('fs-projects-view').style.display = 'block';
+  fsSyncChatLayout();
   renderFsProjects();
 }
 
@@ -435,11 +489,16 @@ function fsSetMode(mode) {
   const history = fsChatHistory(mode);
   const hasHistory = history.length > 0;
   if (hasHistory) fsRestoreChat(history);
+  fsStopQuotaClock();
+  fsRenderQuota();
+  const flowState = fsActiveProject && fsActiveProject.flow && fsActiveProject.flow.mode === mode ? fsActiveProject.flow : null;
 
   if (mode === 'imagem') {
     fsImgAwaiting = false;
     fsImgOtherMode = false;
-    if (hasHistory) {
+    if (flowState && fsResumeImageFlow(flowState)) {
+      fsToast('Continuando de onde você parou');
+    } else if (hasHistory) {
       fsImgPhase = 'idle';
       inputRow.style.display = 'none';
       if (fsRestoreImageState()) {
@@ -453,7 +512,9 @@ function fsSetMode(mode) {
     }
   } else if (mode === 'video') {
     document.getElementById('fs-chat-input').placeholder = 'Escreva sua mensagem...';
-    if (hasHistory) {
+    if (flowState && fsResumeVideoFlow(flowState)) {
+      fsToast('Continuando de onde você parou');
+    } else if (hasHistory) {
       fsVideoPhase = 'idle';
       inputRow.style.display = 'none';
       fsQuickReplies(['Novo prompt de vídeo'], () => { if (!fsGuardLimit()) fsStartVideoFlow(); });
@@ -466,6 +527,8 @@ function fsSetMode(mode) {
     styleInput.style.display = 'block';
     extractBtn.style.display = 'inline-flex';
     fsResetUpload();
+    fsRefreshQuota();
+    fsStartQuotaClock();
     if (!hasHistory) fsBotSay('Envie o vídeo viral que você quer usar de referência e descreva o estilo dele. A IA "extrai" o movimento e te devolve um prompt pronto.');
   }
 }
@@ -486,6 +549,79 @@ const FS_VIDEO_QUESTIONS = [
     q: 'Tem algum detalhe mais específico que não pode faltar? Cenário, iluminação, ângulo de câmera, roupa, cores, expressão... Escreva ou pule.' }
 ];
 
+function fsLastBotIs(mode, text) {
+  const h = fsChatHistory(mode);
+  const last = h[h.length - 1];
+  return !!last && last.who === 'bot' && last.content === text;
+}
+
+function fsPersistFlow() {
+  if (!fsActiveProject) return;
+  let flow = null;
+  if (fsMode === 'imagem' && (fsImgPhase === 'avatar' || fsImgPhase === 'questions')) {
+    flow = {
+      mode: 'imagem', phase: fsImgPhase, step: fsImgStep, answers: Object.assign({}, fsImgAnswers),
+      avatarId: fsImgAvatar ? String(fsImgAvatar.id) : '', productId: fsImgProduct ? String(fsImgProduct.id) : ''
+    };
+  } else if (fsMode === 'video' && (fsVideoPhase === 'avatar' || fsVideoPhase === 'questions')) {
+    flow = {
+      mode: 'video', phase: fsVideoPhase, step: fsVideoStep, answers: Object.assign({}, fsVideoAnswers),
+      avatarId: fsSelectedVideoAvatar ? String(fsSelectedVideoAvatar.id) : '', productId: ''
+    };
+  } else if (fsActiveProject.flow && fsActiveProject.flow.mode === fsMode) {
+    fsActiveProject.flow = null;
+    fsSaveProjects();
+    return;
+  } else {
+    return;
+  }
+  fsActiveProject.flow = fsNormalizeFlow(flow);
+  fsSaveProjects();
+}
+
+function fsResumeVideoFlow(flow) {
+  fsVideoPhase = flow.phase;
+  fsVideoStep = flow.step;
+  fsVideoAnswers = Object.assign({}, flow.answers);
+  fsSelectedVideoAvatar = flow.avatarId ? (fsAllAvatars().find(x => String(x.id) === flow.avatarId) || null) : null;
+  fsAwaitingAnswer = false;
+  fsResetVideoInput();
+  fsSetInputMode('text');
+  const inputRow = document.getElementById('fs-chat-inputrow');
+  if (flow.phase === 'avatar') {
+    inputRow.style.display = 'none';
+    fsAskAvatarStep();
+  } else {
+    inputRow.style.display = 'flex';
+    fsAskNextVideoQuestion(true);
+  }
+  return true;
+}
+
+function fsResumeImageFlow(flow) {
+  fsImgPhase = flow.phase;
+  fsImgStep = flow.step;
+  fsImgAnswers = Object.assign({}, flow.answers);
+  fsImgAvatar = flow.avatarId ? (fsAllAvatars().find(x => String(x.id) === flow.avatarId) || null) : null;
+  fsImgProduct = flow.productId ? (fsAllProducts().find(x => String(x.id) === flow.productId) || null) : null;
+  fsImgTone = null;
+  fsImgVariant = 0;
+  fsImgVersion = 0;
+  fsImgAwaiting = false;
+  fsImgOtherMode = false;
+  fsResetVideoInput();
+  fsSetInputMode('text');
+  const inputRow = document.getElementById('fs-chat-inputrow');
+  if (flow.phase === 'avatar') {
+    inputRow.style.display = 'none';
+    fsAskAvatarStep(fsChooseImageAvatar);
+  } else {
+    inputRow.style.display = 'flex';
+    fsAskNextImageQuestion(true);
+  }
+  return true;
+}
+
 function fsStartVideoFlow() {
   fsFlowId++;
   document.getElementById('fs-quick-replies').innerHTML = '';
@@ -496,6 +632,7 @@ function fsStartVideoFlow() {
   fsAwaitingAnswer = false;
   fsResetVideoInput();
   document.getElementById('fs-chat-inputrow').style.display = 'none';
+  fsPersistFlow();
   fsBotSay('Vamos montar seu prompt de vídeo! Primeiro, escolha um avatar pra estrelar (ou pule se preferir não usar avatar).', fsAskAvatarStep);
 }
 
@@ -528,16 +665,15 @@ function fsAskAvatarStep(choose) {
     return;
   }
   const gridHtml = '<div class="fs-avatar-step-grid">' + list.map((a, i) =>
-    '<div class="fs-avatar-step-card" data-idx="' + i + '" role="button" tabindex="0">' +
-    '<div class="fs-avatar-step-photo">' + fsAvatarPhotoHtml(a) + '</div>' +
-    '<div class="fs-avatar-step-name">' + fsEscape(a.name) + '</div></div>'
+    '<button type="button" class="fs-avatar-step-card" data-idx="' + i + '">' +
+    '<span class="fs-avatar-step-photo">' + fsAvatarPhotoHtml(a) + '</span>' +
+    '<span class="fs-avatar-step-name">' + fsEscape(a.name) + '</span></button>'
   ).join('') + '</div>';
   const msg = fsAddMsg('bot', gridHtml, { raw: true, noSave: true });
   if (msg) {
     msg.querySelectorAll('.fs-avatar-step-card').forEach(card => {
       const pick = () => choosePick(list[Number(card.dataset.idx)]);
       card.addEventListener('click', pick);
-      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
     });
   }
   fsQuickReplies(['Continuar sem avatar'], () => choosePick(null));
@@ -562,6 +698,7 @@ function fsChooseVideoAvatar(avatar) {
 
   fsVideoPhase = 'questions';
   fsVideoStep = 0;
+  fsPersistFlow();
   document.getElementById('fs-chat-inputrow').style.display = 'flex';
   const flow = fsFlowId;
   setTimeout(() => { if (flow === fsFlowId) fsAskNextVideoQuestion(); }, 250);
@@ -580,7 +717,7 @@ function fsResetVideoInput() {
   }
 }
 
-function fsAskNextVideoQuestion() {
+function fsAskNextVideoQuestion(resume) {
   const quick = document.getElementById('fs-quick-replies');
   quick.innerHTML = '';
   fsAwaitingAnswer = false;
@@ -590,7 +727,7 @@ function fsAskNextVideoQuestion() {
     return;
   }
   const step = FS_VIDEO_QUESTIONS[fsVideoStep];
-  fsBotSay(step.q, () => {
+  const arm = () => {
     fsAwaitingAnswer = true;
     if (step.type === 'choice') {
       fsSetInputMode('text');
@@ -601,7 +738,8 @@ function fsAskNextVideoQuestion() {
     } else {
       fsSetInputMode('text');
     }
-  });
+  };
+  if (resume && fsLastBotIs('video', step.q)) arm(); else fsBotSay(step.q, arm);
 }
 
 function fsHandleAnswer(text, skipped) {
@@ -630,6 +768,7 @@ function fsHandleAnswer(text, skipped) {
   if (step) fsVideoAnswers[step.key] = fsOtherMode ? value.slice(0, FS_OTHER_MAX_CHARS) : value;
   if (step && step.key === 'produto') fsMaybeNameProject(value);
   fsVideoStep++;
+  fsPersistFlow();
   fsSetInputMode('text');
   const flowNext = fsFlowId;
   setTimeout(() => { if (flowNext === fsFlowId) fsAskNextVideoQuestion(); }, 300);
@@ -658,6 +797,7 @@ function fsAvatarLine(avatar) {
 
 function fsFinishVideoPrompt() {
   fsVideoPhase = 'done';
+  fsPersistFlow();
   const a = fsVideoAnswers;
   const avatarLine = fsAvatarLine(fsSelectedVideoAvatar);
   const detalhesLine = a.detalhes ? `\nAdditional details: ${a.detalhes}.` : '';
@@ -698,7 +838,7 @@ let fsExtractFile = null;
 let fsExtracting = false;
 
 const FS_VIDEO_EXTS = ['mp4', 'mov', 'webm', 'mkv', 'avi', 'm4v', '3gp', 'wmv'];
-const FS_UPLOAD_EMPTY_HTML = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><div>Clique para enviar o vídeo de referência</div>';
+const FS_UPLOAD_EMPTY_HTML = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span>Clique para enviar o vídeo de referência</span>';
 
 function fsResetUpload() {
   fsExtractFile = null;
@@ -751,16 +891,85 @@ async function fsHandleUploadChange(e) {
   const zone = document.getElementById('fs-upload-zone');
   fsExtractFile = file;
   zone.classList.add('has-file');
-  zone.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><div>${fsEscape(file.name)}</div>`;
+  zone.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span>${fsEscape(file.name)}</span>`;
 }
 
 function fsFormatWait(sec) {
   return sec < 60 ? `${sec}s` : `${Math.ceil(sec / 60)} min`;
 }
 
+let fsQuota = null;
+let fsQuotaTimer = null;
+
+function fsQuotaClock(sec) {
+  const t = Math.max(0, Math.ceil(sec));
+  return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0');
+}
+
+function fsRenderQuota() {
+  const el = document.getElementById('fs-extract-quota');
+  const btn = document.getElementById('fs-extract-btn');
+  if (!el) return;
+  if (!fsQuota || fsMode !== 'extrair' || !fsActiveProject) {
+    el.hidden = true;
+    el.removeAttribute('data-state');
+    return;
+  }
+  let wait = fsQuota.resetAt ? Math.max(0, (fsQuota.resetAt - Date.now()) / 1000) : 0;
+  if (fsQuota.resetAt && wait <= 0 && fsQuota.remaining < fsQuota.limit) {
+    if (fsQuota.remaining <= 0) {
+      fsQuota.resetAt = 0;
+      fsRefreshQuota();
+    } else {
+      fsQuota.remaining = fsQuota.limit;
+      fsQuota.resetAt = 0;
+    }
+    wait = 0;
+  }
+  const remaining = fsQuota.remaining;
+  let text;
+  let state;
+  if (remaining <= 0) {
+    state = 'blocked';
+    text = wait > 0 ? 'Limite de extrações atingido. Libera em ' + fsQuotaClock(wait) : 'Limite de extrações atingido. Verificando…';
+  } else if (fsQuota.limit && remaining <= Math.max(1, Math.floor(fsQuota.limit * 0.4))) {
+    state = 'low';
+    text = 'Restam só ' + remaining + (fsQuota.limit ? ' de ' + fsQuota.limit : '') + (remaining === 1 ? ' extração' : ' extrações') + (wait > 0 ? ' · renova em ' + fsQuotaClock(wait) : '');
+  } else {
+    state = 'ok';
+    text = 'Extrações: ' + remaining + (fsQuota.limit ? ' de ' + fsQuota.limit : '') + ' disponíveis' + (wait > 0 ? ' · renova em ' + fsQuotaClock(wait) : '');
+  }
+  el.hidden = false;
+  el.dataset.state = state;
+  el.textContent = text;
+  if (btn && !fsExtracting) btn.disabled = remaining <= 0;
+}
+
+function fsStartQuotaClock() {
+  fsStopQuotaClock();
+  fsQuotaTimer = setInterval(fsRenderQuota, 1000);
+}
+
+function fsStopQuotaClock() {
+  if (fsQuotaTimer) clearInterval(fsQuotaTimer);
+  fsQuotaTimer = null;
+}
+
+async function fsRefreshQuota() {
+  if (!window.NexSession || typeof NexSession.getExtractQuota !== 'function') return;
+  const q = await NexSession.getExtractQuota();
+  if (!q) return;
+  fsQuota = { limit: q.limit, remaining: q.remaining, resetAt: q.resetSec > 0 ? Date.now() + q.resetSec * 1000 : 0 };
+  fsRenderQuota();
+}
+
 async function fsRunExtract() {
   if (fsExtracting) return;
   if (!fsExtractFile) { fsToast('Envie um vídeo primeiro'); return; }
+  if (fsQuota && fsQuota.remaining <= 0 && fsQuota.resetAt > Date.now()) {
+    fsToast('Limite atingido. Libera em ' + fsQuotaClock((fsQuota.resetAt - Date.now()) / 1000));
+    return;
+  }
   if (fsGuardLimit()) return;
   const file = fsExtractFile;
   const flow = fsFlowId;
@@ -779,6 +988,18 @@ async function fsRunExtract() {
     if (btn) btn.disabled = false;
   }
   if (flow !== fsFlowId) return;
+  if (gate.ok && typeof gate.remaining === 'number') {
+    const keepReset = fsQuota && fsQuota.resetAt > Date.now() ? fsQuota.resetAt : 0;
+    fsQuota = {
+      limit: typeof gate.limit === 'number' ? gate.limit : (fsQuota ? fsQuota.limit : 0),
+      remaining: gate.remaining,
+      resetAt: gate.resetSec > 0 ? Date.now() + gate.resetSec * 1000 : keepReset
+    };
+  }
+  if (!gate.ok && gate.rateLimited) {
+    fsQuota = { limit: fsQuota ? fsQuota.limit : 0, remaining: 0, resetAt: Date.now() + (gate.retryAfterSec || 60) * 1000 };
+  }
+  fsRenderQuota();
   if (!gate.ok) {
     if (gate.rateLimited) {
       fsBotSay(`Você atingiu o limite de extrações por agora. Tente novamente em ${fsFormatWait(gate.retryAfterSec)}.`);
@@ -975,6 +1196,7 @@ function fsStartImageFlow() {
   fsImgAwaiting = false;
   fsImgOtherMode = false;
   if (fsActiveProject) { fsActiveProject.lastImage = null; fsSaveProjects(); }
+  fsPersistFlow();
   fsResetVideoInput();
   fsSetInputMode('text');
   document.getElementById('fs-chat-inputrow').style.display = 'none';
@@ -1000,12 +1222,13 @@ function fsChooseImageAvatar(avatar) {
   }
   fsImgPhase = 'questions';
   fsImgStep = 0;
+  fsPersistFlow();
   document.getElementById('fs-chat-inputrow').style.display = 'flex';
   const flow = fsFlowId;
   setTimeout(() => { if (flow === fsFlowId) fsAskNextImageQuestion(); }, 250);
 }
 
-function fsAskNextImageQuestion() {
+function fsAskNextImageQuestion(resume) {
   if (fsMode !== 'imagem' || fsImgPhase !== 'questions') return;
   document.getElementById('fs-quick-replies').innerHTML = '';
   fsImgAwaiting = false;
@@ -1016,7 +1239,7 @@ function fsAskNextImageQuestion() {
     return;
   }
   const step = FS_IMG_QUESTIONS[fsImgStep];
-  fsBotSay(step.q, () => {
+  const arm = () => {
     fsImgAwaiting = true;
     if (step.type === 'choice') {
       fsSetInputMode('text');
@@ -1031,7 +1254,8 @@ function fsAskNextImageQuestion() {
     } else {
       fsSetInputMode('text');
     }
-  });
+  };
+  if (resume && fsLastBotIs('imagem', step.q)) arm(); else fsBotSay(step.q, arm);
 }
 
 function fsShowProductPicker() {
@@ -1040,16 +1264,15 @@ function fsShowProductPicker() {
   document.getElementById('fs-quick-replies').innerHTML = '';
   if (!list.length) { fsToast('Nenhum produto no catálogo'); return; }
   const gridHtml = '<div class="fs-avatar-step-grid fs-product-pick-grid">' + list.map((p, i) =>
-    '<div class="fs-avatar-step-card" data-idx="' + i + '" role="button" tabindex="0">' +
-    '<div class="fs-avatar-step-photo">' + fsAvatarPhotoHtml({ img: p.img, name: p.name }) + '</div>' +
-    '<div class="fs-avatar-step-name">' + fsEscape(p.name) + '</div></div>'
+    '<button type="button" class="fs-avatar-step-card" data-idx="' + i + '">' +
+    '<span class="fs-avatar-step-photo">' + fsAvatarPhotoHtml({ img: p.img, name: p.name }) + '</span>' +
+    '<span class="fs-avatar-step-name">' + fsEscape(p.name) + '</span></button>'
   ).join('') + '</div>';
   const msg = fsAddMsg('bot', gridHtml, { raw: true, noSave: true });
   if (msg) {
     msg.querySelectorAll('.fs-avatar-step-card').forEach(card => {
       const pick = () => fsPickImageProduct(list[Number(card.dataset.idx)]);
       card.addEventListener('click', pick);
-      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
     });
   }
 }
@@ -1094,6 +1317,7 @@ function fsHandleImageAnswer(text, skipped) {
     fsMaybeNameProject(value);
   }
   fsImgStep++;
+  fsPersistFlow();
   fsSetInputMode('text');
   const flow = fsFlowId;
   setTimeout(() => { if (flow === fsFlowId) fsAskNextImageQuestion(); }, 300);
@@ -1114,6 +1338,7 @@ function fsShowImageActions() {
 
 function fsFinishImagePrompt() {
   fsImgPhase = 'done';
+  fsPersistFlow();
   fsBotSay('Prontinho! Seu prompt de imagem está pronto. Se quiser, ajuste com os botões abaixo.', () => {
     fsEmitImagePrompt();
     fsShowImageActions();
@@ -1290,15 +1515,14 @@ function renderViralizeAvatars() {
   const custom = list.filter(a => a.custom);
   const builtin = list.filter(a => !a.custom);
   const ordered = custom.concat(builtin);
-  grid.innerHTML = ordered.map((a, i) => `<div class="viralize-avatar-card${currentId != null && String(a.id) === currentId ? ' selected' : ''}" data-id="${fsEscape(String(a.id))}" data-idx="${i}" role="button" tabindex="0">
-      <div class="viralize-avatar-photo">${fsAvatarPhotoHtml(a)}</div>
-      <div class="viralize-avatar-name">${fsEscape(a.name)}</div>
-      <div class="viralize-avatar-nicho">${fsEscape(a.nicho || '')}</div>
-    </div>`).join('');
+  grid.innerHTML = ordered.map((a, i) => `<button type="button" class="viralize-avatar-card${currentId != null && String(a.id) === currentId ? ' selected' : ''}" data-id="${fsEscape(String(a.id))}" data-idx="${i}">
+      <span class="viralize-avatar-photo">${fsAvatarPhotoHtml(a)}</span>
+      <span class="viralize-avatar-name">${fsEscape(a.name)}</span>
+      <span class="viralize-avatar-nicho">${fsEscape(a.nicho || '')}</span>
+    </button>`).join('');
   grid.querySelectorAll('.viralize-avatar-card').forEach(card => {
     const pick = () => selectViralizeAvatar(ordered[Number(card.dataset.idx)]);
     card.addEventListener('click', pick);
-    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
   });
   viralizeRenderLimitUI();
 }
@@ -1392,6 +1616,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const sendBtn = document.getElementById('fs-send-btn');
   if (sendBtn) sendBtn.addEventListener('click', fsSendMessage);
 
+  if (chatInput) {
+    chatInput.addEventListener('focus', () => {
+      setTimeout(() => {
+        const body = document.getElementById('fs-chat-body');
+        if (body) body.scrollTop = body.scrollHeight;
+      }, 280);
+    });
+  }
+  if (window.visualViewport) {
+    const syncViewport = () => document.documentElement.style.setProperty('--vvh', window.visualViewport.height + 'px');
+    window.visualViewport.addEventListener('resize', syncViewport);
+    syncViewport();
+  }
   const uploadZone = document.getElementById('fs-upload-zone');
   if (uploadZone) uploadZone.addEventListener('click', fsHandleUploadClick);
   const fileInput = document.getElementById('fs-video-file-input');
