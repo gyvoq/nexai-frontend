@@ -2,6 +2,9 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src https://nexai-backend-production-5e36.up.railway.app; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
 <title>Viralyze — Admin</title>
@@ -225,7 +228,7 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
     <div class="brand">Viralyze admin</div>
     <label for="secret-input">Senha de administrador</label>
     <input type="password" class="input" id="secret-input" autocomplete="current-password" autofocus>
-    <button class="btn-primary" onclick="doLogin()">Entrar</button>
+    <button class="btn-primary" data-click="doLogin">Entrar</button>
     <div class="login-error" id="login-error" role="alert"></div>
   </div>
 </div>
@@ -233,7 +236,7 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
 <div id="main">
   <header class="header">
     <div class="brand">Viralyze admin</div>
-    <button class="link-btn" onclick="doLogout()">Sair</button>
+    <button class="link-btn" data-click="doLogout">Sair</button>
   </header>
 
   <div class="content">
@@ -244,15 +247,15 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
         <div class="field" id="validity-field">
           <span>Validade</span>
           <div class="dd" id="validity-dd">
-            <button type="button" class="dd-btn" onclick="toggleDD(event)">
+            <button type="button" class="dd-btn" data-click="toggleDD" data-stop data-args='["$el"]'>
               <span id="validity-label">1 mês</span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
-            <div class="dd-menu" onclick="event.stopPropagation()">
-              <button type="button" class="dd-item active" onclick="pickValidity(this,1)">1 mês</button>
-              <button type="button" class="dd-item" onclick="pickValidity(this,3)">3 meses</button>
-              <button type="button" class="dd-item" onclick="pickValidity(this,6)">6 meses</button>
-              <button type="button" class="dd-item" onclick="pickValidity(this,12)">12 meses</button>
+            <div class="dd-menu" data-click="noop" data-stop>
+              <button type="button" class="dd-item active" data-click="pickValidity" data-args='["$el",1]'>1 mês</button>
+              <button type="button" class="dd-item" data-click="pickValidity" data-args='["$el",3]'>3 meses</button>
+              <button type="button" class="dd-item" data-click="pickValidity" data-args='["$el",6]'>6 meses</button>
+              <button type="button" class="dd-item" data-click="pickValidity" data-args='["$el",12]'>12 meses</button>
             </div>
           </div>
         </div>
@@ -261,21 +264,21 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
           <div class="field">
             <span>Início</span>
             <div class="dd">
-              <button type="button" class="dd-btn" onclick="openCal('start',event)">
+              <button type="button" class="dd-btn" data-click="openCal" data-stop data-args='["start","$el"]'>
                 <span class="ph" id="label-start">Selecionar</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="16" y1="3" x2="16" y2="7"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
               </button>
-              <div class="cal" id="cal-start" onclick="event.stopPropagation()"></div>
+              <div class="cal" id="cal-start" data-click="noop" data-stop></div>
             </div>
           </div>
           <div class="field">
             <span>Fim</span>
             <div class="dd">
-              <button type="button" class="dd-btn" onclick="openCal('end',event)">
+              <button type="button" class="dd-btn" data-click="openCal" data-stop data-args='["end","$el"]'>
                 <span class="ph" id="label-end">Selecionar</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="16" y1="3" x2="16" y2="7"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
               </button>
-              <div class="cal" id="cal-end" onclick="event.stopPropagation()"></div>
+              <div class="cal" id="cal-end" data-click="noop" data-stop></div>
             </div>
           </div>
         </div>
@@ -283,24 +286,24 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
         <div class="field">
           <span>Quantidade</span>
           <div class="qty">
-            <button type="button" onclick="changeQty(-1)" aria-label="Diminuir">−</button>
+            <button type="button" aria-label="Diminuir" data-click="changeQty" data-args='[-1]'>−</button>
             <output id="qty-display">1</output>
-            <button type="button" onclick="changeQty(1)" aria-label="Aumentar">+</button>
+            <button type="button" aria-label="Aumentar" data-click="changeQty" data-args='[1]'>+</button>
           </div>
         </div>
 
         <label class="toggle">
-          <input type="checkbox" id="custom-toggle" onchange="setDateMode(this.checked?'custom':'auto')">
+          <input type="checkbox" id="custom-toggle" data-change="onDateModeChange" data-args='["$el"]'>
           Escolher datas
         </label>
 
-        <button class="btn-primary" id="create-btn" onclick="createLicenses()">Criar</button>
+        <button class="btn-primary" id="create-btn" data-click="createLicenses">Criar</button>
       </div>
 
       <div class="created" id="created-keys-box">
         <div class="created-head">
           <span id="created-title">Licenças criadas</span>
-          <button class="link-btn" onclick="copyAllKeys()">Copiar todas</button>
+          <button class="link-btn" data-click="copyAllKeys">Copiar todas</button>
         </div>
         <div class="keys" id="keys-list"></div>
       </div>
@@ -308,15 +311,15 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
 
     <div class="toolbar">
       <div class="tabs" id="tabs">
-        <button class="tab active" data-filter="all" onclick="setFilter('all',this)">Todas <span class="count" id="n-all">0</span></button>
-        <button class="tab" data-filter="active" onclick="setFilter('active',this)"><span class="dot c-active"></span>Ativas <span class="count" id="n-active">0</span></button>
-        <button class="tab" data-filter="unused" onclick="setFilter('unused',this)"><span class="dot c-unused"></span>Não usadas <span class="count" id="n-unused">0</span></button>
-        <button class="tab" data-filter="expired" onclick="setFilter('expired',this)"><span class="dot c-expired"></span>Expiradas <span class="count" id="n-expired">0</span></button>
-        <button class="tab" data-filter="revoked" onclick="setFilter('revoked',this)"><span class="dot c-revoked"></span>Revogadas <span class="count" id="n-revoked">0</span></button>
+        <button class="tab active" data-filter="all" data-click="setFilter" data-args='["all","$el"]'>Todas <span class="count" id="n-all">0</span></button>
+        <button class="tab" data-filter="active" data-click="setFilter" data-args='["active","$el"]'><span class="dot c-active"></span>Ativas <span class="count" id="n-active">0</span></button>
+        <button class="tab" data-filter="unused" data-click="setFilter" data-args='["unused","$el"]'><span class="dot c-unused"></span>Não usadas <span class="count" id="n-unused">0</span></button>
+        <button class="tab" data-filter="expired" data-click="setFilter" data-args='["expired","$el"]'><span class="dot c-expired"></span>Expiradas <span class="count" id="n-expired">0</span></button>
+        <button class="tab" data-filter="revoked" data-click="setFilter" data-args='["revoked","$el"]'><span class="dot c-revoked"></span>Revogadas <span class="count" id="n-revoked">0</span></button>
       </div>
       <div class="search-row">
-        <input type="search" class="input search" placeholder="Buscar chave" autocomplete="off" autocapitalize="off" spellcheck="false" oninput="resetVisible();renderTable()" id="search-input">
-        <button class="icon-btn" onclick="loadLicenses()">Atualizar</button>
+        <input type="search" class="input search" placeholder="Buscar chave" autocomplete="off" autocapitalize="off" spellcheck="false" id="search-input" data-input="onSearchInput">
+        <button class="icon-btn" data-click="loadLicenses">Atualizar</button>
       </div>
     </div>
 
@@ -329,7 +332,7 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
           <tbody id="licenses-tbody"><tr><td colspan="5" class="empty">Carregando…</td></tr></tbody>
         </table>
       </div>
-      <div class="more-wrap" id="more-wrap"><button type="button" class="btn-ghost" id="more-btn" onclick="showMore()"></button></div>
+      <div class="more-wrap" id="more-wrap"><button type="button" class="btn-ghost" id="more-btn" data-click="showMore"></button></div>
     </div>
   </div>
 </div>
@@ -341,265 +344,12 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
     <div class="modal-title" id="confirm-title"></div>
     <div class="modal-msg" id="confirm-msg"></div>
     <div class="modal-btns">
-      <button class="btn-ghost" onclick="closeConfirm()">Cancelar</button>
+      <button class="btn-ghost" data-click="closeConfirm">Cancelar</button>
       <button class="btn-confirm" id="confirm-ok">Confirmar</button>
     </div>
   </div>
 </div>
 
-<script>
-const API = 'https://nexai-backend-production-5e36.up.railway.app';
-let adminSecret='', allLicenses=[], currentFilter='all', createdKeys=[], qty=1, dateMode='auto', validity=1;
-
-function doLogin(){
-  const val=document.getElementById('secret-input').value.trim();
-  if(!val){showErr('Digite a senha.');return;}
-  adminSecret=val;
-  fetch(`${API}/api/admin/licenses`,{headers:{'X-Admin-Secret':adminSecret}})
-    .then(r=>{
-      if(r.status===401||r.status===403){showErr('Senha incorreta.');adminSecret='';}
-      else if(r.ok){r.json().then(d=>{
-        allLicenses=d;
-        document.getElementById('login-screen').style.display='none';
-        document.getElementById('main').style.display='block';
-        showErr('');
-        render();
-      });}
-      else showErr('Erro ao conectar. Verifique se o servidor está no ar.');
-    }).catch(()=>showErr('Servidor offline. Verifique o backend.'));
-}
-function showErr(m){document.getElementById('login-error').textContent=m;}
-function doLogout(){
-  adminSecret='';
-  document.getElementById('login-screen').style.display='flex';
-  document.getElementById('main').style.display='none';
-  document.getElementById('secret-input').value='';
-}
-document.getElementById('secret-input').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
-
-function setDateMode(mode){
-  dateMode=mode;
-  document.getElementById('custom-dates').classList.toggle('visible',mode==='custom');
-  document.getElementById('validity-field').classList.toggle('hidden',mode==='custom');
-}
-
-function loadLicenses(){
-  fetch(`${API}/api/admin/licenses`,{headers:{'X-Admin-Secret':adminSecret}})
-    .then(r=>r.json())
-    .then(d=>{allLicenses=d;render();showToast('Lista atualizada');})
-    .catch(()=>showToast('Erro ao carregar'));
-}
-function render(){renderTable();updateCounts();}
-
-function getStatus(l){
-  if(l.revoked)return 'revoked';
-  if(!l.activated)return 'unused';
-  if(l.expired)return 'expired';
-  return 'active';
-}
-function updateCounts(){
-  const c={all:allLicenses.length,active:0,unused:0,expired:0,revoked:0};
-  allLicenses.forEach(l=>c[getStatus(l)]++);
-  Object.keys(c).forEach(k=>document.getElementById('n-'+k).textContent=c[k]);
-}
-
-const MONTHS=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-const cal={start:{value:'',view:null},end:{value:'',view:null}};
-const pad=n=>String(n).padStart(2,'0');
-const toIso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-const fromIso=v=>{const [y,m,d]=v.split('-').map(Number);return new Date(y,m-1,d);};
-
-function closePopups(){document.querySelectorAll('.dd.open').forEach(d=>d.classList.remove('open'));}
-function toggleDD(e){
-  e.stopPropagation();
-  const dd=e.currentTarget.parentElement;
-  const open=!dd.classList.contains('open');
-  closePopups();
-  dd.classList.toggle('open',open);
-}
-function pickValidity(el,v){
-  validity=v;
-  document.getElementById('validity-label').textContent=el.textContent;
-  el.parentElement.querySelectorAll('.dd-item').forEach(i=>i.classList.toggle('active',i===el));
-  closePopups();
-}
-function openCal(which,e){
-  e.stopPropagation();
-  const dd=e.currentTarget.parentElement;
-  const open=!dd.classList.contains('open');
-  closePopups();
-  if(!open)return;
-  const c=cal[which];
-  const base=c.value?fromIso(c.value):(which==='end'&&cal.start.value?fromIso(cal.start.value):new Date());
-  c.view=new Date(base.getFullYear(),base.getMonth(),1);
-  renderCal(which);
-  dd.classList.add('open');
-}
-function navCal(which,dir){
-  const v=cal[which].view;
-  cal[which].view=new Date(v.getFullYear(),v.getMonth()+dir,1);
-  renderCal(which);
-}
-function renderCal(which){
-  const c=cal[which];
-  const y=c.view.getFullYear(), m=c.view.getMonth();
-  const offset=new Date(y,m,1).getDay();
-  const days=new Date(y,m+1,0).getDate();
-  const today=toIso(new Date());
-  let cells='';
-  for(let i=0;i<offset;i++)cells+='<span></span>';
-  for(let d=1;d<=days;d++){
-    const v=toIso(new Date(y,m,d));
-    const off=which==='end'&&cal.start.value&&v<=cal.start.value;
-    const cls='day'+(v===c.value?' sel':'')+(v===today?' today':'');
-    cells+=`<button type="button" class="${cls}" ${off?'disabled':''} onclick="pickDate('${which}','${v}')">${d}</button>`;
-  }
-  document.getElementById('cal-'+which).innerHTML=
-    `<div class="cal-head"><button type="button" class="cal-nav" onclick="navCal('${which}',-1)" aria-label="Mês anterior">‹</button><span>${MONTHS[m]} ${y}</span><button type="button" class="cal-nav" onclick="navCal('${which}',1)" aria-label="Próximo mês">›</button></div>`+
-    `<div class="cal-week">${['D','S','T','Q','Q','S','S'].map(x=>`<span>${x}</span>`).join('')}</div>`+
-    `<div class="cal-grid">${cells}</div>`;
-}
-function setLabel(which){
-  const el=document.getElementById('label-'+which);
-  const v=cal[which].value;
-  el.textContent=v?v.split('-').reverse().join('/'):'Selecionar';
-  el.classList.toggle('ph',!v);
-}
-function pickDate(which,v){
-  cal[which].value=v;
-  if(which==='start'&&cal.end.value&&cal.end.value<=v){cal.end.value='';setLabel('end');}
-  setLabel(which);
-  closePopups();
-}
-document.addEventListener('click',closePopups);
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closePopups();});
-
-function changeQty(d){
-  qty=Math.max(1,Math.min(50,qty+d));
-  document.getElementById('qty-display').textContent=qty;
-}
-
-async function createLicenses(){
-  const btn=document.getElementById('create-btn');
-  const body={validityMonths:validity};
-
-  if(dateMode==='custom'){
-    const s=cal.start.value;
-    const e=cal.end.value;
-    if(!s||!e){showToast('Preencha as datas de início e fim');return;}
-    if(new Date(e)<=new Date(s)){showToast('A data de fim deve ser depois do início');return;}
-    body.customStart=s; body.customEnd=e;
-    body.validityMonths=Math.max(1,Math.round((new Date(e)-new Date(s))/(1000*60*60*24*30)));
-  }
-
-  btn.disabled=true; btn.textContent='Criando…';
-  createdKeys=[];
-  try{
-    for(let i=0;i<qty;i++){
-      const r=await fetch(`${API}/api/admin/licenses`,{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Secret':adminSecret},body:JSON.stringify(body)});
-      if(r.ok){const d=await r.json();createdKeys.push(d.key);}
-    }
-  }catch(err){showToast('Erro ao criar licenças');}
-  btn.disabled=false; btn.textContent='Criar';
-
-  if(createdKeys.length){
-    const box=document.getElementById('created-keys-box');
-    document.getElementById('created-title').textContent=createdKeys.length===1?'Licença criada':`${createdKeys.length} licenças criadas`;
-    document.getElementById('keys-list').innerHTML=createdKeys.map(k=>`<button class="key-chip" onclick="copyText('${k}')" title="Copiar">${k}</button>`).join('');
-    box.style.display='block';
-    loadLicenses();
-  }
-}
-function copyAllKeys(){navigator.clipboard.writeText(createdKeys.join('\n')).then(()=>showToast('Chaves copiadas'));}
-function copyText(t){navigator.clipboard.writeText(t).then(()=>showToast('Chave copiada'));}
-
-function setFilter(f,el){
-  currentFilter=f;
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  el.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
-  resetVisible();
-  renderTable();
-}
-
-const PAGE_SIZE=20;
-let visibleCount=PAGE_SIZE;
-function resetVisible(){visibleCount=PAGE_SIZE;}
-function showMore(){visibleCount+=PAGE_SIZE;renderTable();}
-
-function renderTable(){
-  const q=(document.getElementById('search-input')?.value||'').toLowerCase().trim();
-  let list=allLicenses;
-  if(currentFilter!=='all')list=list.filter(l=>getStatus(l)===currentFilter);
-  if(q)list=list.filter(l=>l.key.toLowerCase().includes(q));
-
-  const tbody=document.getElementById('licenses-tbody');
-  const moreWrap=document.getElementById('more-wrap');
-  const moreBtn=document.getElementById('more-btn');
-  if(!list.length){tbody.innerHTML='<tr><td colspan="5" class="empty">Nenhuma licença encontrada</td></tr>';moreWrap.classList.remove('show');return;}
-  const total=list.length;
-  list=list.slice(0,visibleCount);
-  const remaining=total-list.length;
-  moreWrap.classList.toggle('show',remaining>0);
-  moreBtn.textContent=`Mostrar mais (${Math.min(PAGE_SIZE,remaining)} de ${remaining} restantes)`;
-
-  const fmt=iso=>iso?new Date(iso).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'}):'—';
-  const labels={active:'Ativa',unused:'Não usada',expired:'Expirada',revoked:'Revogada'};
-
-  tbody.innerHTML=list.map(l=>{
-    const s=getStatus(l);
-    const months=`${l.validityMonths} ${l.validityMonths===1?'mês':'meses'}`;
-    const revoke=s==='revoked'?'':`<button class="act act-revoke" onclick="confirmRevoke('${l.key}')">Revogar</button>`;
-    return `<tr>
-      <td class="td-key"><span class="key-cell">${l.key}<span class="sub">${months} · criada em ${fmt(l.createdAt)}</span></span></td>
-      <td class="td-status"><span class="status c-${s}"><span class="dot"></span><span style="color:var(--text)">${labels[s]}</span></span></td>
-      <td class="td-ativ date-cell"><span class="td-label">Ativada</span>${fmt(l.activatedAt)}</td>
-      <td class="td-exp date-cell"><span class="td-label">Expira</span>${fmt(l.expiresAt)}</td>
-      <td class="td-actions"><div class="actions">
-        <button class="act act-copy" onclick="copyText('${l.key}')">Copiar</button>
-        ${revoke}
-        <button class="act act-delete" onclick="confirmDelete('${l.key}')">Apagar</button>
-      </div></td>
-    </tr>`;
-  }).join('');
-}
-
-function confirmRevoke(key){
-  showConfirm('Revogar licença',`Revogar <strong>${key}</strong>? O usuário perde o acesso.`,'Revogar','warn',()=>doRevoke(key));
-}
-function confirmDelete(key){
-  showConfirm('Apagar licença',`Apagar <strong>${key}</strong> para sempre? Essa ação não pode ser desfeita.`,'Apagar','danger',()=>doDelete(key));
-}
-async function doRevoke(key){
-  const r=await fetch(`${API}/api/admin/licenses/${key}`,{method:'DELETE',headers:{'X-Admin-Secret':adminSecret}});
-  if(r.ok){showToast('Licença revogada');loadLicenses();}else showToast('Erro ao revogar');
-}
-async function doDelete(key){
-  const r=await fetch(`${API}/api/admin/licenses/${key}/hard`,{method:'DELETE',headers:{'X-Admin-Secret':adminSecret}});
-  if(r.ok){showToast('Licença apagada');loadLicenses();}else showToast('Erro ao apagar');
-}
-
-function showConfirm(title,msg,okLabel,tone,onOk){
-  document.getElementById('confirm-title').textContent=title;
-  document.getElementById('confirm-msg').innerHTML=msg;
-  const ok=document.getElementById('confirm-ok');
-  ok.textContent=okLabel;
-  ok.className='btn-confirm '+(tone||'');
-  ok.onclick=()=>{closeConfirm();onOk();};
-  document.getElementById('confirm-modal').classList.add('open');
-}
-function closeConfirm(){document.getElementById('confirm-modal').classList.remove('open');}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeConfirm();});
-document.getElementById('confirm-modal').addEventListener('click',e=>{if(e.target.id==='confirm-modal')closeConfirm();});
-
-let toastTimer;
-function showToast(msg){
-  clearTimeout(toastTimer);
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.classList.add('show');
-  toastTimer=setTimeout(()=>t.classList.remove('show'),2400);
-}
-</script>
+<script src="admin.js"></script>
 </body>
 </html>
