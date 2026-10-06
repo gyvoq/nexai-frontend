@@ -198,7 +198,7 @@ function renderFsProjects() {
   const grid = document.getElementById('fs-project-grid');
   if (!grid) return;
   grid.innerHTML =
-    `<div class="fs-new-project-card" onclick="fsCreateProject()" role="button" tabindex="0">
+    `<div class="fs-new-project-card" data-click="fsCreateProject" role="button" tabindex="0">
       <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       <span>Novo projeto</span>
     </div>` +
@@ -207,7 +207,7 @@ function renderFsProjects() {
       const meta2 = n
         ? `<div class="fs-project-card-meta">${n} ${n === 1 ? 'mensagem' : 'mensagens'} · ${fsEscape(fsDayLabel(p.updatedAt))}, ${fsEscape(fsTimeStr(p.updatedAt))}</div>`
         : '';
-      return `<div class="fs-project-card" onclick="fsOpenProject('${p.id}')" role="button" tabindex="0">
+      return `<div class="fs-project-card" data-click="fsOpenProject" data-args="${fsEscape(JSON.stringify([String(p.id)]))}" role="button" tabindex="0">
       <div class="fs-project-card-title">${fsEscape(p.title)}</div>
       <div class="fs-project-card-meta">Estúdio Livre</div>${meta2}
     </div>`;
@@ -514,8 +514,9 @@ function fsAvatarStepList() {
 
 const FS_AVATAR_PLACEHOLDER = '<svg viewBox="0 0 24 24" aria-hidden="true" style="width:55%;height:55%;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.7"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
 function fsAvatarPhotoHtml(a) {
-  return a.img
-    ? '<img src="' + fsEscape(a.img) + '" alt="' + fsEscape(a.name) + '" loading="lazy">'
+  const imgUrl = (window.Sanitize && Sanitize.safeImgUrl) ? Sanitize.safeImgUrl(a.img) : '';
+  return imgUrl
+    ? '<img src="' + fsEscape(imgUrl) + '" alt="' + fsEscape(a.name) + '" loading="lazy">'
     : '<span style="display:flex;width:100%;height:100%;align-items:center;justify-content:center;color:var(--accent3)">' + FS_AVATAR_PLACEHOLDER + '</span>';
 }
 
