@@ -8,6 +8,7 @@ const Session = (() => {
   const TERMS_KEY   = 'nex_terms_accepted';
   const TERMS_VERSION = '1.0';
   const DEVICE_SINCE_KEY = 'nex_device_since';
+  const DEVICE_SECRET_KEY = 'nex_device_secret';
 
   async function getDeviceId() {
     try {
@@ -128,6 +129,18 @@ const Session = (() => {
     }
   }
 
+  function getDeviceSecret() {
+    try {
+      const v = localStorage.getItem(DEVICE_SECRET_KEY);
+      return v && /^[0-9a-f]{64}$/.test(v) ? v : '';
+    } catch { return ''; }
+  }
+
+  function saveDeviceSecret(secret) {
+    if (typeof secret !== 'string' || !/^[0-9a-f]{64}$/.test(secret)) return;
+    try { localStorage.setItem(DEVICE_SECRET_KEY, secret); } catch {  }
+  }
+
   function getToken() {
     try { return sessionStorage.getItem(TOKEN_KEY); } catch { return null; }
   }
@@ -188,10 +201,11 @@ const Session = (() => {
     const res = await fetch(`${API_BASE}/api/activate`, {
       method : 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body   : JSON.stringify({ key: code, deviceId }),
+      body   : JSON.stringify({ key: code, deviceId, deviceSecret: getDeviceSecret() }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Erro desconhecido');
+    if (data.deviceSecret) saveDeviceSecret(data.deviceSecret);
     return data;
   }
 
