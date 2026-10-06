@@ -4,21 +4,27 @@
 <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://nexai-backend-production-5e36.up.railway.app; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script src="js/events.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0c0a12">
 <title>Viralyze — Studio de Marketing Viral</title>
-<meta name="description" content="Viralyze — Studio de Marketing Viral">
+<meta name="description" content="Descubra produtos em alta, gere prompts de imagem e vídeo prontos e crie influencers IA para vender mais no TikTok Shop. Tudo num só lugar.">
+<link rel="canonical" href="https://viralyze-tok.vercel.app/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Viralyze">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:url" content="https://viralyze-tok.vercel.app/">
 <meta property="og:title" content="Viralyze — Studio de Marketing Viral">
 <meta property="og:description" content="Descubra produtos em alta e gere prompts profissionais de imagem e vídeo para vender no TikTok Shop.">
-<meta property="og:image" content="https://viralyze-tok.vercel.app/assets/og.avif">
-<meta property="og:image:type" content="image/avif">
+<meta property="og:image" content="https://viralyze-tok.vercel.app/assets/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Viralyze — Studio de Marketing Viral">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://viralyze-tok.vercel.app/assets/og.avif">
+<meta name="twitter:title" content="Viralyze — Studio de Marketing Viral">
+<meta name="twitter:description" content="Descubra produtos em alta, gere prompts de imagem e vídeo prontos e crie influencers IA para vender mais no TikTok Shop.">
+<meta name="twitter:image" content="https://viralyze-tok.vercel.app/assets/og.jpg">
+<meta name="twitter:image:alt" content="Viralyze — Studio de Marketing Viral">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -30,12 +36,11 @@
 <link rel="stylesheet" href="css/glass.css?v=6">
 <link rel="stylesheet" href="css/elevenlabs-theme.css?v=3">
 <link rel="stylesheet" href="css/viralvideos.css?v=2">
+<link rel="stylesheet" href="css/enhancements.css?v=1">
 </head>
 <body>
 
-
 <div class="toast" id="toast" role="status" aria-live="polite">
-  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
   <span id="toast-msg">Copiado!</span>
 </div>
 
@@ -61,10 +66,10 @@
 
 <header class="header">
   <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
-    <button aria-label="Busca global" id="header-search-btn" style="display:none;background:var(--surface2);border:1px solid var(--border2);border-radius:20px;padding:5px 11px;align-items:center;gap:6px;color:var(--text3);font-size:12px;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif;" data-click="openSearch">
-      <svg style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <span id="search-label-desk" style="display:none">Buscar</span>
-      <kbd id="search-kbd" style="background:var(--surface3);border:1px solid var(--border2);border-radius:4px;font-size:9.5px;padding:1px 5px;font-family:monospace;color:var(--text3);display:none">/</kbd>
+    <button type="button" class="header-search-btn" id="header-search-btn" aria-label="Busca global" data-click="openSearch">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span class="search-label" id="search-label-desk">Buscar</span>
+      <kbd class="search-kbd" id="search-kbd">/</kbd>
     </button>
     <button class="settings-trigger" id="settings-btn"
             aria-label="Configurações" data-tip="Configurações" title="Configurações" data-click="switchTab" data-args='["settings","$el"]'>
@@ -75,8 +80,8 @@
 
 <div class="layout">
 
-    <nav class="sidebar" role="navigation" aria-label="Menu principal">
-    <div class="logo" tabindex="0" role="banner" style="padding:6px 10px 16px">
+    <nav class="sidebar" aria-label="Menu principal">
+    <div class="logo" style="padding:6px 10px 16px">
       <div class="logo-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:white;fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round">
           <polyline points="4 4 12 20 20 4"/>
@@ -85,41 +90,41 @@
       <span class="logo-text">Viralyze</span>
     </div>
     <div class="sidebar-section">Principal</div>
-    <div class="sidebar-item active" tabindex="0" role="menuitem" aria-current="page" data-click="switchTab" data-enter="switchTab" data-args='["mining","$el"]'>
+    <button type="button" class="sidebar-item active" aria-current="page" data-click="switchTab" data-args='["mining","$el"]'>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       Inventário
-    </div>
+    </button>
     <div class="sidebar-section">Criação</div>
-    <div class="sidebar-item" tabindex="0" role="menuitem" data-click="switchTab" data-enter="switchTab" data-args='["freestudio","$el"]'>
+    <button type="button" class="sidebar-item" data-click="switchTab" data-args='["freestudio","$el"]'>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
       Estúdio Livre
-    </div>
-    <div class="sidebar-item" tabindex="0" role="menuitem" data-click="switchTab" data-enter="switchTab" data-args='["viralize","$el"]'>
+    </button>
+    <button type="button" class="sidebar-item" data-click="switchTab" data-args='["viralize","$el"]'>
       <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       Viralize A.I
-    </div>
-    <div class="sidebar-item" tabindex="0" role="menuitem" data-click="switchTab" data-enter="switchTab" data-args='["influencer","$el"]'>
+    </button>
+    <button type="button" class="sidebar-item" data-click="switchTab" data-args='["influencer","$el"]'>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       Influencers
-    </div>
-    <div class="sidebar-item" tabindex="0" role="menuitem" data-click="switchTab" data-enter="switchTab" data-args='["viralvideos","$el"]'>
+    </button>
+    <button type="button" class="sidebar-item" data-click="switchTab" data-args='["viralvideos","$el"]'>
       <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
       Vídeos Virais
-    </div>
-    <div class="sidebar-item" tabindex="0" role="menuitem" data-click="switchTab" data-enter="switchTab" data-args='["imglibrary","$el"]'>
+    </button>
+    <button type="button" class="sidebar-item" data-click="switchTab" data-args='["imglibrary","$el"]'>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
       Biblioteca de Imagens
-    </div>
+    </button>
     <div class="sidebar-footer">
-      <div class="sidebar-item sidebar-settings" tabindex="0" role="menuitem" data-click="switchTab" data-enter="switchTab" data-args='["settings","$el"]'>
+      <button type="button" class="sidebar-item sidebar-settings" data-click="switchTab" data-args='["settings","$el"]'>
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
       Configurações
-      </div>
-      <div class="plan-mini">
+      </button>
+      <div class="plan-mini" id="plan-mini" data-state="loading">
         <div class="plan-mini-dot"></div>
         <div>
-          <div class="plan-mini-name">Plano Pro</div>
-          <div class="plan-mini-label">Todos os recursos ativos</div>
+          <div class="plan-mini-name" id="plan-mini-name">Plano Pro</div>
+          <div class="plan-mini-label" id="plan-mini-label">Verificando licença…</div>
         </div>
       </div>
     </div>
@@ -135,7 +140,6 @@
         </div>
         <div class="stats-bar stats-bar-compact" id="stats-bar"></div>
       </div>
-
 
       <div class="inv-toolbar">
       <div class="niche-filter-wrap" id="niche-filter-wrap">
@@ -189,6 +193,10 @@
             Projetos
           </button>
           <span class="fs-chat-title" id="fs-chat-title">Projeto</span>
+          <button type="button" class="fs-delete-chat-btn" id="fs-delete-chat-btn" data-click="fsDeleteActiveProject" aria-label="Apagar este chat">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+            <span>Apagar</span>
+          </button>
         </div>
         <div class="fs-mode-tabs">
           <button type="button" class="fs-mode-tab active" data-mode="imagem">
@@ -206,10 +214,11 @@
         </div>
         <div class="fs-chat-body" id="fs-chat-body"></div>
         <div class="fs-quick-replies" id="fs-quick-replies"></div>
-        <div class="fs-upload-zone" id="fs-upload-zone" style="display:none" role="button" tabindex="0"></div>
+        <button type="button" class="fs-upload-zone" id="fs-upload-zone" style="display:none"></button>
         <input type="file" id="fs-video-file-input" accept="video/*" style="display:none">
         <input type="text" id="fs-style-input" class="fs-textinput" placeholder="Descreva o estilo do vídeo (ex: mirror selfie, unboxing, GRWM...)" style="display:none">
-        <div style="display:flex;justify-content:flex-end;margin:0 16px 12px" id="fs-extract-btn-wrap">
+        <div class="fs-extract-bar" id="fs-extract-btn-wrap">
+          <div class="fs-extract-quota" id="fs-extract-quota" role="status" aria-live="polite" hidden></div>
           <button type="button" class="quick-action-btn primary" style="display:none" id="fs-extract-btn" data-click="fsRunExtract">Extrair Movimento</button>
         </div>
         <div class="fs-chat-inputrow" id="fs-chat-inputrow">
@@ -296,12 +305,12 @@
         </div>
 
         <div class="inf-stepper" id="inf-stepper" role="tablist" aria-label="Etapas de criação do influencer">
-          <div class="inf-step-item active" data-step="1" role="tab" aria-selected="true" data-click="goInfStep" data-args='[1]'><span class="inf-step-num">1</span> Identidade</div>
-          <div class="inf-step-item" data-step="2" role="tab" aria-selected="false" data-click="goInfStep" data-args='[2]'><span class="inf-step-num">2</span> Corpo</div>
-          <div class="inf-step-item" data-step="3" role="tab" aria-selected="false" data-click="goInfStep" data-args='[3]'><span class="inf-step-num">3</span> Rosto</div>
-          <div class="inf-step-item" data-step="4" role="tab" aria-selected="false" data-click="goInfStep" data-args='[4]'><span class="inf-step-num">4</span> Cabelo</div>
-          <div class="inf-step-item" data-step="5" role="tab" aria-selected="false" data-click="goInfStep" data-args='[5]'><span class="inf-step-num">5</span> Estilo</div>
-          <div class="inf-step-item" data-step="6" role="tab" aria-selected="false" data-click="goInfStep" data-args='[6]'><span class="inf-step-num">6</span> Renderização</div>
+          <button type="button" class="inf-step-item active" data-step="1" role="tab" aria-selected="true" data-click="goInfStep" data-args='[1]'><span class="inf-step-num">1</span> Identidade</button>
+          <button type="button" class="inf-step-item" data-step="2" role="tab" aria-selected="false" data-click="goInfStep" data-args='[2]'><span class="inf-step-num">2</span> Corpo</button>
+          <button type="button" class="inf-step-item" data-step="3" role="tab" aria-selected="false" data-click="goInfStep" data-args='[3]'><span class="inf-step-num">3</span> Rosto</button>
+          <button type="button" class="inf-step-item" data-step="4" role="tab" aria-selected="false" data-click="goInfStep" data-args='[4]'><span class="inf-step-num">4</span> Cabelo</button>
+          <button type="button" class="inf-step-item" data-step="5" role="tab" aria-selected="false" data-click="goInfStep" data-args='[5]'><span class="inf-step-num">5</span> Estilo</button>
+          <button type="button" class="inf-step-item" data-step="6" role="tab" aria-selected="false" data-click="goInfStep" data-args='[6]'><span class="inf-step-num">6</span> Renderização</button>
         </div>
 
         <div class="inf-wizard-layout">
@@ -314,9 +323,9 @@
                 <label class="form-label">Gênero</label>
                 <input type="hidden" id="av-genero" value="Feminino">
                 <div class="inf-option-grid">
-                  <div class="inf-photo-card loading selected" data-click="selectInfOption" data-args='["$el","av-genero","Feminino"]'><img src="assets/FEM.AVIF" alt="Feminino" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Feminino</div></div>
-                  <div class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-genero","Masculino"]'><img src="assets/MAS.AVIF" alt="Masculino" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Masculino</div></div>
-                  <div class="inf-photo-card" data-click="selectInfOption" data-args='["$el","av-genero","Prefiro não dizer"]'><div class="inf-photo-neutral"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></div><span class="inf-photo-check">✓</span><div class="inf-photo-label">Prefiro não dizer</div></div>
+                  <button type="button" class="inf-photo-card loading selected" data-click="selectInfOption" data-args='["$el","av-genero","Feminino"]'><img loading="lazy" decoding="async" src="assets/FEM.AVIF" alt="Feminino" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Feminino</span></button>
+                  <button type="button" class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-genero","Masculino"]'><img loading="lazy" decoding="async" src="assets/MAS.AVIF" alt="Masculino" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Masculino</span></button>
+                  <button type="button" class="inf-photo-card" data-click="selectInfOption" data-args='["$el","av-genero","Prefiro não dizer"]'><span class="inf-photo-neutral"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></span><span class="inf-photo-check">✓</span><span class="inf-photo-label">Prefiro não dizer</span></button>
                 </div>
               </div>
 
@@ -329,13 +338,13 @@
                 <label class="form-label">Etnia / Origem</label>
                 <input type="hidden" id="av-etnia" value="Latina/Latino">
                 <div class="inf-option-grid" id="etnia-option-grid">
-                  <div class="inf-photo-card loading selected" data-key="latina" data-click="selectInfOption" data-args='["$el","av-etnia","Latina/Latino"]'><img src="assets/LAF.AVIF" alt="Latina/Latino" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Latina/Latino</div></div>
-                  <div class="inf-photo-card loading" data-key="branca" data-click="selectInfOption" data-args='["$el","av-etnia","Branca"]'><img src="assets/BRF.AVIF" alt="Branca" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Branca</div></div>
-                  <div class="inf-photo-card loading" data-key="negra" data-click="selectInfOption" data-args='["$el","av-etnia","Negra"]'><img src="assets/NEF.AVIF" alt="Negra" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Negra</div></div>
-                  <div class="inf-photo-card loading" data-key="asiatica" data-click="selectInfOption" data-args='["$el","av-etnia","Asiática"]'><img src="assets/ASF.AVIF" alt="Asiática" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Asiática</div></div>
-                  <div class="inf-photo-card loading" data-key="indigena" data-click="selectInfOption" data-args='["$el","av-etnia","Indígena"]'><img src="assets/INF.AVIF" alt="Indígena" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Indígena</div></div>
-                  <div class="inf-photo-card loading" data-key="oriente" data-click="selectInfOption" data-args='["$el","av-etnia","Oriente Médio"]'><img src="assets/ORF.AVIF" alt="Oriente Médio" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Oriente Médio</div></div>
-                  <div class="inf-photo-card" data-click="selectInfOption" data-args='["$el","av-etnia","Prefiro não dizer"]'><div class="inf-photo-neutral"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></div><span class="inf-photo-check">✓</span><div class="inf-photo-label">Prefiro não dizer</div></div>
+                  <button type="button" class="inf-photo-card loading selected" data-key="latina" data-click="selectInfOption" data-args='["$el","av-etnia","Latina/Latino"]'><img loading="lazy" decoding="async" src="assets/LAF.AVIF" alt="Latina/Latino" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Latina/Latino</span></button>
+                  <button type="button" class="inf-photo-card loading" data-key="branca" data-click="selectInfOption" data-args='["$el","av-etnia","Branca"]'><img loading="lazy" decoding="async" src="assets/BRF.AVIF" alt="Branca" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Branca</span></button>
+                  <button type="button" class="inf-photo-card loading" data-key="negra" data-click="selectInfOption" data-args='["$el","av-etnia","Negra"]'><img loading="lazy" decoding="async" src="assets/NEF.AVIF" alt="Negra" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Negra</span></button>
+                  <button type="button" class="inf-photo-card loading" data-key="asiatica" data-click="selectInfOption" data-args='["$el","av-etnia","Asiática"]'><img loading="lazy" decoding="async" src="assets/ASF.AVIF" alt="Asiática" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Asiática</span></button>
+                  <button type="button" class="inf-photo-card loading" data-key="indigena" data-click="selectInfOption" data-args='["$el","av-etnia","Indígena"]'><img loading="lazy" decoding="async" src="assets/INF.AVIF" alt="Indígena" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Indígena</span></button>
+                  <button type="button" class="inf-photo-card loading" data-key="oriente" data-click="selectInfOption" data-args='["$el","av-etnia","Oriente Médio"]'><img loading="lazy" decoding="async" src="assets/ORF.AVIF" alt="Oriente Médio" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Oriente Médio</span></button>
+                  <button type="button" class="inf-photo-card" data-click="selectInfOption" data-args='["$el","av-etnia","Prefiro não dizer"]'><span class="inf-photo-neutral"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></span><span class="inf-photo-check">✓</span><span class="inf-photo-label">Prefiro não dizer</span></button>
                 </div>
               </div>
             </div>
@@ -345,20 +354,20 @@
                 <label class="form-label">Tipo de Corpo</label>
                 <input type="hidden" id="av-corpo" value="Magro">
                 <div class="inf-option-grid" id="corpo-option-grid">
-                  <div class="inf-photo-card loading selected" data-key="magro" data-click="selectInfOption" data-args='["$el","av-corpo","Magro"]'><img src="assets/MAF.AVIF" alt="Magro" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Magro</div></div>
-                  <div class="inf-photo-card loading" data-key="atletico" data-click="selectInfOption" data-args='["$el","av-corpo","Atlético"]'><img src="assets/ATF.AVIF" alt="Atlético" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Atlético</div></div>
-                  <div class="inf-photo-card loading" data-key="curvilineo" data-click="selectInfOption" data-args='["$el","av-corpo","Curvilíneo"]'><img src="assets/CUF.AVIF" alt="Curvilíneo" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Curvilíneo</div></div>
-                  <div class="inf-photo-card loading" data-key="plussize" data-click="selectInfOption" data-args='["$el","av-corpo","Plus Size"]'><img src="assets/PSF.AVIF" alt="Plus Size" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Plus Size</div></div>
-                  <div class="inf-photo-card loading" data-key="musculoso" data-click="selectInfOption" data-args='["$el","av-corpo","Musculoso"]'><img src="assets/MUF.AVIF" alt="Musculoso" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Musculoso</div></div>
+                  <button type="button" class="inf-photo-card loading selected" data-key="magro" data-click="selectInfOption" data-args='["$el","av-corpo","Magro"]'><img loading="lazy" decoding="async" src="assets/MAF.AVIF" alt="Magro" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Magro</span></button>
+                  <button type="button" class="inf-photo-card loading" data-key="atletico" data-click="selectInfOption" data-args='["$el","av-corpo","Atlético"]'><img loading="lazy" decoding="async" src="assets/ATF.AVIF" alt="Atlético" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Atlético</span></button>
+                  <button type="button" class="inf-photo-card loading" data-key="curvilineo" data-click="selectInfOption" data-args='["$el","av-corpo","Curvilíneo"]'><img loading="lazy" decoding="async" src="assets/CUF.AVIF" alt="Curvilíneo" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Curvilíneo</span></button>
+                  <button type="button" class="inf-photo-card loading" data-key="plussize" data-click="selectInfOption" data-args='["$el","av-corpo","Plus Size"]'><img loading="lazy" decoding="async" src="assets/PSF.AVIF" alt="Plus Size" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Plus Size</span></button>
+                  <button type="button" class="inf-photo-card loading" data-key="musculoso" data-click="selectInfOption" data-args='["$el","av-corpo","Musculoso"]'><img loading="lazy" decoding="async" src="assets/MUF.AVIF" alt="Musculoso" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Musculoso</span></button>
                 </div>
               </div>
               <div class="form-group">
                 <label class="form-label">Altura</label>
                 <input type="hidden" id="av-altura" value="Baixa">
                 <div class="inf-option-grid" id="altura-option-grid">
-                  <div class="inf-photo-card loading selected" data-key="baixa" data-click="selectInfOption" data-args='["$el","av-altura","Baixa"]'><img src="assets/BAF.AVIF" alt="Baixa" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Baixa</div></div>
-                  <div class="inf-photo-card loading" data-key="media" data-click="selectInfOption" data-args='["$el","av-altura","Média"]'><img src="assets/MEF.AVIF" alt="Média" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Média</div></div>
-                  <div class="inf-photo-card loading" data-key="alta" data-click="selectInfOption" data-args='["$el","av-altura","Alta"]'><img src="assets/ALF.AVIF" alt="Alta" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Alta</div></div>
+                  <button type="button" class="inf-photo-card loading selected" data-key="baixa" data-click="selectInfOption" data-args='["$el","av-altura","Baixa"]'><img loading="lazy" decoding="async" src="assets/BAF.AVIF" alt="Baixa" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Baixa</span></button>
+                  <button type="button" class="inf-photo-card loading" data-key="media" data-click="selectInfOption" data-args='["$el","av-altura","Média"]'><img loading="lazy" decoding="async" src="assets/MEF.AVIF" alt="Média" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Média</span></button>
+                  <button type="button" class="inf-photo-card loading" data-key="alta" data-click="selectInfOption" data-args='["$el","av-altura","Alta"]'><img loading="lazy" decoding="async" src="assets/ALF.AVIF" alt="Alta" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Alta</span></button>
                 </div>
               </div>
             </div>
@@ -368,22 +377,22 @@
                 <label class="form-label">Formato do Rosto</label>
                 <input type="hidden" id="av-rosto" value="Oval">
                 <div class="inf-option-grid" id="rosto-option-grid">
-                  <div class="inf-photo-card loading selected" data-key="oval" data-click="selectInfOption" data-args='["$el","av-rosto","Oval"]'><img src="assets/OVF.AVIF" alt="Oval" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Oval</div></div>
-                  <div class="inf-photo-card loading" data-key="redondo" data-click="selectInfOption" data-args='["$el","av-rosto","Redondo"]'><img src="assets/RDF.AVIF" alt="Redondo" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Redondo</div></div>
-                  <div class="inf-photo-card loading" data-key="quadrado" data-click="selectInfOption" data-args='["$el","av-rosto","Quadrado"]'><img src="assets/QDF.AVIF" alt="Quadrado" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Quadrado</div></div>
-                  <div class="inf-photo-card loading" data-key="triangular" data-click="selectInfOption" data-args='["$el","av-rosto","Triangular"]'><img src="assets/TRF.AVIF" alt="Triangular" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Triangular</div></div>
-                  <div class="inf-photo-card loading" data-key="coracao" data-click="selectInfOption" data-args='["$el","av-rosto","Coração"]'><img src="assets/CRF.AVIF" alt="Coração" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Coração</div></div>
+                  <button type="button" class="inf-photo-card loading selected" data-key="oval" data-click="selectInfOption" data-args='["$el","av-rosto","Oval"]'><img loading="lazy" decoding="async" src="assets/OVF.AVIF" alt="Oval" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Oval</span></button>
+                  <button type="button" class="inf-photo-card loading" data-key="redondo" data-click="selectInfOption" data-args='["$el","av-rosto","Redondo"]'><img loading="lazy" decoding="async" src="assets/RDF.AVIF" alt="Redondo" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Redondo</span></button>
+                  <button type="button" class="inf-photo-card loading" data-key="quadrado" data-click="selectInfOption" data-args='["$el","av-rosto","Quadrado"]'><img loading="lazy" decoding="async" src="assets/QDF.AVIF" alt="Quadrado" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Quadrado</span></button>
+                  <button type="button" class="inf-photo-card loading" data-key="triangular" data-click="selectInfOption" data-args='["$el","av-rosto","Triangular"]'><img loading="lazy" decoding="async" src="assets/TRF.AVIF" alt="Triangular" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Triangular</span></button>
+                  <button type="button" class="inf-photo-card loading" data-key="coracao" data-click="selectInfOption" data-args='["$el","av-rosto","Coração"]'><img loading="lazy" decoding="async" src="assets/CRF.AVIF" alt="Coração" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Coração</span></button>
                 </div>
               </div>
               <div class="form-group">
                 <label class="form-label">Cor dos Olhos</label>
                 <input type="hidden" id="av-olhos" value="Castanhos">
                 <div class="inf-option-grid" id="olhos-option-grid">
-                  <div class="inf-photo-card loading selected" data-click="selectInfOption" data-args='["$el","av-olhos","Castanhos"]'><img src="assets/CAS.AVIF" alt="Castanhos" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Castanhos</div></div>
-                  <div class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-olhos","Pretos"]'><img src="assets/PRE.AVIF" alt="Pretos" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Pretos</div></div>
-                  <div class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-olhos","Verdes"]'><img src="assets/VER.AVIF" alt="Verdes" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Verdes</div></div>
-                  <div class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-olhos","Azuis"]'><img src="assets/AZU.AVIF" alt="Azuis" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Azuis</div></div>
-                  <div class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-olhos","Mel"]'><img src="assets/MEL.AVIF" alt="Mel" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Mel</div></div>
+                  <button type="button" class="inf-photo-card loading selected" data-click="selectInfOption" data-args='["$el","av-olhos","Castanhos"]'><img loading="lazy" decoding="async" src="assets/CAS.AVIF" alt="Castanhos" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Castanhos</span></button>
+                  <button type="button" class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-olhos","Pretos"]'><img loading="lazy" decoding="async" src="assets/PRE.AVIF" alt="Pretos" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Pretos</span></button>
+                  <button type="button" class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-olhos","Verdes"]'><img loading="lazy" decoding="async" src="assets/VER.AVIF" alt="Verdes" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Verdes</span></button>
+                  <button type="button" class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-olhos","Azuis"]'><img loading="lazy" decoding="async" src="assets/AZU.AVIF" alt="Azuis" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Azuis</span></button>
+                  <button type="button" class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-olhos","Mel"]'><img loading="lazy" decoding="async" src="assets/MEL.AVIF" alt="Mel" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Mel</span></button>
                 </div>
               </div>
             </div>
@@ -393,32 +402,32 @@
                 <label class="form-label">Cor do Cabelo</label>
                 <input type="hidden" id="av-cor-cabelo" value="Preto">
                 <div class="inf-option-grid" id="corcabelo-option-grid">
-                  <div class="inf-photo-card loading selected" data-click="selectInfOption" data-args='["$el","av-cor-cabelo","Preto"]'><img src="assets/PTO.AVIF" alt="Preto" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Preto</div></div>
-                  <div class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-cor-cabelo","Castanho"]'><img src="assets/CTO.AVIF" alt="Castanho" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Castanho</div></div>
-                  <div class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-cor-cabelo","Loiro"]'><img src="assets/LOI.AVIF" alt="Loiro" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Loiro</div></div>
-                  <div class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-cor-cabelo","Ruivo"]'><img src="assets/RUI.AVIF" alt="Ruivo" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Ruivo</div></div>
-                  <div class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-cor-cabelo","Grisalho"]'><img src="assets/GRI.AVIF" alt="Grisalho" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Grisalho</div></div>
-                  <div class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-cor-cabelo","Colorido"]'><img src="assets/COL.AVIF" alt="Colorido" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Colorido</div></div>
+                  <button type="button" class="inf-photo-card loading selected" data-click="selectInfOption" data-args='["$el","av-cor-cabelo","Preto"]'><img loading="lazy" decoding="async" src="assets/PTO.AVIF" alt="Preto" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Preto</span></button>
+                  <button type="button" class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-cor-cabelo","Castanho"]'><img loading="lazy" decoding="async" src="assets/CTO.AVIF" alt="Castanho" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Castanho</span></button>
+                  <button type="button" class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-cor-cabelo","Loiro"]'><img loading="lazy" decoding="async" src="assets/LOI.AVIF" alt="Loiro" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Loiro</span></button>
+                  <button type="button" class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-cor-cabelo","Ruivo"]'><img loading="lazy" decoding="async" src="assets/RUI.AVIF" alt="Ruivo" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Ruivo</span></button>
+                  <button type="button" class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-cor-cabelo","Grisalho"]'><img loading="lazy" decoding="async" src="assets/GRI.AVIF" alt="Grisalho" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Grisalho</span></button>
+                  <button type="button" class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-cor-cabelo","Colorido"]'><img loading="lazy" decoding="async" src="assets/COL.AVIF" alt="Colorido" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Colorido</span></button>
                 </div>
               </div>
               <div class="form-group">
                 <label class="form-label">Estilo do Cabelo</label>
                 <input type="hidden" id="av-estilo-cabelo" value="Liso">
                 <div class="inf-option-grid" id="estilocabelo-option-grid">
-                  <div class="inf-photo-card loading selected" data-key="liso" data-click="selectInfOption" data-args='["$el","av-estilo-cabelo","Liso"]'><img src="assets/LIF.AVIF" alt="Liso" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Liso</div></div>
-                  <div class="inf-photo-card loading" data-key="ondulado" data-click="selectInfOption" data-args='["$el","av-estilo-cabelo","Ondulado"]'><img src="assets/ONF.AVIF" alt="Ondulado" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Ondulado</div></div>
-                  <div class="inf-photo-card loading" data-key="cacheado" data-click="selectInfOption" data-args='["$el","av-estilo-cabelo","Cacheado"]'><img src="assets/CCF.AVIF" alt="Cacheado" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Cacheado</div></div>
-                  <div class="inf-photo-card loading" data-key="crespo" data-click="selectInfOption" data-args='["$el","av-estilo-cabelo","Crespo"]'><img src="assets/CEF.AVIF" alt="Crespo" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Crespo</div></div>
-                  <div class="inf-photo-card loading" data-key="careca" data-click="selectInfOption" data-args='["$el","av-estilo-cabelo","Careca"]'><img src="assets/CVF.AVIF" alt="Careca" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Careca</div></div>
+                  <button type="button" class="inf-photo-card loading selected" data-key="liso" data-click="selectInfOption" data-args='["$el","av-estilo-cabelo","Liso"]'><img loading="lazy" decoding="async" src="assets/LIF.AVIF" alt="Liso" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Liso</span></button>
+                  <button type="button" class="inf-photo-card loading" data-key="ondulado" data-click="selectInfOption" data-args='["$el","av-estilo-cabelo","Ondulado"]'><img loading="lazy" decoding="async" src="assets/ONF.AVIF" alt="Ondulado" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Ondulado</span></button>
+                  <button type="button" class="inf-photo-card loading" data-key="cacheado" data-click="selectInfOption" data-args='["$el","av-estilo-cabelo","Cacheado"]'><img loading="lazy" decoding="async" src="assets/CCF.AVIF" alt="Cacheado" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Cacheado</span></button>
+                  <button type="button" class="inf-photo-card loading" data-key="crespo" data-click="selectInfOption" data-args='["$el","av-estilo-cabelo","Crespo"]'><img loading="lazy" decoding="async" src="assets/CEF.AVIF" alt="Crespo" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Crespo</span></button>
+                  <button type="button" class="inf-photo-card loading" data-key="careca" data-click="selectInfOption" data-args='["$el","av-estilo-cabelo","Careca"]'><img loading="lazy" decoding="async" src="assets/CVF.AVIF" alt="Careca" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><span class="inf-photo-label">Careca</span></button>
                 </div>
               </div>
             </div>
 
             <div class="inf-step-panel" data-inf-step="5">
-              <div class="form-group"><label class="form-label">Estilo Visual</label><div class="chip-group" id="av-estilo"><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Minimalista</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Streetwear</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Luxo</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Fitness</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Grunge</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Boho</span></div></div>
-              <div class="form-group"><label class="form-label">Nicho</label><div class="chip-group" id="av-nicho"><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Beleza</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Tech</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Moda</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Lifestyle</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Fitness</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Culinária</span></div></div>
-              <div class="form-group"><label class="form-label">Personalidade</label><div class="chip-group" id="av-personalidade"><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Enérgica</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Sofisticada</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Divertida</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Educativa</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Empática</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Audaciosa</span></div></div>
-              <div class="form-group"><label class="form-label">Tipo de Conteúdo</label><div class="chip-group" id="av-conteudo"><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Reviews</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Tutoriais</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Unboxing</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Vlogs</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>GRWM</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>TikTok Ads</span></div></div>
+              <div class="form-group"><label class="form-label">Estilo Visual</label><div class="chip-group" id="av-estilo"><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Minimalista</button><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Streetwear</button><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Luxo</button><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Fitness</button><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Grunge</button><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Boho</button></div></div>
+              <div class="form-group"><label class="form-label">Nicho</label><div class="chip-group" id="av-nicho"><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Beleza</button><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Tech</button><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Moda</button><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Lifestyle</button><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Fitness</button><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Culinária</button></div></div>
+              <div class="form-group"><label class="form-label">Personalidade</label><div class="chip-group" id="av-personalidade"><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Enérgica</button><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Sofisticada</button><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Divertida</button><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Educativa</button><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Empática</button><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Audaciosa</button></div></div>
+              <div class="form-group"><label class="form-label">Tipo de Conteúdo</label><div class="chip-group" id="av-conteudo"><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Reviews</button><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Tutoriais</button><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Unboxing</button><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">Vlogs</button><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">GRWM</button><button type="button" class="form-chip" data-click="toggleChip" data-args='["$el"]' aria-pressed="false">TikTok Ads</button></div></div>
             </div>
 
             <div class="inf-step-panel" data-inf-step="6">
@@ -522,35 +531,34 @@
       </div>
     </div>
 
-
   </main>
 </div>
 
-<nav class="bottom-nav" role="navigation" aria-label="Navegação principal">
-  <div class="nav-item active" role="menuitem" tabindex="0" aria-label="Inventário" data-click="switchTab" data-args='["mining","$el"]'>
+<nav class="bottom-nav" aria-label="Navegação principal">
+  <button type="button" class="nav-item active" aria-label="Inventário" aria-current="page" data-click="switchTab" data-args='["mining","$el"]'>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     <span class="nav-label">Inventário</span>
-  </div>
-  <div class="nav-item" role="menuitem" tabindex="0" aria-label="Estúdio Livre" data-click="switchTab" data-args='["freestudio","$el"]'>
+  </button>
+  <button type="button" class="nav-item" aria-label="Estúdio Livre" data-click="switchTab" data-args='["freestudio","$el"]'>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
     <span class="nav-label">Estúdio</span>
-  </div>
-  <div class="nav-item" role="menuitem" tabindex="0" aria-label="Viralize A.I" data-click="switchTab" data-args='["viralize","$el"]'>
+  </button>
+  <button type="button" class="nav-item" aria-label="Viralize A.I" data-click="switchTab" data-args='["viralize","$el"]'>
     <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
     <span class="nav-label">Viralize</span>
-  </div>
-  <div class="nav-item" role="menuitem" tabindex="0" aria-label="Influencers" data-click="switchTab" data-args='["influencer","$el"]'>
+  </button>
+  <button type="button" class="nav-item" aria-label="Influencers" data-click="switchTab" data-args='["influencer","$el"]'>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     <span class="nav-label">Influencers</span>
-  </div>
-  <div class="nav-item" role="menuitem" tabindex="0" aria-label="Vídeos Virais" data-click="switchTab" data-args='["viralvideos","$el"]'>
+  </button>
+  <button type="button" class="nav-item" aria-label="Vídeos Virais" data-click="switchTab" data-args='["viralvideos","$el"]'>
     <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
     <span class="nav-label">Virais</span>
-  </div>
-  <div class="nav-item" role="menuitem" tabindex="0" aria-label="Biblioteca de Imagens" data-click="switchTab" data-args='["imglibrary","$el"]'>
+  </button>
+  <button type="button" class="nav-item" aria-label="Biblioteca de Imagens" data-click="switchTab" data-args='["imglibrary","$el"]'>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
     <span class="nav-label">Galeria</span>
-  </div>
+  </button>
 </nav>
 
 <div class="history-overlay-bg" id="history-overlay-bg" aria-hidden="true" data-click="closeHistory"></div>
