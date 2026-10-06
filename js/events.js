@@ -17,6 +17,8 @@
     'fetchProductFromLink',
     'fsBackToProjects',
     'fsCreateProject',
+    'fsDeleteActiveProject',
+    'fsDeleteProject',
     'fsOpenProject',
     'fsRunExtract',
     'generateAvatarPromptAI',
