@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
@@ -424,35 +425,6 @@ body.landing {
   </ul>
 </footer>
 
-<script>
-  const nav = document.getElementById('nav');
-  window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 40);
-  });
-
-  const navToggle = document.getElementById('navToggle');
-  const navMobilePanel = document.getElementById('navMobilePanel');
-  navToggle.addEventListener('click', () => {
-    const open = navMobilePanel.classList.toggle('open');
-    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-  });
-  navMobilePanel.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
-      navMobilePanel.classList.remove('open');
-      navToggle.setAttribute('aria-expanded', 'false');
-    });
-  });
-
-</script>
-<script>
-  (function () {
-    var params = new URLSearchParams(location.search);
-    var ret = params.get('return');
-    if (ret && /^[a-zA-Z0-9_-]+\.html$/.test(ret)) {
-      var backLink = document.querySelector('.back-link');
-      if (backLink) backLink.href = '../' + ret;
-    }
-  })();
-</script>
+<script src="legal.js"></script>
 </body>
 </html>
