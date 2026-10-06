@@ -655,9 +655,6 @@ function safeSet(key, val) {
   }
 }
 
-// Tudo que vem do localStorage é revalidado: se um backup malicioso já tiver sido
-// importado antes desta correção, o conteúdo perigoso é descartado na leitura e o
-// armazenamento é regravado já limpo.
 function loadClean(key, fallback, clean) {
   const raw = safeGet(key, fallback);
   const cleaned = clean(raw);
@@ -677,12 +674,12 @@ promptHistory = loadClean(PROMPTS_KEY, [], a => Sanitize.schema.history(a));
 
 let toastTimer;
 
-function showToast(msg, icon = ICONS.star) {
+function showToast(msg, duration) {
   clearTimeout(toastTimer);
   const t = document.getElementById("toast");
   document.getElementById("toast-msg").textContent = msg;
   t.classList.add("show");
-  toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
+  toastTimer = setTimeout(() => t.classList.remove("show"), typeof duration === "number" ? duration : 2600);
 }
 
 function updateCharCounter(inputId, counterId, max) {
@@ -705,7 +702,6 @@ function toggleFav(type, id, btn) {
   showToast(favorites[key] ? "Adicionado aos favoritos" : "Removido dos favoritos");
 }
 
-// Coração do card: troca o ícone e alterna o favorito (antes era código inline no onclick)
 function toggleFavBtn(type, id, btn) {
   btn.innerHTML = heartSVG(!btn.classList.contains("active"));
   toggleFav(type, id, btn);
@@ -831,8 +827,6 @@ function importBackup(event) {
       input.value = "";
       return;
     }
-    // Reconstrói cada lista campo a campo (tipos, tamanhos, URLs https/data:image).
-    // Nada do arquivo é gravado "como veio": campos desconhecidos são descartados.
     const clean = {
       favorites: payload.favorites && typeof payload.favorites === "object" ? Sanitize.schema.favorites(payload.favorites) : null,
       customAvatars: Array.isArray(payload.customAvatars) ? Sanitize.schema.avatars(payload.customAvatars, MAX_CUSTOM_AVATARS) : null,
@@ -1401,10 +1395,14 @@ const TABS = [ "mining", "freestudio", "viralize", "influencer", "viralvideos", 
 
 function switchTab(tab, el) {
   document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
-  document.querySelectorAll(".nav-item,.sidebar-item").forEach(n => n.classList.remove("active"));
   const tabEl = document.getElementById(`tab-${tab}`);
   if (tabEl) tabEl.classList.add("active");
-  document.querySelectorAll(`[onclick*="switchTab('${tab}"]`).forEach(n => n.classList.add("active"));
+  document.querySelectorAll(".nav-item,.sidebar-item").forEach(n => {
+    const active = n.getAttribute("data-click") === "switchTab" && (n.getAttribute("data-args") || "").indexOf(`["${tab}"`) === 0;
+    n.classList.toggle("active", active);
+    if (active) n.setAttribute("aria-current", "page"); else n.removeAttribute("aria-current");
+  });
+  if (typeof fsSyncChatLayout === "function") fsSyncChatLayout();
   window.scrollTo({
     top: 0,
     behavior: "smooth"
@@ -1909,6 +1907,7 @@ function generateAvatarPromptAI() {
   const extraLine = desc ? `\nExtra details: ${desc}` : "";
   const result = `${idade}-year-old ${genero.toLowerCase()} digital influencer named ${nome}.\nStyle: ${estilos}. Niche: ${nichos}. Personality: ${personalidades}. Content: ${conteudos}.${physicalLine}${extraLine}\nWearing trendy outfit matching ${estilos} aesthetic, confident engaging expression, looking at camera.\nProfessional portrait, soft studio lighting, sharp focus, 8K, vertical 9:16.\n\nHandles sugeridos:\n@${nome.toLowerCase().replace(/\s/g, "")}.oficial\n@sou.${nome.toLowerCase().replace(/\s/g, "")}\n@${nome.toLowerCase().replace(/\s/g, "")}creates`;
   document.getElementById("avatar-prompt-output").value = result;
+  scheduleInfDraftSave();
   showToast("Prompt de influencer gerado!");
   loading.classList.remove("visible");
 }
@@ -1966,7 +1965,7 @@ function resetInfluencerForm() {
   });
   updateGenderAwareImages("Feminino");
   document.querySelectorAll("#av-estilo .form-chip, #av-nicho .form-chip, #av-personalidade .form-chip, #av-conteudo .form-chip").forEach(c => {
-    if (c.dataset.custom) c.remove(); else c.classList.remove("selected");
+    if (c.dataset.custom) c.remove(); else { c.classList.remove("selected"); c.setAttribute("aria-pressed", "false"); }
   });
   document.querySelectorAll(".chip-other-wrap").forEach(w => {
     w.classList.remove("open");
@@ -1975,6 +1974,7 @@ function resetInfluencerForm() {
   });
   updateInfSummary();
   goInfStep(1);
+  clearInfDraft();
 }
 
 function saveGeneratedAvatar() {
@@ -2036,12 +2036,14 @@ function saveGeneratedAvatar() {
 
 function toggleChip(el) {
   el.classList.toggle("selected");
+  el.setAttribute("aria-pressed", el.classList.contains("selected") ? "true" : "false");
+  scheduleInfDraftSave();
 }
 
 let currentInfStep = 1;
 const INF_STEP_COUNT = 6;
 
-function goInfStep(n) {
+function goInfStep(n, opts) {
   currentInfStep = n;
   document.querySelectorAll(".inf-step-panel").forEach(p => p.classList.toggle("active", Number(p.dataset.infStep) === n));
   document.querySelectorAll("#inf-stepper .inf-step-item").forEach(s => {
@@ -2054,10 +2056,11 @@ function goInfStep(n) {
   if (backBtn) backBtn.style.visibility = n === 1 ? "hidden" : "visible";
   if (nextBtn) nextBtn.style.display = n === INF_STEP_COUNT ? "none" : "inline-flex";
   const card = document.querySelector(".create-avatar-card");
-  if (card) card.scrollIntoView({
+  if (card && !(opts && opts.noScroll)) card.scrollIntoView({
     behavior: "smooth",
     block: "start"
   });
+  scheduleInfDraftSave();
 }
 
 function infNextStep() {
@@ -2145,11 +2148,10 @@ function initInfOtherOptions() {
     const hidden = grid.previousElementSibling;
     if (!hidden || hidden.tagName !== "INPUT" || grid.querySelector(".inf-other-card")) return;
     const label = (grid.closest(".form-group")?.querySelector(".form-label")?.textContent || "campo").replace(/\s+/g, " ").trim();
-    const card = document.createElement("div");
+    const card = document.createElement("button");
+    card.type = "button";
     card.className = "inf-photo-card inf-other-card";
-    card.setAttribute("role", "button");
-    card.tabIndex = 0;
-    card.innerHTML = `<div class="inf-photo-neutral">${INF_OTHER_ICON}</div><span class="inf-photo-check">✓</span><div class="inf-photo-label">Outro</div>`;
+    card.innerHTML = `<span class="inf-photo-neutral">${INF_OTHER_ICON}</span><span class="inf-photo-check">✓</span><span class="inf-photo-label">Outro</span>`;
     grid.appendChild(card);
 
     const wrap = document.createElement("div");
@@ -2164,7 +2166,6 @@ function initInfOtherOptions() {
       input.focus();
     };
     card.addEventListener("click", pick);
-    card.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
     input.addEventListener("input", () => {
       hidden.value = Sanitize.sanitizeInput(input.value, INF_OTHER_MAX);
       updateInfSummary();
@@ -2174,10 +2175,9 @@ function initInfOtherOptions() {
   [ "av-estilo", "av-nicho", "av-personalidade", "av-conteudo" ].forEach(id => {
     const group = document.getElementById(id);
     if (!group || group.querySelector(".chip-other")) return;
-    const chip = document.createElement("span");
+    const chip = document.createElement("button");
+    chip.type = "button";
     chip.className = "form-chip chip-other";
-    chip.setAttribute("role", "button");
-    chip.tabIndex = 0;
     chip.textContent = "Outro";
     group.appendChild(chip);
 
@@ -2193,17 +2193,14 @@ function initInfOtherOptions() {
       const existing = [ ...group.querySelectorAll(".form-chip:not(.chip-other)") ].find(c => c.textContent.trim().toLowerCase() === text.toLowerCase());
       if (existing) {
         existing.classList.add("selected");
+        existing.setAttribute("aria-pressed", "true");
+        scheduleInfDraftSave();
       } else {
         if (group.querySelectorAll(".form-chip[data-custom]").length >= INF_CHIP_OTHER_LIMIT) {
           showToast(`Você pode adicionar até ${INF_CHIP_OTHER_LIMIT} opções em "Outro".`);
           return;
         }
-        const c = document.createElement("span");
-        c.className = "form-chip selected";
-        c.dataset.custom = "1";
-        c.textContent = text;
-        c.addEventListener("click", () => toggleChip(c));
-        group.insertBefore(c, chip);
+        addCustomChip(group, text);
       }
       input.value = "";
       wrap.classList.remove("open");
@@ -2212,7 +2209,6 @@ function initInfOtherOptions() {
       wrap.classList.toggle("open");
       if (wrap.classList.contains("open")) input.focus();
     });
-    chip.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); chip.click(); } });
     wrap.querySelector("button").addEventListener("click", add);
     input.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); add(); } });
   });
@@ -2241,26 +2237,26 @@ function toggleSwitchKey(e, el) {
   }
 }
 
+let confirmCallback = null;
+
 function showConfirm(msg, onConfirm) {
-  let modal = document.getElementById("confirm-modal");
+  const modal = document.getElementById("confirm-modal");
   if (!modal) return;
   document.getElementById("confirm-msg").textContent = msg;
+  confirmCallback = typeof onConfirm === "function" ? onConfirm : null;
   modal.classList.add("open");
-  const yes = document.getElementById("confirm-yes");
-  const no = document.getElementById("confirm-no");
-  const close = () => modal.classList.remove("open");
-  const handleYes = () => {
-    close();
-    yes.removeEventListener("click", handleYes);
-    no.removeEventListener("click", close);
-    onConfirm();
-  };
-  yes.addEventListener("click", handleYes, {
-    once: true
-  });
-  no.addEventListener("click", close, {
-    once: true
-  });
+}
+
+function closeConfirm() {
+  const modal = document.getElementById("confirm-modal");
+  if (modal) modal.classList.remove("open");
+  confirmCallback = null;
+}
+
+function acceptConfirm() {
+  const cb = confirmCallback;
+  closeConfirm();
+  if (cb) cb();
 }
 
 const DELETE_ALL_WORD = "excluir";
@@ -2370,11 +2366,7 @@ function copyOutput(id) {
 }
 
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape") {
-    closeSearch();
-    closeHistory();
-    return;
-  }
+  if (modalStack.length) return;
   if (e.key === "/" && e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA") {
     e.preventDefault();
     openSearch();
@@ -2624,13 +2616,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") {
-    closeAddModal();
-    closeDeleteAllModal();
-  }
-});
-
 document.addEventListener("DOMContentLoaded", () => {
   try { initInfOtherOptions(); } catch (err) { console.error("initInfOtherOptions", err); }
   updateInfLimitNote();
@@ -2657,21 +2642,356 @@ window.addEventListener("resize", () => {
   }, 200);
 });
 
+const INF_DRAFT_KEY = "viralyze-inf-draft";
+const INF_DRAFT_CHIP_GROUPS = [ "av-estilo", "av-nicho", "av-personalidade", "av-conteudo" ];
+let infDraftTimer = null;
+let infDraftRestoring = false;
+
+function addCustomChip(group, text) {
+  const c = document.createElement("button");
+  c.type = "button";
+  c.className = "form-chip selected";
+  c.dataset.custom = "1";
+  c.setAttribute("aria-pressed", "true");
+  c.textContent = text;
+  c.addEventListener("click", () => toggleChip(c));
+  const other = group.querySelector(".chip-other");
+  if (other) group.insertBefore(c, other); else group.appendChild(c);
+  return c;
+}
+
+function collectInfDraft() {
+  const val = id => {
+    const el = document.getElementById(id);
+    return el ? el.value : "";
+  };
+  const fields = {};
+  Object.keys(INF_FIELD_DEFAULTS).forEach(id => { fields[id] = val(id); });
+  const chips = {};
+  INF_DRAFT_CHIP_GROUPS.forEach(id => {
+    chips[id] = [ ...document.querySelectorAll(`#${id} .form-chip.selected:not(.chip-other)`) ].map(c => ({
+      t: c.textContent.trim(),
+      c: !!c.dataset.custom
+    }));
+  });
+  return {
+    v: 1,
+    step: currentInfStep,
+    nome: val("av-nome"),
+    desc: val("av-desc"),
+    idade: val("av-idade") || "28",
+    prompt: val("avatar-prompt-output"),
+    fields,
+    chips
+  };
+}
+
+function isInfDraftEmpty(d) {
+  if (d.nome || d.desc || d.prompt || d.step !== 1 || d.idade !== "28") return false;
+  if (Object.keys(INF_FIELD_DEFAULTS).some(id => d.fields[id] !== INF_FIELD_DEFAULTS[id])) return false;
+  return !INF_DRAFT_CHIP_GROUPS.some(id => d.chips[id].length);
+}
+
+function saveInfDraft() {
+  if (infDraftRestoring || !document.getElementById("inf-stepper")) return;
+  const d = collectInfDraft();
+  try {
+    if (isInfDraftEmpty(d)) localStorage.removeItem(INF_DRAFT_KEY);
+    else localStorage.setItem(INF_DRAFT_KEY, JSON.stringify(d));
+  } catch (e) {}
+}
+
+function scheduleInfDraftSave() {
+  if (infDraftRestoring) return;
+  clearTimeout(infDraftTimer);
+  infDraftTimer = setTimeout(saveInfDraft, 300);
+}
+
+function clearInfDraft() {
+  clearTimeout(infDraftTimer);
+  try { localStorage.removeItem(INF_DRAFT_KEY); } catch (e) {}
+}
+
+function restoreInfOption(id, value) {
+  const hidden = document.getElementById(id);
+  const grid = hidden && hidden.nextElementSibling;
+  if (!grid || !grid.classList.contains("inf-option-grid")) return;
+  const cards = [ ...grid.querySelectorAll(".inf-photo-card:not(.inf-other-card)") ];
+  const match = cards.find(c => {
+    try { return JSON.parse(c.getAttribute("data-args"))[2] === value; } catch (e) { return false; }
+  });
+  if (match) {
+    selectInfOption(match, id, value);
+    return;
+  }
+  const other = grid.querySelector(".inf-other-card");
+  if (other && value) {
+    selectInfOption(other, id, value);
+    const wrap = grid.nextElementSibling;
+    if (wrap && wrap.classList.contains("inf-other-wrap")) {
+      wrap.classList.add("open");
+      const inp = wrap.querySelector("input");
+      if (inp) inp.value = value;
+    }
+  }
+}
+
+function restoreInfDraft() {
+  let d = null;
+  try { d = JSON.parse(localStorage.getItem(INF_DRAFT_KEY) || "null"); } catch (e) {}
+  if (!d || d.v !== 1 || !d.fields || !d.chips || typeof d.fields !== "object") return;
+  infDraftRestoring = true;
+  try {
+    const set = (id, v, max) => {
+      const el = document.getElementById(id);
+      if (el && typeof v === "string") el.value = Sanitize.sanitizeInput(v, max);
+    };
+    set("av-nome", d.nome, 30);
+    set("av-desc", d.desc, 400);
+    updateCharCounter("av-desc", "av-desc-counter", 400);
+    const age = document.getElementById("av-idade");
+    const ageVal = Math.max(18, Math.min(60, parseInt(d.idade, 10) || 28));
+    if (age) {
+      age.value = String(ageVal);
+      const disp = document.getElementById("av-idade-display");
+      if (disp) disp.textContent = String(ageVal);
+    }
+    if (typeof d.fields["av-genero"] === "string") restoreInfOption("av-genero", Sanitize.sanitizeInput(d.fields["av-genero"], 30));
+    Object.keys(INF_FIELD_DEFAULTS).forEach(id => {
+      if (id !== "av-genero" && typeof d.fields[id] === "string") restoreInfOption(id, Sanitize.sanitizeInput(d.fields[id], 30));
+    });
+    INF_DRAFT_CHIP_GROUPS.forEach(id => {
+      const group = document.getElementById(id);
+      const list = Array.isArray(d.chips[id]) ? d.chips[id].slice(0, 20) : [];
+      if (!group) return;
+      list.forEach(item => {
+        if (!item || typeof item.t !== "string") return;
+        const text = Sanitize.sanitizeInput(item.t, 24);
+        const existing = [ ...group.querySelectorAll(".form-chip:not(.chip-other)") ].find(c => c.textContent.trim() === text);
+        if (existing) {
+          existing.classList.add("selected");
+          existing.setAttribute("aria-pressed", "true");
+        } else if (item.c && text) {
+          addCustomChip(group, text);
+        }
+      });
+    });
+    if (typeof d.prompt === "string") {
+      const out = document.getElementById("avatar-prompt-output");
+      if (out) out.value = d.prompt.slice(0, 8000);
+    }
+    updateInfSummary();
+    const step = Math.max(1, Math.min(INF_STEP_COUNT, parseInt(d.step, 10) || 1));
+    goInfStep(step, { noScroll: true });
+  } finally {
+    infDraftRestoring = false;
+  }
+  showToast("Rascunho do influencer recuperado.");
+}
+
+function setupInfDraft() {
+  const card = document.querySelector(".create-avatar-card");
+  if (!card) return;
+  [ "click", "input", "change" ].forEach(type => card.addEventListener(type, scheduleInfDraftSave, true));
+  window.addEventListener("pagehide", saveInfDraft);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") saveInfDraft(); });
+  restoreInfDraft();
+}
+
+const PLAN_WARN_DAYS = 7;
+const PLAN_WARN_KEY = "viralyze-expiry-warned";
+let licenseExpiresAt = null;
+let planTimer = null;
+
+function formatLicenseDate(iso) {
+  const d = new Date(iso);
+  return isNaN(d.getTime()) ? "" : d.toLocaleDateString("pt-BR");
+}
+
+function licenseState() {
+  if (!licenseExpiresAt) return { state: "loading", text: "Verificando licença…", ms: null };
+  const ms = new Date(licenseExpiresAt).getTime() - Date.now();
+  if (isNaN(ms)) return { state: "loading", text: "Verificando licença…", ms: null };
+  const date = formatLicenseDate(licenseExpiresAt);
+  if (ms <= 0) return { state: "expired", text: "Licença expirada", ms };
+  const hours = Math.ceil(ms / 3600000);
+  if (hours <= 24) return { state: "warn", text: `Expira em ${hours}h · ${date}`, ms };
+  const days = Math.ceil(ms / 86400000);
+  if (days <= PLAN_WARN_DAYS) return { state: "warn", text: `Expira em ${days} dias · ${date}`, ms };
+  return { state: "ok", text: `Ativo até ${date}`, ms };
+}
+
+function renderPlanCard() {
+  const box = document.getElementById("plan-mini");
+  const label = document.getElementById("plan-mini-label");
+  if (!box || !label) return;
+  const st = licenseState();
+  box.dataset.state = st.state;
+  label.textContent = st.text;
+  const date = licenseExpiresAt ? formatLicenseDate(licenseExpiresAt) : "";
+  if (date) box.title = `Licença válida até ${date}`; else box.removeAttribute("title");
+}
+
+function warnLicenseExpiry() {
+  const st = licenseState();
+  if (st.state !== "warn" && st.state !== "expired") return;
+  const today = new Date().toISOString().slice(0, 10);
+  let last = null;
+  try { last = localStorage.getItem(PLAN_WARN_KEY); } catch (e) {}
+  if (last === today + st.state) return;
+  try { localStorage.setItem(PLAN_WARN_KEY, today + st.state); } catch (e) {}
+  showToast(st.state === "expired" ? "Sua licença expirou. Renove para continuar usando." : `Sua licença ${st.text.replace(/^Expira/, "expira")}. Renove para não perder o acesso.`, 6500);
+}
+
+function setLicenseExpiry(iso) {
+  if (!iso) return;
+  licenseExpiresAt = iso;
+  renderPlanCard();
+  warnLicenseExpiry();
+  clearInterval(planTimer);
+  planTimer = setInterval(() => {
+    renderPlanCard();
+    warnLicenseExpiry();
+  }, 60000);
+}
+
+window.addEventListener("nex:license", e => setLicenseExpiry(e.detail && e.detail.expiresAt));
+
+const MODAL_SELECTOR = ".modal-overlay, .search-overlay, .history-panel";
+const MODAL_CLOSERS = {
+  "add-product-modal": "closeAddModal",
+  "link-import-modal": "closeLinkImport",
+  "confirm-modal": "closeConfirm",
+  "history-panel": "closeHistory",
+  "search-overlay": "closeSearch",
+  "delete-all-modal": "closeDeleteAllModal"
+};
+const FOCUSABLE_SELECTOR = 'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+const modalStack = [];
+
+function setBackgroundInert(on) {
+  document.querySelectorAll(".header, .layout, .bottom-nav").forEach(el => {
+    if (on) {
+      el.setAttribute("inert", "");
+      el.setAttribute("aria-hidden", "true");
+    } else {
+      el.removeAttribute("inert");
+      el.removeAttribute("aria-hidden");
+    }
+  });
+}
+
+function focusablesIn(el) {
+  return [ ...el.querySelectorAll(FOCUSABLE_SELECTOR) ].filter(n => !n.hidden && n.getClientRects().length > 0);
+}
+
+let lastOutsideFocus = null;
+
+document.addEventListener("focusin", e => {
+  if (!e.target.closest || !e.target.closest(MODAL_SELECTOR)) lastOutsideFocus = e.target;
+});
+
+function onModalOpened(el) {
+  if (modalStack.some(m => m.el === el)) return;
+  const active = document.activeElement;
+  const opener = active && !el.contains(active) ? active : lastOutsideFocus;
+  modalStack.push({ el, opener });
+  setBackgroundInert(true);
+  if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");
+  const focus = () => {
+    if (el.contains(document.activeElement)) return;
+    const target = focusablesIn(el)[0] || el;
+    target.focus();
+  };
+  if (typeof requestAnimationFrame === "function") requestAnimationFrame(focus); else focus();
+}
+
+function onModalClosed(el) {
+  const i = modalStack.findIndex(m => m.el === el);
+  if (i < 0) return;
+  const opener = modalStack[i].opener;
+  modalStack.splice(i, 1);
+  if (!modalStack.length) setBackgroundInert(false);
+  if (opener && typeof opener.focus === "function" && document.contains(opener)) opener.focus();
+}
+
+function closeTopModal() {
+  const top = modalStack[modalStack.length - 1];
+  if (!top) return false;
+  const fn = MODAL_CLOSERS[top.el.id];
+  if (fn && typeof window[fn] === "function") window[fn](); else top.el.classList.remove("open");
+  return true;
+}
+
+function trapTab(e) {
+  const top = modalStack[modalStack.length - 1];
+  if (!top) return;
+  const items = focusablesIn(top.el);
+  if (!items.length) {
+    e.preventDefault();
+    top.el.focus();
+    return;
+  }
+  const first = items[0];
+  const last = items[items.length - 1];
+  const active = document.activeElement;
+  if (!top.el.contains(active)) {
+    e.preventDefault();
+    first.focus();
+  } else if (e.shiftKey && (active === first || active === top.el)) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && active === last) {
+    e.preventDefault();
+    first.focus();
+  }
+}
+
+function initModalManager() {
+  const observer = new MutationObserver(list => {
+    list.forEach(m => {
+      const el = m.target;
+      if (el.classList.contains("open")) onModalOpened(el); else onModalClosed(el);
+    });
+  });
+  document.querySelectorAll(MODAL_SELECTOR).forEach(el => {
+    observer.observe(el, { attributes: true, attributeFilter: [ "class" ] });
+    if (el.classList.contains("open")) onModalOpened(el);
+  });
+  document.addEventListener("keydown", e => {
+    if (!modalStack.length) return;
+    if (e.key === "Escape") {
+      e.preventDefault();
+      closeTopModal();
+    } else if (e.key === "Tab") {
+      trapTab(e);
+    }
+  });
+  const yes = document.getElementById("confirm-yes");
+  const no = document.getElementById("confirm-no");
+  if (yes) yes.addEventListener("click", acceptConfirm);
+  if (no) no.addEventListener("click", closeConfirm);
+  const confirm = document.getElementById("confirm-modal");
+  if (confirm) confirm.addEventListener("click", e => { if (e.target === confirm) closeConfirm(); });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initModalManager();
+  setupInfDraft();
+  try {
+    const stored = sessionStorage.getItem("nex_session_expiry");
+    if (stored && !licenseExpiresAt) setLicenseExpiry(stored);
+  } catch (e) {}
+});
+
 (function init() {
-  showSkeletons("product-grid", 8);
   renderMiningStats();
-  setTimeout(() => {
-    renderProducts();
-  }, 420);
+  renderProducts();
   renderAvatars("all");
   setupFilters("mining-filters", "cat", "#product-grid", ".product-card");
   updateImgStepGate();
   updateVidStepGate();
   updateHistNotif();
-  if (window.innerWidth >= 900) {
-    document.getElementById("search-label-desk").style.display = "inline";
-    document.getElementById("search-kbd").style.display = "inline";
-  }
   const imgStepper = document.getElementById("img-stepper");
   const vidStepper = document.getElementById("vid-stepper");
   if (imgStepper) {
