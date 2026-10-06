@@ -2,6 +2,8 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://nexai-backend-production-5e36.up.railway.app; object-src 'none'; base-uri 'self'; form-action 'self'">
+<script src="js/events.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Viralyze — Studio de Marketing Viral</title>
 <meta name="description" content="Viralyze — Studio de Marketing Viral">
@@ -39,7 +41,7 @@
 
 <div class="modal-overlay" id="add-product-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
   <div class="modal">
-    <button class="modal-close" onclick="closeAddModal()" aria-label="Fechar">
+    <button class="modal-close" aria-label="Fechar" data-click="closeAddModal">
       <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
     <div class="modal-title" id="modal-title">Adicionar Produto</div>
@@ -50,22 +52,22 @@
     </div>
     <div class="form-group">
       <label class="form-label" for="np-prompt">Prompt Visual <span style="color:var(--text3);font-size:9px;letter-spacing:0;text-transform:none;font-weight:400;margin-left:3px">(máx. 200 caracteres)</span></label>
-      <textarea class="form-textarea" id="np-prompt" maxlength="200" placeholder="Descreva o produto visualmente em inglês. Ex: cylindrical bottle with white dropper top" style="min-height:76px" oninput="updateCharCounter('np-prompt','np-counter',200)"></textarea>
+      <textarea class="form-textarea" id="np-prompt" maxlength="200" placeholder="Descreva o produto visualmente em inglês. Ex: cylindrical bottle with white dropper top" style="min-height:76px" data-input="updateCharCounter" data-args='["np-prompt","np-counter",200]'></textarea>
       <div class="char-counter" id="np-counter">0 / 200</div>
     </div>
-    <button class="modal-cta" onclick="saveNewProduct()">Adicionar Produto</button>
+    <button class="modal-cta" data-click="saveNewProduct">Adicionar Produto</button>
   </div>
 </div>
 
 <header class="header">
   <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
-    <button onclick="openSearch()" aria-label="Busca global" id="header-search-btn" style="display:none;background:var(--surface2);border:1px solid var(--border2);border-radius:20px;padding:5px 11px;align-items:center;gap:6px;color:var(--text3);font-size:12px;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif;">
+    <button aria-label="Busca global" id="header-search-btn" style="display:none;background:var(--surface2);border:1px solid var(--border2);border-radius:20px;padding:5px 11px;align-items:center;gap:6px;color:var(--text3);font-size:12px;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif;" data-click="openSearch">
       <svg style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <span id="search-label-desk" style="display:none">Buscar</span>
       <kbd id="search-kbd" style="background:var(--surface3);border:1px solid var(--border2);border-radius:4px;font-size:9.5px;padding:1px 5px;font-family:monospace;color:var(--text3);display:none">/</kbd>
     </button>
-    <button class="settings-trigger" onclick="switchTab('settings',this)" id="settings-btn"
-            aria-label="Configurações" data-tip="Configurações" title="Configurações">
+    <button class="settings-trigger" id="settings-btn"
+            aria-label="Configurações" data-tip="Configurações" title="Configurações" data-click="switchTab" data-args='["settings","$el"]'>
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
     </button>
   </div>
@@ -83,33 +85,33 @@
       <span class="logo-text">Viralyze</span>
     </div>
     <div class="sidebar-section">Principal</div>
-    <div class="sidebar-item active" onclick="switchTab('mining',this)" tabindex="0" role="menuitem" aria-current="page" onkeydown="if(event.key==='Enter')switchTab('mining',this)">
+    <div class="sidebar-item active" tabindex="0" role="menuitem" aria-current="page" data-click="switchTab" data-enter="switchTab" data-args='["mining","$el"]'>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       Inventário
     </div>
     <div class="sidebar-section">Criação</div>
-    <div class="sidebar-item" onclick="switchTab('freestudio',this)" tabindex="0" role="menuitem" onkeydown="if(event.key==='Enter')switchTab('freestudio',this)">
+    <div class="sidebar-item" tabindex="0" role="menuitem" data-click="switchTab" data-enter="switchTab" data-args='["freestudio","$el"]'>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
       Estúdio Livre
     </div>
-    <div class="sidebar-item" onclick="switchTab('viralize',this)" tabindex="0" role="menuitem" onkeydown="if(event.key==='Enter')switchTab('viralize',this)">
+    <div class="sidebar-item" tabindex="0" role="menuitem" data-click="switchTab" data-enter="switchTab" data-args='["viralize","$el"]'>
       <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       Viralize A.I
     </div>
-    <div class="sidebar-item" onclick="switchTab('influencer',this)" tabindex="0" role="menuitem" onkeydown="if(event.key==='Enter')switchTab('influencer',this)">
+    <div class="sidebar-item" tabindex="0" role="menuitem" data-click="switchTab" data-enter="switchTab" data-args='["influencer","$el"]'>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       Influencers
     </div>
-    <div class="sidebar-item" onclick="switchTab('viralvideos',this)" tabindex="0" role="menuitem" onkeydown="if(event.key==='Enter')switchTab('viralvideos',this)">
+    <div class="sidebar-item" tabindex="0" role="menuitem" data-click="switchTab" data-enter="switchTab" data-args='["viralvideos","$el"]'>
       <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
       Vídeos Virais
     </div>
-    <div class="sidebar-item" onclick="switchTab('imglibrary',this)" tabindex="0" role="menuitem" onkeydown="if(event.key==='Enter')switchTab('imglibrary',this)">
+    <div class="sidebar-item" tabindex="0" role="menuitem" data-click="switchTab" data-enter="switchTab" data-args='["imglibrary","$el"]'>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
       Biblioteca de Imagens
     </div>
     <div class="sidebar-footer">
-      <div class="sidebar-item sidebar-settings" onclick="switchTab('settings',this)" tabindex="0" role="menuitem" onkeydown="if(event.key==='Enter')switchTab('settings',this)">
+      <div class="sidebar-item sidebar-settings" tabindex="0" role="menuitem" data-click="switchTab" data-enter="switchTab" data-args='["settings","$el"]'>
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
       Configurações
       </div>
@@ -137,7 +139,7 @@
 
       <div class="inv-toolbar">
       <div class="niche-filter-wrap" id="niche-filter-wrap">
-        <button type="button" class="niche-filter-btn" onclick="toggleNicheFilter()" aria-haspopup="true" aria-expanded="false">
+        <button type="button" class="niche-filter-btn" aria-haspopup="true" aria-expanded="false" data-click="toggleNicheFilter">
           <svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
           <span id="niche-filter-label">Todos os nichos</span>
           <svg class="niche-caret" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
@@ -152,7 +154,7 @@
           <button class="filter-chip" data-cat="fitness"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><line x1="6" y1="12" x2="18" y2="12"/><rect x="6" y="7" width="3" height="10" rx="1"/><rect x="15" y="7" width="3" height="10" rx="1"/></svg> Fitness</button>
         </div>
       </div>
-      <button type="button" class="inv-link-btn" onclick="openLinkImport()">
+      <button type="button" class="inv-link-btn" data-click="openLinkImport">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 007.07 0l3-3a5 5 0 00-7.07-7.07l-1.7 1.7"/><path d="M14 11a5 5 0 00-7.07 0l-3 3a5 5 0 007.07 7.07l1.7-1.7"/></svg>
         Importar por link
       </button>
@@ -172,7 +174,7 @@
       <div id="fs-projects-view">
         <div class="fs-projects-header">
           <p class="section-label" style="margin:0">Seus projetos</p>
-          <button type="button" class="fs-new-project-btn" onclick="fsCreateProject()">
+          <button type="button" class="fs-new-project-btn" data-click="fsCreateProject">
             <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Novo projeto
           </button>
@@ -182,7 +184,7 @@
 
       <div id="fs-chat-view" class="fs-chat-shell" style="display:none">
         <div class="fs-chat-topbar">
-          <button type="button" class="fs-back-btn" onclick="fsBackToProjects()">
+          <button type="button" class="fs-back-btn" data-click="fsBackToProjects">
             <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.4"><polyline points="15 18 9 12 15 6"/></svg>
             Projetos
           </button>
@@ -208,7 +210,7 @@
         <input type="file" id="fs-video-file-input" accept="video/*" style="display:none">
         <input type="text" id="fs-style-input" class="fs-textinput" placeholder="Descreva o estilo do vídeo (ex: mirror selfie, unboxing, GRWM...)" style="display:none">
         <div style="display:flex;justify-content:flex-end;margin:0 16px 12px" id="fs-extract-btn-wrap">
-          <button type="button" class="quick-action-btn primary" onclick="fsRunExtract()" style="display:none" id="fs-extract-btn">Extrair Movimento</button>
+          <button type="button" class="quick-action-btn primary" style="display:none" id="fs-extract-btn" data-click="fsRunExtract">Extrair Movimento</button>
         </div>
         <div class="fs-chat-inputrow" id="fs-chat-inputrow">
           <input type="text" class="fs-chat-input" id="fs-chat-input" placeholder="Escreva sua mensagem...">
@@ -231,7 +233,7 @@
       <div class="viralize-output" id="viralize-output">
         <div class="viralize-output-label">Prompt pronto para <span id="viralize-output-avatar"></span></div>
         <div class="viralize-output-text" id="viralize-output-text"></div>
-        <button type="button" class="copy-btn" onclick="copyViralizeOutput()">
+        <button type="button" class="copy-btn" data-click="copyViralizeOutput">
           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
           Copiar Prompt
         </button>
@@ -253,7 +255,7 @@
       <div class="imglib-empty">
         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
         <p>Você ainda não gerou nenhuma imagem.<br>Crie no Estúdio Livre e ela aparece aqui.</p>
-        <button type="button" class="quick-action-btn primary" onclick="switchTab('freestudio', null)">Ir para o Estúdio Livre</button>
+        <button type="button" class="quick-action-btn primary" data-click="switchTab" data-args='["freestudio",null]'>Ir para o Estúdio Livre</button>
       </div>
     </div>
 
@@ -294,46 +296,46 @@
         </div>
 
         <div class="inf-stepper" id="inf-stepper" role="tablist" aria-label="Etapas de criação do influencer">
-          <div class="inf-step-item active" data-step="1" onclick="goInfStep(1)" role="tab" aria-selected="true"><span class="inf-step-num">1</span> Identidade</div>
-          <div class="inf-step-item" data-step="2" onclick="goInfStep(2)" role="tab" aria-selected="false"><span class="inf-step-num">2</span> Corpo</div>
-          <div class="inf-step-item" data-step="3" onclick="goInfStep(3)" role="tab" aria-selected="false"><span class="inf-step-num">3</span> Rosto</div>
-          <div class="inf-step-item" data-step="4" onclick="goInfStep(4)" role="tab" aria-selected="false"><span class="inf-step-num">4</span> Cabelo</div>
-          <div class="inf-step-item" data-step="5" onclick="goInfStep(5)" role="tab" aria-selected="false"><span class="inf-step-num">5</span> Estilo</div>
-          <div class="inf-step-item" data-step="6" onclick="goInfStep(6)" role="tab" aria-selected="false"><span class="inf-step-num">6</span> Renderização</div>
+          <div class="inf-step-item active" data-step="1" role="tab" aria-selected="true" data-click="goInfStep" data-args='[1]'><span class="inf-step-num">1</span> Identidade</div>
+          <div class="inf-step-item" data-step="2" role="tab" aria-selected="false" data-click="goInfStep" data-args='[2]'><span class="inf-step-num">2</span> Corpo</div>
+          <div class="inf-step-item" data-step="3" role="tab" aria-selected="false" data-click="goInfStep" data-args='[3]'><span class="inf-step-num">3</span> Rosto</div>
+          <div class="inf-step-item" data-step="4" role="tab" aria-selected="false" data-click="goInfStep" data-args='[4]'><span class="inf-step-num">4</span> Cabelo</div>
+          <div class="inf-step-item" data-step="5" role="tab" aria-selected="false" data-click="goInfStep" data-args='[5]'><span class="inf-step-num">5</span> Estilo</div>
+          <div class="inf-step-item" data-step="6" role="tab" aria-selected="false" data-click="goInfStep" data-args='[6]'><span class="inf-step-num">6</span> Renderização</div>
         </div>
 
         <div class="inf-wizard-layout">
           <div class="inf-wizard-main">
 
             <div class="inf-step-panel active" data-inf-step="1">
-              <div class="form-group"><label class="form-label" for="av-nome">Nome do Influencer</label><input type="text" class="form-input" placeholder="Ex: Aurora, Marcus, Luna..." id="av-nome" maxlength="30" autocomplete="off" oninput="updateInfSummary()"></div>
+              <div class="form-group"><label class="form-label" for="av-nome">Nome do Influencer</label><input type="text" class="form-input" placeholder="Ex: Aurora, Marcus, Luna..." id="av-nome" maxlength="30" autocomplete="off" data-input="updateInfSummary"></div>
 
               <div class="form-group">
                 <label class="form-label">Gênero</label>
                 <input type="hidden" id="av-genero" value="Feminino">
                 <div class="inf-option-grid">
-                  <div class="inf-photo-card loading selected" onclick="selectInfOption(this,'av-genero','Feminino')"><img src="assets/FEM.AVIF" alt="Feminino" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Feminino</div></div>
-                  <div class="inf-photo-card loading" onclick="selectInfOption(this,'av-genero','Masculino')"><img src="assets/MAS.AVIF" alt="Masculino" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Masculino</div></div>
-                  <div class="inf-photo-card" onclick="selectInfOption(this,'av-genero','Prefiro não dizer')"><div class="inf-photo-neutral"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></div><span class="inf-photo-check">✓</span><div class="inf-photo-label">Prefiro não dizer</div></div>
+                  <div class="inf-photo-card loading selected" data-click="selectInfOption" data-args='["$el","av-genero","Feminino"]'><img src="assets/FEM.AVIF" alt="Feminino" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Feminino</div></div>
+                  <div class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-genero","Masculino"]'><img src="assets/MAS.AVIF" alt="Masculino" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Masculino</div></div>
+                  <div class="inf-photo-card" data-click="selectInfOption" data-args='["$el","av-genero","Prefiro não dizer"]'><div class="inf-photo-neutral"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></div><span class="inf-photo-check">✓</span><div class="inf-photo-label">Prefiro não dizer</div></div>
                 </div>
               </div>
 
               <div class="form-group">
                 <label class="form-label">Idade — <span id="av-idade-display">28</span> anos</label>
-                <input type="range" id="av-idade" min="18" max="60" value="28" oninput="document.getElementById('av-idade-display').textContent=this.value;updateInfSummary()">
+                <input type="range" id="av-idade" min="18" max="60" value="28" data-input="onAgeInput" data-args='["$el"]'>
               </div>
 
               <div class="form-group">
                 <label class="form-label">Etnia / Origem</label>
                 <input type="hidden" id="av-etnia" value="Latina/Latino">
                 <div class="inf-option-grid" id="etnia-option-grid">
-                  <div class="inf-photo-card loading selected" data-key="latina" onclick="selectInfOption(this,'av-etnia','Latina/Latino')"><img src="assets/LAF.AVIF" alt="Latina/Latino" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Latina/Latino</div></div>
-                  <div class="inf-photo-card loading" data-key="branca" onclick="selectInfOption(this,'av-etnia','Branca')"><img src="assets/BRF.AVIF" alt="Branca" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Branca</div></div>
-                  <div class="inf-photo-card loading" data-key="negra" onclick="selectInfOption(this,'av-etnia','Negra')"><img src="assets/NEF.AVIF" alt="Negra" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Negra</div></div>
-                  <div class="inf-photo-card loading" data-key="asiatica" onclick="selectInfOption(this,'av-etnia','Asiática')"><img src="assets/ASF.AVIF" alt="Asiática" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Asiática</div></div>
-                  <div class="inf-photo-card loading" data-key="indigena" onclick="selectInfOption(this,'av-etnia','Indígena')"><img src="assets/INF.AVIF" alt="Indígena" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Indígena</div></div>
-                  <div class="inf-photo-card loading" data-key="oriente" onclick="selectInfOption(this,'av-etnia','Oriente Médio')"><img src="assets/ORF.AVIF" alt="Oriente Médio" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Oriente Médio</div></div>
-                  <div class="inf-photo-card" onclick="selectInfOption(this,'av-etnia','Prefiro não dizer')"><div class="inf-photo-neutral"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></div><span class="inf-photo-check">✓</span><div class="inf-photo-label">Prefiro não dizer</div></div>
+                  <div class="inf-photo-card loading selected" data-key="latina" data-click="selectInfOption" data-args='["$el","av-etnia","Latina/Latino"]'><img src="assets/LAF.AVIF" alt="Latina/Latino" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Latina/Latino</div></div>
+                  <div class="inf-photo-card loading" data-key="branca" data-click="selectInfOption" data-args='["$el","av-etnia","Branca"]'><img src="assets/BRF.AVIF" alt="Branca" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Branca</div></div>
+                  <div class="inf-photo-card loading" data-key="negra" data-click="selectInfOption" data-args='["$el","av-etnia","Negra"]'><img src="assets/NEF.AVIF" alt="Negra" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Negra</div></div>
+                  <div class="inf-photo-card loading" data-key="asiatica" data-click="selectInfOption" data-args='["$el","av-etnia","Asiática"]'><img src="assets/ASF.AVIF" alt="Asiática" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Asiática</div></div>
+                  <div class="inf-photo-card loading" data-key="indigena" data-click="selectInfOption" data-args='["$el","av-etnia","Indígena"]'><img src="assets/INF.AVIF" alt="Indígena" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Indígena</div></div>
+                  <div class="inf-photo-card loading" data-key="oriente" data-click="selectInfOption" data-args='["$el","av-etnia","Oriente Médio"]'><img src="assets/ORF.AVIF" alt="Oriente Médio" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Oriente Médio</div></div>
+                  <div class="inf-photo-card" data-click="selectInfOption" data-args='["$el","av-etnia","Prefiro não dizer"]'><div class="inf-photo-neutral"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></div><span class="inf-photo-check">✓</span><div class="inf-photo-label">Prefiro não dizer</div></div>
                 </div>
               </div>
             </div>
@@ -343,20 +345,20 @@
                 <label class="form-label">Tipo de Corpo</label>
                 <input type="hidden" id="av-corpo" value="Magro">
                 <div class="inf-option-grid" id="corpo-option-grid">
-                  <div class="inf-photo-card loading selected" data-key="magro" onclick="selectInfOption(this,'av-corpo','Magro')"><img src="assets/MAF.AVIF" alt="Magro" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Magro</div></div>
-                  <div class="inf-photo-card loading" data-key="atletico" onclick="selectInfOption(this,'av-corpo','Atlético')"><img src="assets/ATF.AVIF" alt="Atlético" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Atlético</div></div>
-                  <div class="inf-photo-card loading" data-key="curvilineo" onclick="selectInfOption(this,'av-corpo','Curvilíneo')"><img src="assets/CUF.AVIF" alt="Curvilíneo" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Curvilíneo</div></div>
-                  <div class="inf-photo-card loading" data-key="plussize" onclick="selectInfOption(this,'av-corpo','Plus Size')"><img src="assets/PSF.AVIF" alt="Plus Size" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Plus Size</div></div>
-                  <div class="inf-photo-card loading" data-key="musculoso" onclick="selectInfOption(this,'av-corpo','Musculoso')"><img src="assets/MUF.AVIF" alt="Musculoso" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Musculoso</div></div>
+                  <div class="inf-photo-card loading selected" data-key="magro" data-click="selectInfOption" data-args='["$el","av-corpo","Magro"]'><img src="assets/MAF.AVIF" alt="Magro" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Magro</div></div>
+                  <div class="inf-photo-card loading" data-key="atletico" data-click="selectInfOption" data-args='["$el","av-corpo","Atlético"]'><img src="assets/ATF.AVIF" alt="Atlético" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Atlético</div></div>
+                  <div class="inf-photo-card loading" data-key="curvilineo" data-click="selectInfOption" data-args='["$el","av-corpo","Curvilíneo"]'><img src="assets/CUF.AVIF" alt="Curvilíneo" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Curvilíneo</div></div>
+                  <div class="inf-photo-card loading" data-key="plussize" data-click="selectInfOption" data-args='["$el","av-corpo","Plus Size"]'><img src="assets/PSF.AVIF" alt="Plus Size" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Plus Size</div></div>
+                  <div class="inf-photo-card loading" data-key="musculoso" data-click="selectInfOption" data-args='["$el","av-corpo","Musculoso"]'><img src="assets/MUF.AVIF" alt="Musculoso" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Musculoso</div></div>
                 </div>
               </div>
               <div class="form-group">
                 <label class="form-label">Altura</label>
                 <input type="hidden" id="av-altura" value="Baixa">
                 <div class="inf-option-grid" id="altura-option-grid">
-                  <div class="inf-photo-card loading selected" data-key="baixa" onclick="selectInfOption(this,'av-altura','Baixa')"><img src="assets/BAF.AVIF" alt="Baixa" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Baixa</div></div>
-                  <div class="inf-photo-card loading" data-key="media" onclick="selectInfOption(this,'av-altura','Média')"><img src="assets/MEF.AVIF" alt="Média" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Média</div></div>
-                  <div class="inf-photo-card loading" data-key="alta" onclick="selectInfOption(this,'av-altura','Alta')"><img src="assets/ALF.AVIF" alt="Alta" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Alta</div></div>
+                  <div class="inf-photo-card loading selected" data-key="baixa" data-click="selectInfOption" data-args='["$el","av-altura","Baixa"]'><img src="assets/BAF.AVIF" alt="Baixa" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Baixa</div></div>
+                  <div class="inf-photo-card loading" data-key="media" data-click="selectInfOption" data-args='["$el","av-altura","Média"]'><img src="assets/MEF.AVIF" alt="Média" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Média</div></div>
+                  <div class="inf-photo-card loading" data-key="alta" data-click="selectInfOption" data-args='["$el","av-altura","Alta"]'><img src="assets/ALF.AVIF" alt="Alta" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Alta</div></div>
                 </div>
               </div>
             </div>
@@ -366,22 +368,22 @@
                 <label class="form-label">Formato do Rosto</label>
                 <input type="hidden" id="av-rosto" value="Oval">
                 <div class="inf-option-grid" id="rosto-option-grid">
-                  <div class="inf-photo-card loading selected" data-key="oval" onclick="selectInfOption(this,'av-rosto','Oval')"><img src="assets/OVF.AVIF" alt="Oval" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Oval</div></div>
-                  <div class="inf-photo-card loading" data-key="redondo" onclick="selectInfOption(this,'av-rosto','Redondo')"><img src="assets/RDF.AVIF" alt="Redondo" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Redondo</div></div>
-                  <div class="inf-photo-card loading" data-key="quadrado" onclick="selectInfOption(this,'av-rosto','Quadrado')"><img src="assets/QDF.AVIF" alt="Quadrado" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Quadrado</div></div>
-                  <div class="inf-photo-card loading" data-key="triangular" onclick="selectInfOption(this,'av-rosto','Triangular')"><img src="assets/TRF.AVIF" alt="Triangular" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Triangular</div></div>
-                  <div class="inf-photo-card loading" data-key="coracao" onclick="selectInfOption(this,'av-rosto','Coração')"><img src="assets/CRF.AVIF" alt="Coração" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Coração</div></div>
+                  <div class="inf-photo-card loading selected" data-key="oval" data-click="selectInfOption" data-args='["$el","av-rosto","Oval"]'><img src="assets/OVF.AVIF" alt="Oval" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Oval</div></div>
+                  <div class="inf-photo-card loading" data-key="redondo" data-click="selectInfOption" data-args='["$el","av-rosto","Redondo"]'><img src="assets/RDF.AVIF" alt="Redondo" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Redondo</div></div>
+                  <div class="inf-photo-card loading" data-key="quadrado" data-click="selectInfOption" data-args='["$el","av-rosto","Quadrado"]'><img src="assets/QDF.AVIF" alt="Quadrado" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Quadrado</div></div>
+                  <div class="inf-photo-card loading" data-key="triangular" data-click="selectInfOption" data-args='["$el","av-rosto","Triangular"]'><img src="assets/TRF.AVIF" alt="Triangular" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Triangular</div></div>
+                  <div class="inf-photo-card loading" data-key="coracao" data-click="selectInfOption" data-args='["$el","av-rosto","Coração"]'><img src="assets/CRF.AVIF" alt="Coração" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Coração</div></div>
                 </div>
               </div>
               <div class="form-group">
                 <label class="form-label">Cor dos Olhos</label>
                 <input type="hidden" id="av-olhos" value="Castanhos">
                 <div class="inf-option-grid" id="olhos-option-grid">
-                  <div class="inf-photo-card loading selected" onclick="selectInfOption(this,'av-olhos','Castanhos')"><img src="assets/CAS.AVIF" alt="Castanhos" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Castanhos</div></div>
-                  <div class="inf-photo-card loading" onclick="selectInfOption(this,'av-olhos','Pretos')"><img src="assets/PRE.AVIF" alt="Pretos" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Pretos</div></div>
-                  <div class="inf-photo-card loading" onclick="selectInfOption(this,'av-olhos','Verdes')"><img src="assets/VER.AVIF" alt="Verdes" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Verdes</div></div>
-                  <div class="inf-photo-card loading" onclick="selectInfOption(this,'av-olhos','Azuis')"><img src="assets/AZU.AVIF" alt="Azuis" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Azuis</div></div>
-                  <div class="inf-photo-card loading" onclick="selectInfOption(this,'av-olhos','Mel')"><img src="assets/MEL.AVIF" alt="Mel" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Mel</div></div>
+                  <div class="inf-photo-card loading selected" data-click="selectInfOption" data-args='["$el","av-olhos","Castanhos"]'><img src="assets/CAS.AVIF" alt="Castanhos" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Castanhos</div></div>
+                  <div class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-olhos","Pretos"]'><img src="assets/PRE.AVIF" alt="Pretos" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Pretos</div></div>
+                  <div class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-olhos","Verdes"]'><img src="assets/VER.AVIF" alt="Verdes" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Verdes</div></div>
+                  <div class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-olhos","Azuis"]'><img src="assets/AZU.AVIF" alt="Azuis" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Azuis</div></div>
+                  <div class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-olhos","Mel"]'><img src="assets/MEL.AVIF" alt="Mel" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Mel</div></div>
                 </div>
               </div>
             </div>
@@ -391,32 +393,32 @@
                 <label class="form-label">Cor do Cabelo</label>
                 <input type="hidden" id="av-cor-cabelo" value="Preto">
                 <div class="inf-option-grid" id="corcabelo-option-grid">
-                  <div class="inf-photo-card loading selected" onclick="selectInfOption(this,'av-cor-cabelo','Preto')"><img src="assets/PTO.AVIF" alt="Preto" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Preto</div></div>
-                  <div class="inf-photo-card loading" onclick="selectInfOption(this,'av-cor-cabelo','Castanho')"><img src="assets/CTO.AVIF" alt="Castanho" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Castanho</div></div>
-                  <div class="inf-photo-card loading" onclick="selectInfOption(this,'av-cor-cabelo','Loiro')"><img src="assets/LOI.AVIF" alt="Loiro" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Loiro</div></div>
-                  <div class="inf-photo-card loading" onclick="selectInfOption(this,'av-cor-cabelo','Ruivo')"><img src="assets/RUI.AVIF" alt="Ruivo" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Ruivo</div></div>
-                  <div class="inf-photo-card loading" onclick="selectInfOption(this,'av-cor-cabelo','Grisalho')"><img src="assets/GRI.AVIF" alt="Grisalho" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Grisalho</div></div>
-                  <div class="inf-photo-card loading" onclick="selectInfOption(this,'av-cor-cabelo','Colorido')"><img src="assets/COL.AVIF" alt="Colorido" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Colorido</div></div>
+                  <div class="inf-photo-card loading selected" data-click="selectInfOption" data-args='["$el","av-cor-cabelo","Preto"]'><img src="assets/PTO.AVIF" alt="Preto" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Preto</div></div>
+                  <div class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-cor-cabelo","Castanho"]'><img src="assets/CTO.AVIF" alt="Castanho" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Castanho</div></div>
+                  <div class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-cor-cabelo","Loiro"]'><img src="assets/LOI.AVIF" alt="Loiro" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Loiro</div></div>
+                  <div class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-cor-cabelo","Ruivo"]'><img src="assets/RUI.AVIF" alt="Ruivo" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Ruivo</div></div>
+                  <div class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-cor-cabelo","Grisalho"]'><img src="assets/GRI.AVIF" alt="Grisalho" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Grisalho</div></div>
+                  <div class="inf-photo-card loading" data-click="selectInfOption" data-args='["$el","av-cor-cabelo","Colorido"]'><img src="assets/COL.AVIF" alt="Colorido" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Colorido</div></div>
                 </div>
               </div>
               <div class="form-group">
                 <label class="form-label">Estilo do Cabelo</label>
                 <input type="hidden" id="av-estilo-cabelo" value="Liso">
                 <div class="inf-option-grid" id="estilocabelo-option-grid">
-                  <div class="inf-photo-card loading selected" data-key="liso" onclick="selectInfOption(this,'av-estilo-cabelo','Liso')"><img src="assets/LIF.AVIF" alt="Liso" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Liso</div></div>
-                  <div class="inf-photo-card loading" data-key="ondulado" onclick="selectInfOption(this,'av-estilo-cabelo','Ondulado')"><img src="assets/ONF.AVIF" alt="Ondulado" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Ondulado</div></div>
-                  <div class="inf-photo-card loading" data-key="cacheado" onclick="selectInfOption(this,'av-estilo-cabelo','Cacheado')"><img src="assets/CCF.AVIF" alt="Cacheado" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Cacheado</div></div>
-                  <div class="inf-photo-card loading" data-key="crespo" onclick="selectInfOption(this,'av-estilo-cabelo','Crespo')"><img src="assets/CEF.AVIF" alt="Crespo" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Crespo</div></div>
-                  <div class="inf-photo-card loading" data-key="careca" onclick="selectInfOption(this,'av-estilo-cabelo','Careca')"><img src="assets/CVF.AVIF" alt="Careca" onload="this.classList.add('loaded');this.closest('.inf-photo-card').classList.remove('loading')" onerror="this.closest('.inf-photo-card').classList.remove('loading')"><span class="inf-photo-check">✓</span><div class="inf-photo-label">Careca</div></div>
+                  <div class="inf-photo-card loading selected" data-key="liso" data-click="selectInfOption" data-args='["$el","av-estilo-cabelo","Liso"]'><img src="assets/LIF.AVIF" alt="Liso" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Liso</div></div>
+                  <div class="inf-photo-card loading" data-key="ondulado" data-click="selectInfOption" data-args='["$el","av-estilo-cabelo","Ondulado"]'><img src="assets/ONF.AVIF" alt="Ondulado" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Ondulado</div></div>
+                  <div class="inf-photo-card loading" data-key="cacheado" data-click="selectInfOption" data-args='["$el","av-estilo-cabelo","Cacheado"]'><img src="assets/CCF.AVIF" alt="Cacheado" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Cacheado</div></div>
+                  <div class="inf-photo-card loading" data-key="crespo" data-click="selectInfOption" data-args='["$el","av-estilo-cabelo","Crespo"]'><img src="assets/CEF.AVIF" alt="Crespo" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Crespo</div></div>
+                  <div class="inf-photo-card loading" data-key="careca" data-click="selectInfOption" data-args='["$el","av-estilo-cabelo","Careca"]'><img src="assets/CVF.AVIF" alt="Careca" data-load="infPhotoLoaded" data-error="infPhotoFailed" data-args='["$el"]'><span class="inf-photo-check">✓</span><div class="inf-photo-label">Careca</div></div>
                 </div>
               </div>
             </div>
 
             <div class="inf-step-panel" data-inf-step="5">
-              <div class="form-group"><label class="form-label">Estilo Visual</label><div class="chip-group" id="av-estilo"><span class="form-chip" onclick="toggleChip(this)">Minimalista</span><span class="form-chip" onclick="toggleChip(this)">Streetwear</span><span class="form-chip" onclick="toggleChip(this)">Luxo</span><span class="form-chip" onclick="toggleChip(this)">Fitness</span><span class="form-chip" onclick="toggleChip(this)">Grunge</span><span class="form-chip" onclick="toggleChip(this)">Boho</span></div></div>
-              <div class="form-group"><label class="form-label">Nicho</label><div class="chip-group" id="av-nicho"><span class="form-chip" onclick="toggleChip(this)">Beleza</span><span class="form-chip" onclick="toggleChip(this)">Tech</span><span class="form-chip" onclick="toggleChip(this)">Moda</span><span class="form-chip" onclick="toggleChip(this)">Lifestyle</span><span class="form-chip" onclick="toggleChip(this)">Fitness</span><span class="form-chip" onclick="toggleChip(this)">Culinária</span></div></div>
-              <div class="form-group"><label class="form-label">Personalidade</label><div class="chip-group" id="av-personalidade"><span class="form-chip" onclick="toggleChip(this)">Enérgica</span><span class="form-chip" onclick="toggleChip(this)">Sofisticada</span><span class="form-chip" onclick="toggleChip(this)">Divertida</span><span class="form-chip" onclick="toggleChip(this)">Educativa</span><span class="form-chip" onclick="toggleChip(this)">Empática</span><span class="form-chip" onclick="toggleChip(this)">Audaciosa</span></div></div>
-              <div class="form-group"><label class="form-label">Tipo de Conteúdo</label><div class="chip-group" id="av-conteudo"><span class="form-chip" onclick="toggleChip(this)">Reviews</span><span class="form-chip" onclick="toggleChip(this)">Tutoriais</span><span class="form-chip" onclick="toggleChip(this)">Unboxing</span><span class="form-chip" onclick="toggleChip(this)">Vlogs</span><span class="form-chip" onclick="toggleChip(this)">GRWM</span><span class="form-chip" onclick="toggleChip(this)">TikTok Ads</span></div></div>
+              <div class="form-group"><label class="form-label">Estilo Visual</label><div class="chip-group" id="av-estilo"><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Minimalista</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Streetwear</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Luxo</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Fitness</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Grunge</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Boho</span></div></div>
+              <div class="form-group"><label class="form-label">Nicho</label><div class="chip-group" id="av-nicho"><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Beleza</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Tech</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Moda</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Lifestyle</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Fitness</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Culinária</span></div></div>
+              <div class="form-group"><label class="form-label">Personalidade</label><div class="chip-group" id="av-personalidade"><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Enérgica</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Sofisticada</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Divertida</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Educativa</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Empática</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Audaciosa</span></div></div>
+              <div class="form-group"><label class="form-label">Tipo de Conteúdo</label><div class="chip-group" id="av-conteudo"><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Reviews</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Tutoriais</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Unboxing</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>Vlogs</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>GRWM</span><span class="form-chip" data-click="toggleChip" data-args='["$el"]'>TikTok Ads</span></div></div>
             </div>
 
             <div class="inf-step-panel" data-inf-step="6">
@@ -426,11 +428,10 @@
                   <span style="color:var(--text3);font-size:9px;letter-spacing:0;text-transform:none;font-weight:400">(opcional · máx. 400)</span>
                 </label>
                 <textarea class="form-textarea" id="av-desc" maxlength="400"
-                          placeholder="Características físicas específicas, sotaque, linguagem, tom de voz..."
-                          oninput="updateCharCounter('av-desc','av-desc-counter',400)"></textarea>
+                          placeholder="Características físicas específicas, sotaque, linguagem, tom de voz..." data-input="updateCharCounter" data-args='["av-desc","av-desc-counter",400]'></textarea>
                 <div class="char-counter" id="av-desc-counter">0 / 400</div>
               </div>
-              <button class="gen-btn" style="margin-top:4px" onclick="generateAvatarPromptAI()">
+              <button class="gen-btn" style="margin-top:4px" data-click="generateAvatarPromptAI">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
                 Gerar Prompt com IA
               </button>
@@ -441,15 +442,15 @@
               <textarea class="prompt-box" id="avatar-prompt-output" style="margin-top:10px;min-height:130px"
                         readonly placeholder="Preencha as informações e clique em Gerar Prompt..."
                         aria-readonly="true" aria-label="Prompt do influencer"></textarea>
-              <button class="modal-cta inf-save-btn" style="margin-top:10px" onclick="saveGeneratedAvatar()">
+              <button class="modal-cta inf-save-btn" style="margin-top:10px" data-click="saveGeneratedAvatar">
                 <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:inline;margin-right:5px" aria-hidden="true"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                 Salvar Influencer
               </button>
             </div>
 
             <div class="inf-wizard-nav">
-              <button type="button" class="inf-nav-btn" id="inf-nav-back" onclick="infPrevStep()" style="visibility:hidden">Voltar</button>
-              <button type="button" class="inf-nav-btn primary" id="inf-nav-next" onclick="infNextStep()">Avançar</button>
+              <button type="button" class="inf-nav-btn" id="inf-nav-back" style="visibility:hidden" data-click="infPrevStep">Voltar</button>
+              <button type="button" class="inf-nav-btn primary" id="inf-nav-next" data-click="infNextStep">Avançar</button>
             </div>
           </div>
 
@@ -499,10 +500,10 @@
           </div>
           <div class="settings-row"><div><div class="settings-row-label">Backup completo</div><div class="settings-row-desc">Salva favoritos, influencers, produtos, prompts, conversas do Estúdio Livre e preferências em um arquivo</div></div></div>
           <div class="export-row">
-            <button class="export-btn backup-btn" onclick="generateBackup()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>Gerar Backup</button>
-            <button class="export-btn backup-btn" onclick="document.getElementById('backup-file-input').click()"><svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>Importar Backup</button>
+            <button class="export-btn backup-btn" data-click="generateBackup"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>Gerar Backup</button>
+            <button class="export-btn backup-btn" data-click="openBackupPicker"><svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>Importar Backup</button>
           </div>
-          <input type="file" id="backup-file-input" accept="application/json,.json" style="display:none" onchange="importBackup(event)">
+          <input type="file" id="backup-file-input" accept="application/json,.json" style="display:none" data-change="importBackup" data-args='["$ev"]'>
           <div class="settings-row-desc" id="backup-status" style="margin-top:8px;min-height:14px"></div>
         </div>
         <div class="settings-card" id="device-card">
@@ -526,37 +527,37 @@
 </div>
 
 <nav class="bottom-nav" role="navigation" aria-label="Navegação principal">
-  <div class="nav-item active" onclick="switchTab('mining',this)" role="menuitem" tabindex="0" aria-label="Inventário">
+  <div class="nav-item active" role="menuitem" tabindex="0" aria-label="Inventário" data-click="switchTab" data-args='["mining","$el"]'>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     <span class="nav-label">Inventário</span>
   </div>
-  <div class="nav-item" onclick="switchTab('freestudio',this)" role="menuitem" tabindex="0" aria-label="Estúdio Livre">
+  <div class="nav-item" role="menuitem" tabindex="0" aria-label="Estúdio Livre" data-click="switchTab" data-args='["freestudio","$el"]'>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
     <span class="nav-label">Estúdio</span>
   </div>
-  <div class="nav-item" onclick="switchTab('viralize',this)" role="menuitem" tabindex="0" aria-label="Viralize A.I">
+  <div class="nav-item" role="menuitem" tabindex="0" aria-label="Viralize A.I" data-click="switchTab" data-args='["viralize","$el"]'>
     <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
     <span class="nav-label">Viralize</span>
   </div>
-  <div class="nav-item" onclick="switchTab('influencer',this)" role="menuitem" tabindex="0" aria-label="Influencers">
+  <div class="nav-item" role="menuitem" tabindex="0" aria-label="Influencers" data-click="switchTab" data-args='["influencer","$el"]'>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     <span class="nav-label">Influencers</span>
   </div>
-  <div class="nav-item" onclick="switchTab('viralvideos',this)" role="menuitem" tabindex="0" aria-label="Vídeos Virais">
+  <div class="nav-item" role="menuitem" tabindex="0" aria-label="Vídeos Virais" data-click="switchTab" data-args='["viralvideos","$el"]'>
     <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
     <span class="nav-label">Virais</span>
   </div>
-  <div class="nav-item" onclick="switchTab('imglibrary',this)" role="menuitem" tabindex="0" aria-label="Biblioteca de Imagens">
+  <div class="nav-item" role="menuitem" tabindex="0" aria-label="Biblioteca de Imagens" data-click="switchTab" data-args='["imglibrary","$el"]'>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
     <span class="nav-label">Galeria</span>
   </div>
 </nav>
 
-<div class="history-overlay-bg" id="history-overlay-bg" onclick="closeHistory()" aria-hidden="true"></div>
+<div class="history-overlay-bg" id="history-overlay-bg" aria-hidden="true" data-click="closeHistory"></div>
 <div class="history-panel" id="history-panel" role="dialog" aria-modal="true" aria-label="Histórico de prompts">
   <div class="history-panel-header">
     <span class="history-panel-title">Histórico de Prompts</span>
-    <button class="history-panel-close" onclick="closeHistory()" aria-label="Fechar histórico">
+    <button class="history-panel-close" aria-label="Fechar histórico" data-click="closeHistory">
       <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
@@ -582,7 +583,7 @@
 
 <div class="modal-overlay" id="link-import-modal" role="dialog" aria-modal="true" aria-labelledby="link-import-title">
   <div class="modal" style="max-width:460px">
-    <button class="modal-close" onclick="closeLinkImport()" aria-label="Fechar">
+    <button class="modal-close" aria-label="Fechar" data-click="closeLinkImport">
       <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
     <div class="modal-title" id="link-import-title">Importar produto por link</div>
@@ -591,7 +592,7 @@
       <label class="form-label" for="link-import-url">Link do produto</label>
       <div class="link-import-row">
         <input type="url" class="form-input" id="link-import-url" placeholder="https://www.mercadolivre.com.br/..." autocomplete="off" spellcheck="false">
-        <button type="button" class="export-btn" id="link-import-fetch" onclick="fetchProductFromLink()">Buscar</button>
+        <button type="button" class="export-btn" id="link-import-fetch" data-click="fetchProductFromLink">Buscar</button>
       </div>
       <div class="link-import-status" id="link-import-status" role="status" aria-live="polite"></div>
     </div>
@@ -601,7 +602,7 @@
         <label class="form-label" for="link-import-name">Nome do produto</label>
         <input type="text" class="form-input" id="link-import-name" maxlength="60" autocomplete="off">
       </div>
-      <button type="button" class="modal-cta" onclick="confirmLinkImport()">Adicionar ao inventário</button>
+      <button type="button" class="modal-cta" data-click="confirmLinkImport">Adicionar ao inventário</button>
     </div>
   </div>
 </div>
