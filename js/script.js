@@ -655,13 +655,25 @@ function safeSet(key, val) {
   }
 }
 
-favorites = safeGet(FAV_KEY, {});
+// Tudo que vem do localStorage é revalidado: se um backup malicioso já tiver sido
+// importado antes desta correção, o conteúdo perigoso é descartado na leitura e o
+// armazenamento é regravado já limpo.
+function loadClean(key, fallback, clean) {
+  const raw = safeGet(key, fallback);
+  const cleaned = clean(raw);
+  try {
+    if (JSON.stringify(cleaned) !== JSON.stringify(raw)) safeSet(key, cleaned);
+  } catch (e) {}
+  return cleaned;
+}
 
-customAvatars = safeGet(AVATARS_KEY, []);
+favorites = loadClean(FAV_KEY, {}, Sanitize.schema.favorites);
 
-customProducts = safeGet(PRODUCTS_KEY, []);
+customAvatars = loadClean(AVATARS_KEY, [], a => Sanitize.schema.avatars(a));
 
-promptHistory = safeGet(PROMPTS_KEY, []);
+customProducts = loadClean(PRODUCTS_KEY, [], a => Sanitize.schema.products(a));
+
+promptHistory = loadClean(PROMPTS_KEY, [], a => Sanitize.schema.history(a));
 
 let toastTimer;
 
@@ -691,6 +703,12 @@ function toggleFav(type, id, btn) {
   }
   safeSet(FAV_KEY, favorites);
   showToast(favorites[key] ? "Adicionado aos favoritos" : "Removido dos favoritos");
+}
+
+// Coração do card: troca o ícone e alterna o favorito (antes era código inline no onclick)
+function toggleFavBtn(type, id, btn) {
+  btn.innerHTML = heartSVG(!btn.classList.contains("active"));
+  toggleFav(type, id, btn);
 }
 
 function isFav(type, id) {
@@ -813,36 +831,51 @@ function importBackup(event) {
       input.value = "";
       return;
     }
+    // Reconstrói cada lista campo a campo (tipos, tamanhos, URLs https/data:image).
+    // Nada do arquivo é gravado "como veio": campos desconhecidos são descartados.
+    const clean = {
+      favorites: payload.favorites && typeof payload.favorites === "object" ? Sanitize.schema.favorites(payload.favorites) : null,
+      customAvatars: Array.isArray(payload.customAvatars) ? Sanitize.schema.avatars(payload.customAvatars, MAX_CUSTOM_AVATARS) : null,
+      customProducts: Array.isArray(payload.customProducts) ? Sanitize.schema.products(payload.customProducts) : null,
+      promptHistory: Array.isArray(payload.promptHistory) ? Sanitize.schema.history(payload.promptHistory) : null,
+      inventory: Array.isArray(payload.selectedInventory) ? Sanitize.schema.inventory(payload.selectedInventory) : null
+    };
+    const dropped = [
+      [ "customAvatars", payload.customAvatars, clean.customAvatars ],
+      [ "customProducts", payload.customProducts, clean.customProducts ],
+      [ "promptHistory", payload.promptHistory, clean.promptHistory ]
+    ].reduce((n, [ , before, after ]) => n + (Array.isArray(before) && after ? Math.max(0, before.length - after.length) : 0), 0);
+
     showConfirm("Importar este backup vai substituir seus dados atuais (favoritos, influencers, produtos, histórico e conversas do Estúdio Livre). Continuar?", () => {
       try {
-        if (payload.favorites && typeof payload.favorites === "object") {
-          favorites = payload.favorites;
+        if (clean.favorites) {
+          favorites = clean.favorites;
           safeSet(FAV_KEY, favorites);
         }
-        if (Array.isArray(payload.customAvatars)) {
-          customAvatars = payload.customAvatars;
+        if (clean.customAvatars) {
+          customAvatars = clean.customAvatars;
           safeSet(AVATARS_KEY, customAvatars);
         }
-        if (Array.isArray(payload.customProducts)) {
-          customProducts = payload.customProducts;
+        if (clean.customProducts) {
+          customProducts = clean.customProducts;
           safeSet(PRODUCTS_KEY, customProducts);
         }
-        if (Array.isArray(payload.promptHistory)) {
-          promptHistory = payload.promptHistory;
+        if (clean.promptHistory) {
+          promptHistory = clean.promptHistory;
           safeSet(PROMPTS_KEY, promptHistory);
         }
         if (Array.isArray(payload.freeStudioProjects) && typeof fsImportProjects === "function") {
           fsImportProjects(payload.freeStudioProjects);
         }
-        if (Array.isArray(payload.selectedInventory)) {
-          try { localStorage.setItem(INVENTORY_KEY, JSON.stringify(payload.selectedInventory.filter(v => typeof v === "number" || typeof v === "string"))); } catch (e) {}
+        if (clean.inventory) {
+          try { localStorage.setItem(INVENTORY_KEY, JSON.stringify(clean.inventory)); } catch (e) {}
         }
         if (typeof renderProducts === "function") renderProducts();
         if (typeof renderAvatars === "function") renderAvatars("all");
         if (typeof renderViralizeAvatars === "function") renderViralizeAvatars();
         if (typeof updateHistNotif === "function") updateHistNotif();
-        showToast("Backup importado com sucesso!");
-        if (status) status.textContent = "Backup importado em " + (new Date).toLocaleString("pt-BR") + ".";
+        showToast(dropped ? `Backup importado. ${dropped} item(ns) inválido(s) foram ignorados.` : "Backup importado com sucesso!");
+        if (status) status.textContent = "Backup importado em " + (new Date).toLocaleString("pt-BR") + (dropped ? ` (${dropped} item(ns) ignorado(s)).` : ".");
       } catch (err) {
         showToast("Erro ao aplicar o backup.");
         if (status) status.textContent = "Falha ao importar os dados.";
@@ -1103,12 +1136,24 @@ function scrollToFirstProduct() {
 }
 
 function productCard(p, selectable, i = 0, clickFn = "selectStudioProduct") {
-  const imgContent = p.img ? `<img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">` : `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.55"><path d="M21 8L12 3 3 8l9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>`;
+  const esc = Sanitize.escapeHTML;
+  const safeName = esc(p.name);
+  const imgUrl = Sanitize.safeImgUrl(p.img);
+  const imgContent = imgUrl ? `<img src="${esc(imgUrl)}" alt="${safeName}" loading="lazy" data-error="hideSelf" data-args="${Sanitize.args("$el")}">` : `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.55"><path d="M21 8L12 3 3 8l9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>`;
   const customBadge = p.custom ? `<span style="position:absolute;bottom:7px;right:7px;background:rgba(124,107,255,0.85);color:white;font-size:8px;padding:2px 6px;border-radius:7px;font-weight:700;backdrop-filter:blur(4px)">MEU</span>` : "";
-  const trendBadge = p.rank <= 5 ? `<div class="trending-badge">TOP ${p.rank}</div>` : "";
+  const rank = Number(p.rank);
+  const trendBadge = rank <= 5 ? `<div class="trending-badge">TOP ${rank}</div>` : "";
   const newBadge = p.isNew ? `<span class="badge-new">NOVO</span>` : "";
-  const safeName = Sanitize.escapeHTML(p.name);
-  return `<div class="product-card" data-cat="${p.cat}" data-id="${p.id}" ${selectable ? `onclick="${clickFn}('${p.id}',this)" role="option" tabindex="0" aria-label="${safeName}"` : ""} role="listitem">\n    <div class="card-img ${p.grad}">${imgContent}${customBadge}${trendBadge}${newBadge}\n    </div>\n    <div class="card-body">\n      <div class="card-name">${safeName}</div>\n      ${!selectable ? `<button class="card-btn" onclick="event.stopPropagation();addToInventory(${p.id},'${safeName.replace(/'/g, "\\'")}')"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar</button>` : ""}\n    </div>\n  </div>`;
+  const pick = selectable ? `data-click="${esc(clickFn)}" data-args="${Sanitize.args(String(p.id), "$el")}" role="option" tabindex="0" aria-label="${safeName}"` : "";
+  const addBtn = !selectable ? `<button class="card-btn" data-click="addToInventory" data-stop data-args="${Sanitize.args(p.id, String(p.name))}"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Adicionar</button>` : "";
+  return `<div class="product-card" data-cat="${esc(p.cat)}" data-id="${esc(String(p.id))}" ${pick} role="listitem">
+    <div class="card-img ${esc(p.grad)}">${imgContent}${customBadge}${trendBadge}${newBadge}
+    </div>
+    <div class="card-body">
+      <div class="card-name">${safeName}</div>
+      ${addBtn}
+    </div>
+  </div>`;
 }
 
 function renderProducts() {
@@ -1172,7 +1217,7 @@ function renderVideos() {
   document.getElementById("video-grid").innerHTML = videos.map((v, i) => {
     const fav = isFav("vid", v.id);
     const newBadgeV = v.isNew ? `<span class="badge-new">NOVO</span>` : "";
-    return `<div class="video-card" data-fmt="${v.fmt}" role="listitem">\n      <div class="video-thumb">\n        <img src="${v.img}" alt="${v.title}" loading="lazy" onerror="this.style.display='none'">\n        <div class="play-overlay" aria-hidden="true"><div class="play-circle"><svg viewBox="0 0 24 24" style="width:32px;height:32px"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>\n        <span class="format-badge ${v.fmtClass}">${v.fmt.toUpperCase()}</span>\n        ${newBadgeV}\n        <button class="fav-btn ${fav ? "active" : ""}" style="top:7px;left:7px;right:auto" onclick="this.innerHTML=heartSVG(!this.classList.contains('active'));toggleFav('vid',${v.id},this)" aria-label="${fav ? "Remover dos favoritos" : "Favoritar vídeo"}">${heartSVG(fav)}</button>\n      </div>\n      <div class="video-body">\n        <button class="card-btn" onclick="window.open('${v.url}','_blank')" style="margin-bottom:8px"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>Ver no TikTok</button>\n        <div class="video-title">${v.title}</div>\n        <div class="video-stats">\n          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>${v.views}</span>\n          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>${v.likes}</span>\n          <span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${v.dur}</span>\n        </div>\n        <button class="accordion-btn" onclick="toggleAccordion(this)" aria-expanded="false"><span>Estrutura do Roteiro</span><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>\n        <div class="accordion-body" role="region">\n          <div class="script-step"><span>Hook (0–3s)</span><p>${v.hook}</p></div>\n          <div class="script-step"><span>Reveal (3–12s)</span><p>${v.reveal}</p></div>\n          <div class="script-step"><span>CTA</span><p>${v.cta}</p></div>\n        </div>\n      </div>\n    </div>`;
+    return `<div class="video-card" data-fmt="${v.fmt}" role="listitem">\n      <div class="video-thumb">\n        <img src="${v.img}" alt="${v.title}" loading="lazy" data-error="hideSelf" data-args="${Sanitize.args("$el")}">\n        <div class="play-overlay" aria-hidden="true"><div class="play-circle"><svg viewBox="0 0 24 24" style="width:32px;height:32px"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>\n        <span class="format-badge ${v.fmtClass}">${v.fmt.toUpperCase()}</span>\n        ${newBadgeV}\n        <button class="fav-btn ${fav ? "active" : ""}" style="top:7px;left:7px;right:auto" data-click="toggleFavBtn" data-args="${Sanitize.args("vid", v.id, "$el")}" aria-label="${fav ? "Remover dos favoritos" : "Favoritar vídeo"}">${heartSVG(fav)}</button>\n      </div>\n      <div class="video-body">\n        <button class="card-btn" data-click="openExternal" data-args="${Sanitize.args(v.url)}" style="margin-bottom:8px"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>Ver no TikTok</button>\n        <div class="video-title">${v.title}</div>\n        <div class="video-stats">\n          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>${v.views}</span>\n          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>${v.likes}</span>\n          <span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${v.dur}</span>\n        </div>\n        <button class="accordion-btn" data-click="toggleAccordion" data-args="${Sanitize.args("$el")}" aria-expanded="false"><span>Estrutura do Roteiro</span><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>\n        <div class="accordion-body" role="region">\n          <div class="script-step"><span>Hook (0–3s)</span><p>${v.hook}</p></div>\n          <div class="script-step"><span>Reveal (3–12s)</span><p>${v.reveal}</p></div>\n          <div class="script-step"><span>CTA</span><p>${v.cta}</p></div>\n        </div>\n      </div>\n    </div>`;
   }).join("");
 }
 
@@ -1297,7 +1342,7 @@ function renderAvatarSelectGrid(containerId, clickFn, selectedAvatar) {
     emoji: ICONS.star,
     grad: gradients[i % gradients.length]
   })) ];
-  document.getElementById(containerId).innerHTML = all.map(a => `<div class="avatar-select-card ${selectedAvatar && selectedAvatar.id === a.id ? "selected" : ""}" onclick="${clickFn}('${a.id}',this,'${a.custom ? "custom" : "builtin"}')" role="option" tabindex="0" aria-label="${a.name}, ${a.nicho}" aria-selected="${selectedAvatar && selectedAvatar.id === a.id}">\n    <div class="avatar-select-emoji" aria-hidden="true">${a.img ? `<img src="${a.img}" alt="">` : a.emoji || ICONS.star}</div>\n    <div class="avatar-select-name">${a.name}</div>\n    <div class="avatar-select-nicho">${a.nicho || a.niche || "—"}</div>\n  </div>`).join("");
+  document.getElementById(containerId).innerHTML = all.map(a => `<div class="avatar-select-card ${selectedAvatar && selectedAvatar.id === a.id ? "selected" : ""}" data-click="${Sanitize.escapeHTML(clickFn)}" data-args="${Sanitize.args(String(a.id), "$el", a.custom ? "custom" : "builtin")}" role="option" tabindex="0" aria-label="${Sanitize.escapeHTML(a.name)}, ${Sanitize.escapeHTML(a.nicho)}" aria-selected="${selectedAvatar && selectedAvatar.id === a.id}">\n    <div class="avatar-select-emoji" aria-hidden="true">${Sanitize.safeImgUrl(a.img) ? `<img src="${Sanitize.escapeHTML(Sanitize.safeImgUrl(a.img))}" alt="">` : a.emoji || ICONS.star}</div>\n    <div class="avatar-select-name">${Sanitize.escapeHTML(a.name)}</div>\n    <div class="avatar-select-nicho">${Sanitize.escapeHTML(a.nicho || a.niche || "—")}</div>\n  </div>`).join("");
 }
 
 function renderStudioAvatars() {
@@ -1311,7 +1356,7 @@ function renderVidAvatars() {
 function renderAvatars(filter = "all") {
   let list = avatars;
   if (filter === "custom") list = []; else if (filter !== "all") list = avatars.filter(a => a.gender === filter);
-  document.getElementById("avatar-grid").innerHTML = list.map((a, i) => `<div class="avatar-card" data-gender="${a.gender}" role="listitem">\n    <div class="avatar-img" aria-hidden="true"><img src="${a.img}" alt="${a.name}" loading="lazy"></div>\n    <div class="avatar-body">\n      <div class="avatar-name">${a.name}</div>\n      <div class="avatar-meta">${a.age} anos · ${a.nicho}</div>\n      <span class="avatar-badge">${a.style}</span>\n      <button class="use-btn" onclick="useAvatar(${a.id})"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Usar Avatar</button>\n    </div>\n  </div>`).join("");
+  document.getElementById("avatar-grid").innerHTML = list.map((a, i) => `<div class="avatar-card" data-gender="${a.gender}" role="listitem">\n    <div class="avatar-img" aria-hidden="true"><img src="${a.img}" alt="${a.name}" loading="lazy"></div>\n    <div class="avatar-body">\n      <div class="avatar-name">${a.name}</div>\n      <div class="avatar-meta">${a.age} anos · ${a.nicho}</div>\n      <span class="avatar-badge">${a.style}</span>\n      <button class="use-btn" data-click="useAvatar" data-args="${Sanitize.args(a.id)}"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Usar Avatar</button>\n    </div>\n  </div>`).join("");
   const sect = document.getElementById("custom-avatars-section");
   const grid = document.getElementById("custom-avatar-grid");
   if (customAvatars.length > 0 && (filter === "all" || filter === "custom")) {
@@ -1321,7 +1366,7 @@ function renderAvatars(filter = "all") {
       const sName = Sanitize.escapeHTML(a.name || "");
       const sNicho = Sanitize.escapeHTML(a.nicho || "—");
       const sStyle = Sanitize.escapeHTML(a.style || "Personalizado");
-      return `<div class="avatar-card" role="listitem"><div class="avatar-img ${grad}" aria-hidden="true">${ICONS.star}</div><div class="avatar-body"><div class="avatar-name">${sName}</div><div class="avatar-meta">${a.age || "—"} anos · ${sNicho}</div><span class="avatar-badge">${sStyle}</span><button class="use-btn" onclick="useCustomAvatar(${i})"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Usar</button><button class="delete-btn" onclick="deleteCustomAvatar(${i})" aria-label="Excluir avatar" title="Excluir avatar"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg></button></div></div>`;
+      return `<div class="avatar-card" role="listitem"><div class="avatar-img ${grad}" aria-hidden="true">${ICONS.star}</div><div class="avatar-body"><div class="avatar-name">${sName}</div><div class="avatar-meta">${Sanitize.escapeHTML(a.age || "—")} anos · ${sNicho}</div><span class="avatar-badge">${sStyle}</span><button class="use-btn" data-click="useCustomAvatar" data-args="${Sanitize.args(i)}"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Usar</button><button class="delete-btn" data-click="deleteCustomAvatar" data-args="${Sanitize.args(i)}" aria-label="Excluir avatar" title="Excluir avatar"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg></button></div></div>`;
     }).join("");
   } else if (filter === "custom" && customAvatars.length === 0) {
     sect.style.display = "";
@@ -1333,23 +1378,23 @@ function renderAvatars(filter = "all") {
 }
 
 function renderStudioOptions() {
-  document.getElementById("camera-opts").innerHTML = cameras.map(c => `<div class="option-card ${c.id === selectedCamera ? "selected" : ""}" onclick="selectCamera('${c.id}',this)" role="button" tabindex="0" aria-pressed="${c.id === selectedCamera}"><div class="opt-icon"><svg viewBox="0 0 24 24"><path d="${c.iconPath}"/></svg></div><span>${c.label}</span></div>`).join("");
-  document.getElementById("style-opts").innerHTML = styles.map(s => `<div class="option-card ${s.id === selectedStyle ? "selected" : ""}" onclick="selectStyle('${s.id}',this)" role="button" tabindex="0" aria-pressed="${s.id === selectedStyle}"><div class="opt-icon"><svg viewBox="0 0 24 24"><path d="${s.iconPath}"/></svg></div><span>${s.label}</span><span class="opt-label">${s.sub}</span></div>`).join("");
-  document.getElementById("mode-opts").innerHTML = modes.map(m => `<div class="option-card ${m.id === selectedMode ? "selected" : ""}" onclick="selectMode('${m.id}',this)" role="button" tabindex="0" aria-pressed="${m.id === selectedMode}"><div class="opt-icon"><svg viewBox="0 0 24 24"><path d="${m.iconPath}"/></svg></div><span>${m.label}</span></div>`).join("");
-  document.getElementById("improve-opts").innerHTML = improvements.map(imp => `<div class="improve-chip ${selectedImprovements.has(imp) ? "selected" : ""}" onclick="toggleImprovement('${imp}',this)" role="checkbox" tabindex="0" aria-checked="${selectedImprovements.has(imp)}"><div class="check-dot" aria-hidden="true"></div>${imp}</div>`).join("");
-  document.getElementById("vid-improve-opts").innerHTML = vidImprovements.map(imp => `<div class="improve-chip ${selectedVidImprovements.has(imp) ? "selected" : ""}" onclick="toggleVidImprovement('${imp}',this)" role="checkbox" tabindex="0" aria-checked="${selectedVidImprovements.has(imp)}"><div class="check-dot" aria-hidden="true"></div>${imp}</div>`).join("");
+  document.getElementById("camera-opts").innerHTML = cameras.map(c => `<div class="option-card ${c.id === selectedCamera ? "selected" : ""}" data-click="selectCamera" data-args="${Sanitize.args(c.id, "$el")}" role="button" tabindex="0" aria-pressed="${c.id === selectedCamera}"><div class="opt-icon"><svg viewBox="0 0 24 24"><path d="${c.iconPath}"/></svg></div><span>${c.label}</span></div>`).join("");
+  document.getElementById("style-opts").innerHTML = styles.map(s => `<div class="option-card ${s.id === selectedStyle ? "selected" : ""}" data-click="selectStyle" data-args="${Sanitize.args(s.id, "$el")}" role="button" tabindex="0" aria-pressed="${s.id === selectedStyle}"><div class="opt-icon"><svg viewBox="0 0 24 24"><path d="${s.iconPath}"/></svg></div><span>${s.label}</span><span class="opt-label">${s.sub}</span></div>`).join("");
+  document.getElementById("mode-opts").innerHTML = modes.map(m => `<div class="option-card ${m.id === selectedMode ? "selected" : ""}" data-click="selectMode" data-args="${Sanitize.args(m.id, "$el")}" role="button" tabindex="0" aria-pressed="${m.id === selectedMode}"><div class="opt-icon"><svg viewBox="0 0 24 24"><path d="${m.iconPath}"/></svg></div><span>${m.label}</span></div>`).join("");
+  document.getElementById("improve-opts").innerHTML = improvements.map(imp => `<div class="improve-chip ${selectedImprovements.has(imp) ? "selected" : ""}" data-click="toggleImprovement" data-args="${Sanitize.args(imp, "$el")}" role="checkbox" tabindex="0" aria-checked="${selectedImprovements.has(imp)}"><div class="check-dot" aria-hidden="true"></div>${imp}</div>`).join("");
+  document.getElementById("vid-improve-opts").innerHTML = vidImprovements.map(imp => `<div class="improve-chip ${selectedVidImprovements.has(imp) ? "selected" : ""}" data-click="toggleVidImprovement" data-args="${Sanitize.args(imp, "$el")}" role="checkbox" tabindex="0" aria-checked="${selectedVidImprovements.has(imp)}"><div class="check-dot" aria-hidden="true"></div>${imp}</div>`).join("");
 }
 
 function renderBgOptions() {
-  document.getElementById("bg-opts").innerHTML = backgrounds.map(bg => `<div class="bg-card ${bg.id === selectedBg ? "selected" : ""}" onclick="selectBg('${bg.id}',this)" role="radio" tabindex="0" aria-checked="${bg.id === selectedBg}" aria-label="${bg.label}"><div class="bg-preview" style="background:${bg.css}" aria-hidden="true"></div><div class="bg-card-label">${bg.label}</div></div>`).join("");
+  document.getElementById("bg-opts").innerHTML = backgrounds.map(bg => `<div class="bg-card ${bg.id === selectedBg ? "selected" : ""}" data-click="selectBg" data-args="${Sanitize.args(bg.id, "$el")}" role="radio" tabindex="0" aria-checked="${bg.id === selectedBg}" aria-label="${bg.label}"><div class="bg-preview" style="background:${bg.css}" aria-hidden="true"></div><div class="bg-card-label">${bg.label}</div></div>`).join("");
 }
 
 function renderRoteiroUI() {
-  document.getElementById("roteiro-type-grid").innerHTML = roteiroTypes.map(r => `<div class="option-card ${selectedRoteiroType === r.id ? "selected" : ""}" onclick="selectRoteiroType('${r.id}',this)" role="radio" tabindex="0" aria-checked="${selectedRoteiroType === r.id}" style="padding:10px;gap:4px"><span style="font-size:12.5px;font-weight:700">${r.label}</span></div>`).join("");
-  document.getElementById("hook-presets").innerHTML = hookPresets.map(p => `<span class="roteiro-preset" onclick="applyPreset('rot-hook',this)" role="button" tabindex="0">${p}</span>`).join("");
-  document.getElementById("reveal-presets").innerHTML = revealPresets.map(p => `<span class="roteiro-preset" onclick="applyPreset('rot-reveal',this)" role="button" tabindex="0">${p}</span>`).join("");
-  document.getElementById("cta-presets").innerHTML = ctaPresets.map(p => `<span class="roteiro-preset" onclick="applyPreset('rot-cta',this)" role="button" tabindex="0">${p}</span>`).join("");
-  document.getElementById("roteiro-tom-chips").innerHTML = tomOptions.map(t => `<span class="dur-chip ${t === selectedTom ? "active" : ""}" onclick="selectTom('${t}',this)" role="radio" tabindex="0" aria-checked="${t === selectedTom}">${t}</span>`).join("");
+  document.getElementById("roteiro-type-grid").innerHTML = roteiroTypes.map(r => `<div class="option-card ${selectedRoteiroType === r.id ? "selected" : ""}" data-click="selectRoteiroType" data-args="${Sanitize.args(r.id, "$el")}" role="radio" tabindex="0" aria-checked="${selectedRoteiroType === r.id}" style="padding:10px;gap:4px"><span style="font-size:12.5px;font-weight:700">${r.label}</span></div>`).join("");
+  document.getElementById("hook-presets").innerHTML = hookPresets.map(p => `<span class="roteiro-preset" data-click="applyPreset" data-args='["rot-hook","$el"]' role="button" tabindex="0">${p}</span>`).join("");
+  document.getElementById("reveal-presets").innerHTML = revealPresets.map(p => `<span class="roteiro-preset" data-click="applyPreset" data-args='["rot-reveal","$el"]' role="button" tabindex="0">${p}</span>`).join("");
+  document.getElementById("cta-presets").innerHTML = ctaPresets.map(p => `<span class="roteiro-preset" data-click="applyPreset" data-args='["rot-cta","$el"]' role="button" tabindex="0">${p}</span>`).join("");
+  document.getElementById("roteiro-tom-chips").innerHTML = tomOptions.map(t => `<span class="dur-chip ${t === selectedTom ? "active" : ""}" data-click="selectTom" data-args="${Sanitize.args(t, "$el")}" role="radio" tabindex="0" aria-checked="${t === selectedTom}">${t}</span>`).join("");
 }
 
 const TABS = [ "mining", "freestudio", "viralize", "influencer", "viralvideos", "imglibrary", "settings" ];
@@ -2392,7 +2437,7 @@ function renderHistoryPanel() {
       minute: "2-digit"
     });
     const preview = Sanitize.escapeHTML(item.content.replace(/\n/g, " ").slice(0, 120) + "...");
-    return `<div class="history-item">\n      <div class="history-item-meta">\n        <span class="history-item-type ${typeClass[item.type] || "hist-img"}">${typeLabel[item.type] || item.type}</span>\n        <span class="history-item-date">${date}</span>\n      </div>\n      <div class="history-item-preview">${preview}</div>\n      <div class="history-item-actions">\n        <button class="hist-copy-btn" onclick="copyHistItem(${i})">\n          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>\n          Copiar\n        </button>\n        <button class="hist-copy-btn" onclick="deleteHistItem(${i})" style="flex:0;padding:5px 9px">\n          <svg viewBox="0 0 24 24" style="stroke:#c084fc"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>\n        </button>\n      </div>\n    </div>`;
+    return `<div class="history-item">\n      <div class="history-item-meta">\n        <span class="history-item-type ${typeClass[item.type] || "hist-img"}">${typeLabel[item.type] || Sanitize.escapeHTML(item.type)}</span>\n        <span class="history-item-date">${date}</span>\n      </div>\n      <div class="history-item-preview">${preview}</div>\n      <div class="history-item-actions">\n        <button class="hist-copy-btn" data-click="copyHistItem" data-args="${Sanitize.args(i)}">\n          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>\n          Copiar\n        </button>\n        <button class="hist-copy-btn" data-click="deleteHistItem" data-args="${Sanitize.args(i)}" style="flex:0;padding:5px 9px">\n          <svg viewBox="0 0 24 24" style="stroke:#c084fc"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>\n        </button>\n      </div>\n    </div>`;
   }).join("");
 }
 
@@ -2425,6 +2470,11 @@ function openSearch() {
 function closeSearch() {
   document.getElementById("search-overlay").classList.remove("open");
   document.getElementById("search-main-input").value = "";
+}
+
+function goSearchResult(tab) {
+  switchTab(tab, null);
+  closeSearch();
 }
 
 function renderSearchResults(q) {
@@ -2473,7 +2523,7 @@ function renderSearchResults(q) {
       label: n.label,
       sub: n.cat,
       icon: n.icon,
-      action: `switchTab('${n.tab}',null);closeSearch()`
+      tab: n.tab
     });
   });
   allProducts().filter(p => !ql || p.name.toLowerCase().includes(ql)).slice(0, 5).forEach(p => {
@@ -2482,7 +2532,7 @@ function renderSearchResults(q) {
       label: p.name,
       sub: p.cat,
       icon: ICONS.box,
-      action: `switchTab('mining',null);closeSearch()`
+      tab: "mining"
     });
   });
   avatars.filter(a => !ql || a.name.toLowerCase().includes(ql) || a.nicho.toLowerCase().includes(ql)).slice(0, 4).forEach(a => {
@@ -2491,11 +2541,11 @@ function renderSearchResults(q) {
       label: a.name,
       sub: a.nicho,
       icon: a.emoji,
-      action: `switchTab('influencer',null);closeSearch()`
+      tab: "influencer"
     });
   });
   if (!results.length) {
-    container.innerHTML = `<div style="padding:22px;text-align:center;color:var(--text3);font-size:13px">Nenhum resultado para "<strong style="color:var(--text)">${q}</strong>"</div>`;
+    container.innerHTML = `<div style="padding:22px;text-align:center;color:var(--text3);font-size:13px">Nenhum resultado para "<strong style="color:var(--text)">${Sanitize.escapeHTML(q)}</strong>"</div>`;
     return;
   }
   const typeClass = {
@@ -2503,7 +2553,7 @@ function renderSearchResults(q) {
     product: "sri-product",
     avatar: "sri-avatar"
   };
-  container.innerHTML = results.slice(0, 10).map((r, i) => `<div class="search-result-item" tabindex="0" onclick="${r.action}" onkeydown="if(event.key==='Enter'){${r.action}}">\n    <div class="search-result-icon ${typeClass[r.type] || ""}">${r.icon}</div>\n    <div><div class="search-result-name">${r.label}</div><div class="search-result-cat">${r.sub}</div></div>\n    <span class="search-result-badge">${r.type === "nav" ? "Seção" : r.type === "product" ? "Produto" : "Avatar"}</span>\n  </div>`).join("");
+  container.innerHTML = results.slice(0, 10).map((r, i) => `<div class="search-result-item" tabindex="0" data-click="goSearchResult" data-enter="goSearchResult" data-args="${Sanitize.args(r.tab)}">\n    <div class="search-result-icon ${typeClass[r.type] || ""}">${r.icon}</div>\n    <div><div class="search-result-name">${Sanitize.escapeHTML(r.label)}</div><div class="search-result-cat">${Sanitize.escapeHTML(r.sub)}</div></div>\n    <span class="search-result-badge">${r.type === "nav" ? "Seção" : r.type === "product" ? "Produto" : "Avatar"}</span>\n  </div>`).join("");
 }
 
 function updateStepperProgress(totalSteps, current, progressId) {
@@ -2518,7 +2568,7 @@ function showAvatarPreview(avatar, containerId) {
   const chip = document.createElement("div");
   chip.className = "avatar-preview-chip";
   chip.id = containerId + "-preview";
-  chip.innerHTML = `<span class="avatar-preview-emoji">${avatar.img ? `<img src="${avatar.img}" alt="">` : avatar.emoji || ICONS.star}</span>\n    <div><div class="avatar-preview-name">${avatar.name}</div><div class="avatar-preview-nicho">${avatar.nicho || "—"}</div></div>\n    <button class="avatar-preview-clear" onclick="clearAvatarSelection('${containerId}')" aria-label="Remover avatar selecionado">${ICONS.close}</button>`;
+  chip.innerHTML = `<span class="avatar-preview-emoji">${Sanitize.safeImgUrl(avatar.img) ? `<img src="${Sanitize.escapeHTML(Sanitize.safeImgUrl(avatar.img))}" alt="">` : avatar.emoji || ICONS.star}</span>\n    <div><div class="avatar-preview-name">${Sanitize.escapeHTML(avatar.name)}</div><div class="avatar-preview-nicho">${Sanitize.escapeHTML(avatar.nicho || "—")}</div></div>\n    <button class="avatar-preview-clear" data-click="clearAvatarSelection" data-args="${Sanitize.args(containerId)}" aria-label="Remover avatar selecionado">${ICONS.close}</button>`;
   const target = document.getElementById(containerId);
   if (target) target.parentNode.insertBefore(chip, target);
 }
