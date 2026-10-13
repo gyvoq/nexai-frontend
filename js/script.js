@@ -2509,7 +2509,7 @@ function renderSearchResults(q) {
     icon: ICONS.gear,
     tab: "settings"
   } ];
-  navItems.filter(n => !ql || n.label.toLowerCase().includes(ql)).forEach(n => {
+  navItems.filter(n => !ql || n.label.toLowerCase().includes(ql) || I18N.t(n.label).toLowerCase().includes(ql)).forEach(n => {
     results.push({
       type: "nav",
       label: n.label,
@@ -2518,7 +2518,7 @@ function renderSearchResults(q) {
       tab: n.tab
     });
   });
-  allProducts().filter(p => !ql || p.name.toLowerCase().includes(ql)).slice(0, 5).forEach(p => {
+  allProducts().filter(p => !ql || p.name.toLowerCase().includes(ql) || I18N.t(p.name).toLowerCase().includes(ql)).slice(0, 5).forEach(p => {
     results.push({
       type: "product",
       label: p.name,
@@ -2527,7 +2527,7 @@ function renderSearchResults(q) {
       tab: "mining"
     });
   });
-  avatars.filter(a => !ql || a.name.toLowerCase().includes(ql) || a.nicho.toLowerCase().includes(ql)).slice(0, 4).forEach(a => {
+  avatars.filter(a => !ql || a.name.toLowerCase().includes(ql) || a.nicho.toLowerCase().includes(ql) || I18N.t(a.nicho).toLowerCase().includes(ql)).slice(0, 4).forEach(a => {
     results.push({
       type: "avatar",
       label: a.name,
