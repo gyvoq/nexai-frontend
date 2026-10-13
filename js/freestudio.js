@@ -320,6 +320,7 @@ function fsTypeDuration(text) {
 }
 
 function fsTypewrite(el, text) {
+  text = I18N.t(text);
   const body = document.getElementById('fs-chat-body');
   const len = text.length;
   if (!len) { el.textContent = ''; return; }
@@ -410,11 +411,11 @@ function fsBotSay(text, callback, opts = {}) {
 
 function fsQuickReplies(options, onPick) {
   const quick = document.getElementById('fs-quick-replies');
-  quick.innerHTML = options.map(o => `<button type="button" class="fs-quick-reply">${fsEscape(o)}</button>`).join('');
+  quick.innerHTML = options.map(o => `<button type="button" class="fs-quick-reply" data-val="${fsEscape(o)}">${fsEscape(o)}</button>`).join('');
   quick.querySelectorAll('.fs-quick-reply').forEach(btn => {
     btn.addEventListener('click', () => {
-      if (onPick) onPick(btn.textContent);
-      else fsHandleAnswer(btn.textContent);
+      if (onPick) onPick(btn.dataset.val);
+      else fsHandleAnswer(btn.dataset.val);
     });
   });
 }
@@ -779,7 +780,7 @@ function fsAvatarLine(avatar) {
   const ok = v => v && v !== '—';
   const gender = avatar.gender === 'f' ? 'female' : avatar.gender === 'm' ? 'male' : 'non-binary';
   const age = ok(avatar.age) ? avatar.age + '-year-old ' : '';
-  let line = ` Featuring ${avatar.name}, ${age}${gender} creator (${ok(avatar.nicho) ? avatar.nicho : 'lifestyle'} niche, ${ok(avatar.style) ? avatar.style : 'natural'} style).`;
+  let line = ` Featuring ${avatar.name}, ${age}${gender} creator (${ok(avatar.nicho) ? I18N.t(avatar.nicho) : 'lifestyle'} niche, ${ok(avatar.style) ? I18N.t(avatar.style) : 'natural'} style).`;
   const looks = [
     avatar.etnia, avatar.corpo,
     ok(avatar.altura) && avatar.altura + ' height',
@@ -1140,8 +1141,8 @@ function fsBuildImagePromptFrom(st) {
   const format = FS_IMG_FORMATS[a.formato] || a.formato || FS_IMG_FORMATS['9:16'];
   const variant = FS_IMG_VARIANTS[(st.variant || 0) % FS_IMG_VARIANTS.length];
   const tone = st.tone ? FS_IMG_TONES[st.tone] : '';
-  const name = (st.product && st.product.name) || a.produto || 'product';
-  const hint = st.product && st.product.prompt ? ' (' + st.product.prompt + ')' : '';
+  const name = I18N.t((st.product && st.product.name) || a.produto || 'product');
+  const hint = st.product && st.product.prompt ? ' (' + I18N.t(st.product.prompt) + ')' : '';
   const lines = [];
   lines.push('Subject: ' + name + hint + '.');
   lines.push('Shot type: ' + style.shot + '.');
@@ -1497,11 +1498,11 @@ function fsBuildViralizePrompt(avatar, key) {
     `Creator:${fsAvatarLine(avatar).replace(/^ Featuring /, ' ')}`,
     `Format: ${t.duration} vertical 9:16 UGC video for ${t.platform}.`,
     `Setting: ${t.setting}.`,
-    `Hook (0-3s): "${t.hook}".`,
+    `Hook (0-3s): "${I18N.t(t.hook)}".`,
     'Shots:',
     ...t.shots.map((x, i) => `${i + 1}. ${x}`),
     `Audio: ${t.audio}.`,
-    `Call to action (last 3s): "${t.cta}".`,
+    `Call to action (last 3s): "${I18N.t(t.cta)}".`,
     'Look & feel: handheld, natural light, authentic UGC delivery, no over-polished ad look.',
     'Avoid: blurry footage, distorted faces or hands, watermarks, hard-to-read on-screen text.'
   ].join('\n');
