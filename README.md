@@ -1,46 +1,57 @@
-# Viralyze — Tradução automática (PT → EN)
+# Viralyze (Nex AI) — Frontend
 
-Detecta o idioma do navegador e, se o primeiro idioma for inglês, traduz o site inteiro para inglês. Qualquer outro idioma continua em português.
+Estúdio de marketing viral para TikTok Shop: descubra produtos e vídeos em alta, crie influencers IA e gere prompts de imagem e vídeo prontos para ferramentas como Midjourney, Runway e Kling.
 
-## Como funciona
+## Funcionalidades
 
-- `js/i18n.js` lê `navigator.languages[0]`. Se começar com `en`, baixa o dicionário e troca os textos, `placeholder`, `title`, `aria-label`, `alt` e meta tags.
-- Um `MutationObserver` traduz também o que o JS do app insere depois (toasts, cards, chat do Estúdio Livre).
-- `js/i18n.en.js` é o dicionário PT → EN (~775 entradas). Só é baixado por quem está em inglês.
-- Datas e horas (`pt-BR` fixo no código) saem em `en-US` no modo inglês.
-- Se o dicionário não carregar, o site aparece em português após 3 segundos.
+- **Inventário**: produtos virais por nicho, favoritos e importação por link de loja.
+- **Vídeos Virais**: vídeos em alta no TikTok como referência.
+- **Estúdio Livre**: chat para gerar prompts de imagem e vídeo e extrair o movimento de um vídeo de referência.
+- **Viralize A.I**: escolha um avatar e receba um prompt de vídeo pronto.
+- **Influencers**: avatares prontos ou criados em etapas.
+- **Biblioteca de Imagens, histórico de prompts e backup** dos dados.
+- **Português e inglês**: o idioma é detectado pelo navegador.
 
-## Instalação
+## Stack
 
-1. Coloque `i18n.js` e `i18n.en.js` em `js/`.
-2. Em cada HTML, adicione no `<head>` (antes do `<link rel="icon"`):
-   - `index.html`: `<script src="js/i18n.js"></script>`
-   - `landing/*.html` e `404.html`: `<script src="/js/i18n.js"></script>`
-3. Em `404.html`, troque `script-src 'none'` por `script-src 'self'` no CSP.
+HTML, CSS e JavaScript puro, sem build. Hospedado na Vercel (cabeçalhos de segurança em `vercel.json`). Os dados do usuário (favoritos, projetos, prompts) ficam só no navegador.
 
-## Uso
+## Estrutura
+
+```
+index.html       App (acesso por chave de licença)
+landing/         Landing page, termos de uso e política de privacidade
+admin/           Painel administrativo
+404.html         Página de erro
+js/              Lógica do app, sessão, Estúdio Livre e tradução (i18n)
+css/             Estilos
+assets/          Imagens e mídia
+```
+
+## Backend
+
+O frontend se comunica com um backend privado (Node.js, Express e MongoDB) que valida as licenças e atende as chamadas protegidas da API. Este repositório não contém chaves nem segredos.
+
+## Rodar localmente
+
+Não há dependências nem build. Sirva a pasta raiz com qualquer servidor estático:
+
+```bash
+npx serve .
+```
+
+Abra `http://localhost:3000`. Para testar o app completo é preciso um backend acessível e uma licença válida.
+
+## Tradução (PT → EN)
+
+`js/i18n.js` lê o primeiro idioma do navegador e, se for inglês, carrega o dicionário `js/i18n.en.js` e traduz o site, inclusive o que o JS insere depois.
 
 | Ação | Como |
 |---|---|
-| Forçar inglês ou português | Adicione `?lang=en` ou `?lang=pt` na URL (fica salvo no navegador) |
+| Forçar idioma | `?lang=en` ou `?lang=pt` na URL (fica salvo no navegador) |
 | Voltar ao automático | `I18N.setLang(null)` no console |
 | Traduzir uma string no JS | `I18N.t("texto em pt")` |
-| Não traduzir um elemento | Adicione o atributo `data-no-i18n` |
+| Não traduzir um elemento | atributo `data-no-i18n` |
+| Adicionar ou corrigir tradução | edite `js/i18n.en.js` (`"texto em pt": "english text"`) |
 
-## Adicionar ou corrigir traduções
-
-Edite `js/i18n.en.js`, no formato `"texto em português": "english text"`. A chave deve ser idêntica ao texto original (espaços extras são ignorados). Frases com números ou nomes variáveis ficam em `js/i18n.js`, na lista `P` (expressões regulares).
-
-Para a mesma frase ter traduções diferentes conforme a tag pai, use a chave `tag::Texto` (ex.: `"em::Privacidade": "Policy"`).
-
-## Alterações em arquivos existentes
-
-- `js/script.js`: a busca global também procura pelo nome em inglês.
-- `js/freestudio.js`: botões de resposta rápida usam `data-val` (valor original), o bot digita já em inglês e os prompts gerados usam nomes em inglês.
-
-## Limitações
-
-- O painel `/admin` não foi traduzido.
-- Preço continua em R$.
-- Mensagens de erro e respostas da IA vindas do backend continuam no idioma original.
-- A tradução da política de privacidade e dos termos é literal e deve ser revisada por um advogado.
+Limitações: o `/admin` não está traduzido, o preço continua em R$, mensagens vindas do backend ficam no idioma original, e a tradução dos textos legais deve ser revisada por um advogado.
