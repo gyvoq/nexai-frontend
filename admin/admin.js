@@ -1,6 +1,7 @@
 const API = 'https://nexai-backend-production-5e36.up.railway.app';
 const KEY_RE=/^[A-Z0-9]{5}$/;
-let adminSecret='', allLicenses=[], currentFilter='all', createdKeys=[], qty=1, dateMode='auto', validity=1;
+let adminSecret='', allLicenses=[], currentFilter='all', createdKeys=[], qty=1, dateMode='auto', validity=1, maxDev=1;
+const esc=t=>String(t??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 
 function doLogin(){
   const val=document.getElementById('secret-input').value.trim();
@@ -79,6 +80,12 @@ function pickValidity(el,v){
   el.parentElement.querySelectorAll('.dd-item').forEach(i=>i.classList.toggle('active',i===el));
   closePopups();
 }
+function pickDevices(el,v){
+  maxDev=v;
+  document.getElementById('devices-label').textContent=el.textContent;
+  el.parentElement.querySelectorAll('.dd-item').forEach(i=>i.classList.toggle('active',i===el));
+  closePopups();
+}
 function openCal(which,btn){
   const dd=btn.parentElement;
   const open=!dd.classList.contains('open');
@@ -136,7 +143,7 @@ function changeQty(d){
 
 async function createLicenses(){
   const btn=document.getElementById('create-btn');
-  const body={validityMonths:validity};
+  const body={validityMonths:validity,maxDevices:maxDev,description:(document.getElementById('desc-input').value||'').trim().slice(0,100)};
 
   if(dateMode==='custom'){
     const s=cal.start.value;
@@ -190,7 +197,7 @@ function renderTable(){
   const q=(document.getElementById('search-input')?.value||'').toLowerCase().trim();
   let list=allLicenses;
   if(currentFilter!=='all')list=list.filter(l=>getStatus(l)===currentFilter);
-  if(q)list=list.filter(l=>l.key.toLowerCase().includes(q));
+  if(q)list=list.filter(l=>l.key.toLowerCase().includes(q)||String(l.description||'').toLowerCase().includes(q));
 
   const tbody=document.getElementById('licenses-tbody');
   const moreWrap=document.getElementById('more-wrap');
@@ -209,10 +216,13 @@ function renderTable(){
   tbody.innerHTML=list.map(l=>{
     const s=getStatus(l);
     const months=`${Number(l.validityMonths)||0} ${Number(l.validityMonths)===1?'mês':'meses'}`;
+    const md=Number(l.maxDevices)||1;
+    const devs=md>1?` · ${Number(l.devicesUsed)||0}/${md} disp.`:'';
+    const desc=l.description?`<span class="desc">${esc(l.description)}</span>`:'';
     const revoke=s==='revoked'?'':`<button class="act act-revoke" data-click="confirmRevoke" data-args='["${l.key}"]'>Revogar</button>`;
     const reset=(l.deviceLocked&&s!=='revoked')?`<button class="act act-copy" data-click="confirmReset" data-args='["${l.key}"]' title="Libera a chave para ser ativada em outro dispositivo">Liberar</button>`:'';
     return `<tr>
-      <td class="td-key"><span class="key-cell">${l.key}<span class="sub">${months} · criada em ${safeFmt(l.createdAt)}</span></span></td>
+      <td class="td-key"><span class="key-cell">${l.key}<span class="sub">${months}${devs} · criada em ${safeFmt(l.createdAt)}</span>${desc}</span></td>
       <td class="td-status"><span class="status c-${s}"><span class="dot"></span><span style="color:var(--text)">${labels[s]}</span></span></td>
       <td class="td-ativ date-cell"><span class="td-label">Ativada</span>${safeFmt(l.activatedAt)}</td>
       <td class="td-exp date-cell"><span class="td-label">Expira</span>${safeFmt(l.expiresAt)}</td>
@@ -284,7 +294,7 @@ function onSearchInput(){resetVisible();renderTable();}
 const ACTIONS={
   doLogin,doLogout,loadLicenses,createLicenses,copyAllKeys,copyText,changeQty,setFilter,showMore,
   closeConfirm,toggleDD,openCal,navCal,pickDate,pickValidity,confirmRevoke,confirmDelete,confirmReset,
-  onDateModeChange,onSearchInput,noop,
+  onDateModeChange,onSearchInput,pickDevices,noop,
 };
 
 function runAction(el,e,attr){
