@@ -89,6 +89,9 @@ button{cursor:pointer;touch-action:manipulation;}
 .custom-dates{display:none;gap:14px;}
 .custom-dates.visible{display:flex;flex-wrap:wrap;}
 .hidden{display:none !important;}
+.field-desc{flex:1 1 220px;min-width:180px;}
+.field-desc .input{padding:9px 11px;border-radius:8px;}
+.desc{display:block;margin-top:3px;color:var(--text);font-size:12.5px;font-weight:400;opacity:.85;white-space:normal;word-break:break-word;max-width:320px;}
 
 .created{display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);}
 .created-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;color:var(--muted);}
@@ -284,6 +287,33 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
         </div>
 
         <div class="field">
+          <span>Dispositivos</span>
+          <div class="dd" id="devices-dd">
+            <button type="button" class="dd-btn" data-click="toggleDD" data-stop data-args='["$el"]'>
+              <span id="devices-label">1 dispositivo</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="dd-menu" data-click="noop" data-stop>
+              <button type="button" class="dd-item active" data-click="pickDevices" data-args='["$el",1]'>1 dispositivo</button>
+              <button type="button" class="dd-item" data-click="pickDevices" data-args='["$el",2]'>2 dispositivos</button>
+              <button type="button" class="dd-item" data-click="pickDevices" data-args='["$el",3]'>3 dispositivos</button>
+              <button type="button" class="dd-item" data-click="pickDevices" data-args='["$el",4]'>4 dispositivos</button>
+              <button type="button" class="dd-item" data-click="pickDevices" data-args='["$el",5]'>5 dispositivos</button>
+              <button type="button" class="dd-item" data-click="pickDevices" data-args='["$el",6]'>6 dispositivos</button>
+              <button type="button" class="dd-item" data-click="pickDevices" data-args='["$el",7]'>7 dispositivos</button>
+              <button type="button" class="dd-item" data-click="pickDevices" data-args='["$el",8]'>8 dispositivos</button>
+              <button type="button" class="dd-item" data-click="pickDevices" data-args='["$el",9]'>9 dispositivos</button>
+              <button type="button" class="dd-item" data-click="pickDevices" data-args='["$el",10]'>10 dispositivos</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field field-desc">
+          <span>Descrição</span>
+          <input type="text" class="input" id="desc-input" maxlength="100" placeholder="Ex.: João - plano família" autocomplete="off">
+        </div>
+
+        <div class="field">
           <span>Quantidade</span>
           <div class="qty">
             <button type="button" aria-label="Diminuir" data-click="changeQty" data-args='[-1]'>−</button>
@@ -318,7 +348,7 @@ tbody tr:hover td{background:rgba(255,255,255,.015);}
         <button class="tab" data-filter="revoked" data-click="setFilter" data-args='["revoked","$el"]'><span class="dot c-revoked"></span>Revogadas <span class="count" id="n-revoked">0</span></button>
       </div>
       <div class="search-row">
-        <input type="search" class="input search" placeholder="Buscar chave" autocomplete="off" autocapitalize="off" spellcheck="false" id="search-input" data-input="onSearchInput">
+        <input type="search" class="input search" placeholder="Buscar chave ou descrição" autocomplete="off" autocapitalize="off" spellcheck="false" id="search-input" data-input="onSearchInput">
         <button class="icon-btn" data-click="loadLicenses">Atualizar</button>
       </div>
     </div>
